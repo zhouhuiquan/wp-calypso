@@ -47,7 +47,6 @@ class GoogleLoginButton extends Component {
 		super( props );
 
 		this.initialized = null;
-
 		this.handleClick = this.handleClick.bind( this );
 		this.showError = this.showError.bind( this );
 		this.hideError = this.hideError.bind( this );
@@ -63,7 +62,7 @@ class GoogleLoginButton extends Component {
 		}
 
 		return new Promise( resolve => {
-			loadScript( 'https://apis.google.com/js/api.js', () => resolve( window.gapi ) );
+			loadScript( 'https://apis.google.com/js/platform.js', () => resolve( window.gapi ) );
 		} );
 	}
 
