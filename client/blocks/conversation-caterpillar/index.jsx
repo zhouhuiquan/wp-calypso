@@ -4,8 +4,9 @@
  */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { map, get, last, uniqBy, size, filter, takeRight } from 'lodash';
+import { map, get, last, uniqBy, size, filter, takeRight, reverse } from 'lodash';
 import { localize } from 'i18n-calypso';
+import classNames from 'classnames';
 
 /***
  * Internal dependencies
@@ -32,7 +33,6 @@ class ConversationCaterpillarComponent extends React.Component {
 			filter( uniqueAuthors, 'avatar_URL' ),
 			MAX_GRAVATARS_TO_DISPLAY
 		);
-		const displayedAuthorsCount = size( displayedAuthors );
 		const lastAuthorName = get( last( displayedAuthors ), 'name' );
 		const gravatarSmallScreenThreshold = MAX_GRAVATARS_TO_DISPLAY / 2;
 
@@ -40,20 +40,12 @@ class ConversationCaterpillarComponent extends React.Component {
 		return (
 			<div className="conversation-caterpillar">
 				<div className="conversation-caterpillar__gravatars">
-					{ map( displayedAuthors, ( author, index ) => {
-						let gravClasses = 'conversation-caterpillar__gravatar';
-						// If we have more than 5 gravs,
-						// add a additional class so we can hide some on small screens
-						if (
-							displayedAuthorsCount > gravatarSmallScreenThreshold &&
-							index < displayedAuthorsCount - gravatarSmallScreenThreshold
-						) {
-							gravClasses += ' is-hidden-on-small-screens';
-						}
-
+					{ map( reverse( displayedAuthors ), ( author, index ) => {
 						return (
 							<Gravatar
-								className={ gravClasses }
+								className={ classNames( 'conversation-caterpillar__gravatar', {
+									'is-hidden-on-small-screens': index >= gravatarSmallScreenThreshold,
+								} ) }
 								key={ author.ID }
 								user={ author }
 								size={ 32 }

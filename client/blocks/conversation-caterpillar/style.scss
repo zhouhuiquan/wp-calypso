@@ -6,6 +6,7 @@
 .conversation-caterpillar__gravatars {
 	display: flex;
 	flex-wrap: wrap;
+	flex-direction: row-reverse;
 	max-height: 36px;
 	overflow: hidden;
 }
@@ -17,8 +18,14 @@
 	vertical-align: middle;
 	width: 32px;
 
-	&:first-child {
+	&:last-child {
 		margin-left: 0;
+	}
+
+	&.is-hidden-on-small-screens {
+		@include breakpoint( "<660px" ) {
+			display: none;
+		}
 	}
 }
 
