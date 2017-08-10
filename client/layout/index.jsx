@@ -42,6 +42,7 @@ import DocumentHead from 'components/data/document-head';
 import NpsSurveyNotice from 'layout/nps-survey-notice';
 import AppBanner from 'blocks/app-banner';
 import { getPreference } from 'state/preferences/selectors';
+import JITM from 'blocks/jitm';
 
 if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
 	KeyboardShortcutsMenu = require( 'lib/keyboard-shortcuts/menu' );
@@ -150,6 +151,7 @@ Layout = React.createClass( {
 				<QuerySites allSites />
 				<QueryPreferences />
 				{ <GuidedTours /> }
+				{ config.isEnabled( 'jitms' ) && <JITM /> }
 				{ config.isEnabled( 'nps-survey/notice' ) && <NpsSurveyNotice /> }
 				{ config.isEnabled( 'keyboard-shortcuts' ) ? <KeyboardShortcutsMenu /> : null }
 				{ this.renderMasterbar() }
