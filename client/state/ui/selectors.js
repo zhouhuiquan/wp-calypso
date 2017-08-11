@@ -103,12 +103,25 @@ export function isSectionLoading( state ) {
  * Returns true if the current section is isomorphic.
  *
  * @param  {Object}  state Global state tree
- * @return {bool}    True if current section is isomorphic
+ * @return {Boolean}    True if current section is isomorphic
  *
  * @see client/sections
  */
 export function isSectionIsomorphic( state ) {
-	return get( getSection( state ), 'isomorphic', false );
+	return !! get( getSection( state ), 'isomorphic', false );
+}
+
+/**
+ * Returns the isomorphic configuration of the section if it is isomorphic.
+ *
+ * @param  {Object}  state Global state tree
+ * @return {Object}  the isomorphic configuration of the section
+ *
+ * @see client/sections
+ */
+export function getIsomorphicSectionConfiguration( state ) {
+	const configuration = get( getSection( state ), 'isomorphic', null );
+	return configuration === true ? {} : configuration;
 }
 
 /**

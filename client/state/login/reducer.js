@@ -187,7 +187,7 @@ export const socialAccount = createReducer( { isCreating: false, createError: nu
 } );
 
 export const oauth2ClientData = createReducer( null, {
-	[ OAUTH2_CLIENT_DATA_REQUEST ]: () => null,
+	[ OAUTH2_CLIENT_DATA_REQUEST ]: ( state, { data } ) => data,
 	[ OAUTH2_CLIENT_DATA_REQUEST_FAILURE ]: ( state, { error } ) => error,
 	[ OAUTH2_CLIENT_DATA_REQUEST_SUCCESS ]: ( state, { data } ) => data,
 } );

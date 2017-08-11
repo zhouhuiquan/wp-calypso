@@ -434,7 +434,10 @@ export const logoutUser = ( redirectTo ) => ( dispatch, getState ) => {
 
 export const fetchOAuth2ClientData = ( clientId ) => dispatch => {
 	dispatch( {
-		type: OAUTH2_CLIENT_DATA_REQUEST
+		type: OAUTH2_CLIENT_DATA_REQUEST,
+		data: {
+			id: clientId,
+		}
 	} );
 
 	return wpcom.undocumented().oauth2ClientId( clientId ).then( wpcomResponse => {
