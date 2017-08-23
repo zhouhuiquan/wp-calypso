@@ -74,7 +74,7 @@ module.exports = function() {
 			);
 		}
 
-		page( '/plugins/:site_id',
+		page( '/plugins/:site',
 			controller.siteSelection,
 			controller.navigation,
 			pluginsController.browsePlugins
