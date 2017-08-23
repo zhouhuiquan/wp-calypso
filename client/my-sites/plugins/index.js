@@ -74,6 +74,12 @@ module.exports = function() {
 			);
 		}
 
+		page( '/plugins/:site_id',
+			controller.siteSelection,
+			controller.navigation,
+			pluginsController.browsePlugins
+		);
+
 		page( '/plugins',
 			controller.siteSelection,
 			controller.navigation,
