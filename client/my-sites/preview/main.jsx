@@ -150,6 +150,8 @@ class PreviewMain extends React.Component {
 							{ components: { strong: <strong /> } }
 						)
 					}
+					allowCustomization={ true }
+					siteSlug={ this.props.site.slug }
 				/>
 			</Main>
 		);

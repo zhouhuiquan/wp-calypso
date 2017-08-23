@@ -120,6 +120,22 @@ export class WebPreviewContent extends Component {
 				this.setState( { isLoadingSubpage: true } );
 				return;
 		}
+
+		switch ( data.id ) {
+			case 'control-focus':
+				this.openCustomizerWithFocus( 'control', data.data );
+				return;
+			case 'focus-widget-control':
+				this.openCustomizerWithFocus( 'panel', 'widgets' );
+				return;
+			case 'focus-menu':
+				this.openCustomizerWithFocus( 'panel', 'nav_menu' );
+				return;
+		}
+	}
+
+	openCustomizerWithFocus = ( key, val ) => {
+		page( '/customize/' + this.props.siteSlug + `?autofocus[${ key }]=${ val }` );
 	}
 
 	handleLocationChange = ( payload ) => {
@@ -181,7 +197,16 @@ export class WebPreviewContent extends Component {
 		try {
 			const newUrl = iframeUrl === 'about:blank'
 				? iframeUrl
-				: addQueryArgs( { calypso_token: this.previewId }, iframeUrl );
+				: addQueryArgs( {
+					calypso_token: this.previewId,
+					...( this.props.allowCustomization
+						? {
+							customize_changeset_uuid: 'c964a2aa-ac1a-4c66-acfe-1f7b25dac752',
+							customize_messenger_channel: 'preview-' + this.previewId,
+						}
+						: {}
+					),
+				}, iframeUrl );
 			this.iframe.contentWindow.location.replace( newUrl );
 			this.setState( {
 				loaded: false,
