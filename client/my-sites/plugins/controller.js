@@ -212,6 +212,7 @@ const controller = {
 	plugin( context ) {
 		const siteUrl = route.getSiteFragment( context.path );
 
+		// If the "plugin" part of the route is actually a site, browse the plugins for that site instead.
 		if (
 			siteUrl &&
 			context.params.plugin &&
