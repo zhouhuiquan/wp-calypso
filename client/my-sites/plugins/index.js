@@ -74,13 +74,13 @@ module.exports = function() {
 			);
 		}
 
-		page( '/plugins/:site',
+		page( '/plugins',
 			controller.siteSelection,
 			controller.navigation,
 			pluginsController.browsePlugins
 		);
 
-		page( '/plugins',
+		page( '/plugins/manage/:site?',
 			controller.siteSelection,
 			controller.navigation,
 			pluginsController.plugins.bind( null, 'all' ),
@@ -92,7 +92,8 @@ module.exports = function() {
 				controller.siteSelection,
 				controller.navigation,
 				pluginsController.jetpackCanUpdate.bind( null, filter ),
-				pluginsController.plugins.bind( null, filter )
+				pluginsController.plugins.bind( null, filter ),
+				controller.sites
 			)
 		) );
 
