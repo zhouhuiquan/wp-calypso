@@ -135,7 +135,7 @@ const PluginsBrowser = React.createClass( {
 			return <PluginsBrowserList
 				plugins={ this.getPluginsFullList( category ) }
 				listName={ category }
-				title={ this.props.translateCategory( category ) }
+				title={ this.translateCategory( category ) }
 				site={ this.props.site }
 				showPlaceholders={ isFetching }
 				currentSites={ this.props.sites.getSelectedOrAllJetpackCanManage() } />;
@@ -175,7 +175,7 @@ const PluginsBrowser = React.createClass( {
 		return <PluginsBrowserList
 			plugins={ this.getPluginsShortList( category ) }
 			listName={ category }
-			title={ this.props.translateCategory( category ) }
+			title={ this.translateCategory( category ) }
 			site={ this.props.site }
 			expandedListLink={ this.getPluginsFullList( category ).length > this._SHORT_LIST_LENGTH ? listLink : false }
 			size={ this._SHORT_LIST_LENGTH }
