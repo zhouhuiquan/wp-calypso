@@ -262,10 +262,32 @@ const PluginsBrowser = React.createClass( {
 			return;
 		}
 
+		const site = this.props.site ? '/' + this.props.site : '';
+		const suggestedSearches = [
+			this.props.translate( 'Engagement', { context: 'Plugins suggested search term' } ),
+			this.props.translate( 'Security', { context: 'Plugins suggested search term' } ),
+			this.props.translate( 'Appearance', { context: 'Plugins suggested search term' } ),
+			this.props.translate( 'Writing', { context: 'Plugins suggested search term' } ),
+		];
+		// TODO: getSearchBox() probably no longer needs the `pinned` argument since it is always pinned
+		// TODO: The Search does not get the search text when a suggested term is clicked
+		// TODO: do we still need any of the CSS in plugins-browser__main-header? It breaks the layout when the search field is open.
 		return (
-			<div className="plugins-browser__main-header">
-				{ this.getSearchBox( false ) }
-			</div>
+			<SectionNav selectedText={ this.props.translate( 'Suggested Searches', { context: 'Suggested searches for plugins' } ) }>
+				<NavTabs label="Suggested Searches">
+					<NavItem path={ '/plugins' + site } selected={ false } >
+						{ this.props.translate( 'All', { context: 'Filter all plugins' } ) }
+					</NavItem>
+					{ suggestedSearches.map( term => <NavItem
+						key={ `suggested-search-${ term }` }
+						path={ '/plugins' + site + '?s=' + term }
+					>
+						{ term }
+					</NavItem>
+					) }
+				</NavTabs>
+				{ this.getSearchBox( true ) }
+			</SectionNav>
 		);
 	},
 
