@@ -1,15 +1,19 @@
 .plugins-browser__main-header {
-	.search {
-		position: relative;
-	}
+	display: flex;
 
-	@include breakpoint( "<660px" ) {
-		margin-top: 2em;
+	.section-nav {
+		flex: auto;
+		margin: 0;
 	}
 }
 
-.plugins-browser .section-nav {
-	@include breakpoint( "<660px" ) {
-		margin-top: 2em;
-	}
+.plugins-browser__manage-button {
+	flex: none;
+	display: flex;
+	align-items: center;
+	padding: 11px 16px;
+	background-color: $white;
+	box-shadow:
+		0 0 0 1px transparentize( lighten( $gray, 20% ), .5 ),
+		0 1px 2px lighten( $gray, 30% );
 }

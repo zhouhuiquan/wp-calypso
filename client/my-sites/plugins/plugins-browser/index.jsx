@@ -4,12 +4,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
+import Gridicon from 'gridicons';
 
 /**
  * Internal dependencies
  */
 import SidebarNavigation from 'my-sites/sidebar-navigation';
 import DocumentHead from 'components/data/document-head';
+import Button from 'components/button';
 import Search from 'components/search';
 import SectionNav from 'components/section-nav';
 import MainComponent from 'components/main';
@@ -202,8 +204,9 @@ const PluginsBrowser = React.createClass( {
 				initialValue={ this.props.search }
 				placeholder={ this.props.translate( 'Search Plugins' ) }
 				delaySearch={ true }
-				analyticsGroup="PluginsBrowser" />
-			);
+				analyticsGroup="PluginsBrowser"
+			/>
+		);
 	},
 
 	getNavigationBar() {
@@ -239,15 +242,7 @@ const PluginsBrowser = React.createClass( {
 		</SectionNav>;
 	},
 
-	getPageHeaderView() {
-		if ( this.props.category ) {
-			return this.getNavigationBar();
-		}
-
-		if ( this.props.hideSearchForm ) {
-			return;
-		}
-
+	getSearchBar() {
 		const site = this.props.site ? '/' + this.props.site : '';
 		const suggestedSearches = [
 			this.props.translate( 'Engagement', { context: 'Plugins suggested search term' } ),
@@ -256,23 +251,52 @@ const PluginsBrowser = React.createClass( {
 			this.props.translate( 'Writing', { context: 'Plugins suggested search term' } ),
 		];
 		// TODO: The Search does not get the search text when a suggested term is clicked
-		// TODO: do we still need any of the CSS in plugins-browser__main-header? It breaks the layout when the search field is open.
 		return (
-			<SectionNav selectedText={ this.props.translate( 'Suggested Searches', { context: 'Suggested searches for plugins' } ) }>
+			<SectionNav
+				selectedText={ this.props.translate( 'Suggested Searches', {
+					context: 'Suggested searches for plugins',
+				} ) }
+			>
 				<NavTabs label="Suggested Searches">
-					<NavItem path={ '/plugins' + site } selected={ false } >
+					<NavItem path={ '/plugins' + site } selected={ false }>
 						{ this.props.translate( 'All', { context: 'Filter all plugins' } ) }
 					</NavItem>
-					{ suggestedSearches.map( term => <NavItem
-						key={ `suggested-search-${ term }` }
-						path={ '/plugins' + site + '?s=' + term }
-					>
-						{ term }
-					</NavItem>
+					{ suggestedSearches.map( term =>
+						<NavItem key={ `suggested-search-${ term }` } path={ '/plugins' + site + '?s=' + term }>
+							{ term }
+						</NavItem>
 					) }
 				</NavTabs>
 				{ this.getSearchBox() }
 			</SectionNav>
+		);
+	},
+
+	getManageButton() {
+		const site = this.props.site ? '/' + this.props.site : '';
+		return (
+			<div className="plugins-browser__manage-button">
+				<Button compact href={ '/plugins/manage' + site }>
+					<Gridicon icon="cog" />
+					{ this.props.translate( 'Manage' ) }
+				</Button>
+			</div>
+		);
+	},
+
+	getPageHeaderView() {
+		if ( this.props.hideSearchForm ) {
+			return null;
+		}
+
+		const navigation = this.props.category ? this.getNavigationBar() : this.getSearchBar();
+		const manageButton = this.props.isJetpackSite && this.getManageButton();
+
+		return (
+			<div className="plugins-browser__main-header">
+				{ navigation }
+				{ manageButton }
+			</div>
 		);
 	},
 
@@ -331,6 +355,7 @@ export default connect(
 	state => {
 		const selectedSiteId = getSelectedSiteId( state );
 		return {
+			isJetpackSite: isJetpackSite( state, selectedSiteId ),
 			jetpackManageError: !! isJetpackSite( state, selectedSiteId ) && ! canJetpackSiteManage( state, selectedSiteId ),
 			isRequestingSites: isRequestingSites( state ),
 			noPermissionsError: !! selectedSiteId && ! canCurrentUser( state, selectedSiteId, 'manage_options' ),
