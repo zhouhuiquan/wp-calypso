@@ -42,14 +42,6 @@ const PluginsBrowser = React.createClass( {
 
 	mixins: [ infiniteScroll( 'fetchNextPagePlugins' ), URLSearch ],
 
-	reinitializeSearch() {
-		this.WrappedSearch = props => <Search { ...props } />;
-	},
-
-	componentWillMount() {
-		this.reinitializeSearch();
-	},
-
 	componentDidMount() {
 		PluginsListStore.on( 'change', this.refreshLists );
 		this.props.sites.on( 'change', this.refreshLists );
@@ -62,7 +54,7 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	getInitialState() {
-		return this.getPluginsLists( this.props.search );
+		return Object.assign( {}, { searchValue: this.props.search }, this.getPluginsLists( this.props.search ) );
 	},
 
 	componentWillUnmount() {
@@ -75,7 +67,11 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	refreshLists( search ) {
-		this.setState( this.getPluginsLists( search || this.props.search ) );
+		return this.setState( Object.assign(
+			{},
+			{ searchValue: search || this.props.search },
+			this.getPluginsLists( search || this.props.search )
+		) );
 	},
 
 	fetchNextPagePlugins() {
@@ -204,14 +200,13 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	getSearchBox() {
-		const { WrappedSearch } = this;
-
 		return (
-			<WrappedSearch
+			<Search
 				pinned
 				fitsContainer
 				onSearch={ this.doSearch }
 				initialValue={ this.props.search }
+				value={ this.state.searchValue }
 				placeholder={ this.props.translate( 'Search Plugins' ) }
 				delaySearch={ true }
 				analyticsGroup="PluginsBrowser"
@@ -253,8 +248,7 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	handleSuggestedSearch( term ) {
-		this.reinitializeSearch();
-		return () => this.doSearch( term );
+		return () => this.setState( { searchValue: term } );
 	},
 
 	getSearchBar() {
