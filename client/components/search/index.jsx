@@ -129,7 +129,10 @@ const Search = React.createClass( {
 			( nextProps.value || nextProps.value === '' ) &&
 			nextProps.value !== this.state.keyword
 		) {
-			this.setState( { keyword: nextProps.value } );
+			this.setState( { keyword: nextProps.value }, () => {
+				// No need to wait for the debounce if the value was changed by the props
+				this.props.onSearch( nextProps.value );
+			} );
 		}
 	},
 
