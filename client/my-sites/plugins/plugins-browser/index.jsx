@@ -42,6 +42,14 @@ const PluginsBrowser = React.createClass( {
 
 	mixins: [ infiniteScroll( 'fetchNextPagePlugins' ), URLSearch ],
 
+	reinitializeSearch() {
+		this.WrappedSearch = props => <Search { ...props } />;
+	},
+
+	componentWillMount() {
+		this.reinitializeSearch();
+	},
+
 	componentDidMount() {
 		PluginsListStore.on( 'change', this.refreshLists );
 		this.props.sites.on( 'change', this.refreshLists );
@@ -196,8 +204,10 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	getSearchBox() {
+		const { WrappedSearch } = this;
+
 		return (
-			<Search
+			<WrappedSearch
 				pinned
 				fitsContainer
 				onSearch={ this.doSearch }
@@ -242,15 +252,19 @@ const PluginsBrowser = React.createClass( {
 		</SectionNav>;
 	},
 
+	handleSuggestedSearch( term ) {
+		this.reinitializeSearch();
+		return () => this.doSearch( term );
+	},
+
 	getSearchBar() {
-		const site = this.props.site ? '/' + this.props.site : '';
 		const suggestedSearches = [
 			this.props.translate( 'Engagement', { context: 'Plugins suggested search term' } ),
 			this.props.translate( 'Security', { context: 'Plugins suggested search term' } ),
 			this.props.translate( 'Appearance', { context: 'Plugins suggested search term' } ),
 			this.props.translate( 'Writing', { context: 'Plugins suggested search term' } ),
 		];
-		// TODO: The Search does not get the search text when a suggested term is clicked
+
 		return (
 			<SectionNav
 				selectedText={ this.props.translate( 'Suggested Searches', {
@@ -258,11 +272,11 @@ const PluginsBrowser = React.createClass( {
 				} ) }
 			>
 				<NavTabs label="Suggested Searches">
-					<NavItem path={ '/plugins' + site } selected={ false }>
+					<NavItem onClick={ this.handleSuggestedSearch( false ) }>
 						{ this.props.translate( 'All', { context: 'Filter all plugins' } ) }
 					</NavItem>
 					{ suggestedSearches.map( term =>
-						<NavItem key={ `suggested-search-${ term }` } path={ '/plugins' + site + '?s=' + term }>
+						<NavItem key={ term } onClick={ this.handleSuggestedSearch( term ) }>
 							{ term }
 						</NavItem>
 					) }
