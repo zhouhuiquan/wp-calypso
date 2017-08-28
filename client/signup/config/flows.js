@@ -93,6 +93,15 @@ const flows = {
 		}
 	},
 
+	'up-front-payment': {
+		steps: [ 'plans-no-site', 'payment', 'design-type', 'themes', 'domains', 'user' ],
+		description: 'Allow a user to pay up-front for a plan.',
+		lastModified: '2016-06-02',
+		meta: {
+			skipBundlingPlan: true
+		}
+	},
+
 	free: {
 		steps: [ 'design-type', 'themes', 'domains', 'user' ],
 		destination: getSiteDestination,

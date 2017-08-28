@@ -108,6 +108,18 @@ export default {
 		stepName: 'test'
 	},
 
+	payment: {
+		stepName: 'payment',
+		providesDependencies: [ 'paymentDetails' ]
+	},
+
+	'plans-no-site': {
+		stepName: 'plans-no-site',
+		apiRequestFunction: stepActions.addPlanToCart,
+		dependencies: [],
+		providesDependencies: [ 'cartItem', 'privacyItem' ]
+	},
+
 	plans: {
 		stepName: 'plans',
 		apiRequestFunction: stepActions.addPlanToCart,

@@ -16,6 +16,8 @@ import SurveyStepComponent from 'signup/steps/survey';
 import ThemeSelectionComponent from 'signup/steps/theme-selection';
 import UserSignupComponent from 'signup/steps/user';
 import PlansStepWithoutFreePlan from 'signup/steps/plans-without-free';
+import PlansNoSite from 'signup/steps/plans-no-site';
+import PaymentNoSite from 'signup/steps/payment';
 
 export default {
 	'design-type': DesignTypeComponent,
@@ -27,7 +29,9 @@ export default {
 	'get-dot-blog-plans': GetDotBlogPlansStepComponent,
 	'get-dot-blog-themes': ThemeSelectionComponent,
 	plans: PlansStepComponent,
+	payment: PaymentNoSite,
 	'plans-site-selected': PlansStepWithoutFreePlan,
+	'plans-no-site': PlansNoSite,
 	site: SiteComponent,
 	'rebrand-cities-welcome': RebrandCitiesWelcomeComponent,
 	'site-or-domain': SiteOrDomainComponent,
