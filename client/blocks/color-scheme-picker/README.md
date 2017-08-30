@@ -18,7 +18,10 @@ handleColorSchemeSelection = event => {
 
 render() {
 	return (
-		<ColorSchemePicker temporarySelection onSelection={ this.handleColorSchemeSelection } />
+		<ColorSchemePicker
+			temporarySelection={ true }
+			onSelection={ this.handleColorSchemeSelection }
+		/>
 	);
 }
 ```
