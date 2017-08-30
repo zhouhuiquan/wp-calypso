@@ -56,9 +56,5 @@ export const remoteValuesSchema = {
 			type: 'array',
 			items: { type: 'number' }
 		},
-		colorScheme: {
-			type: 'string',
-			'enum': [ 'default', 'light', 'dark' ],
-		},
 	}
 };
