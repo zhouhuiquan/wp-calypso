@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react';
  * Internal dependencies
  */
 import Card from 'components/card';
+import Notice from 'components/notice';
 import ColorSchemePicker from 'blocks/color-scheme-picker';
 
 class ColorSchemePickerExample extends PureComponent {
@@ -25,6 +26,12 @@ class ColorSchemePickerExample extends PureComponent {
 		return (
 			<Card>
 				<ColorSchemePicker temporarySelection onSelection={ this.handleColorSchemeSelection } />
+
+				{ this.state.selectedColorScheme &&
+					<Notice
+						text={ `Selected color scheme: ${ this.state.selectedColorScheme }` }
+						showDismiss={ false }
+					/> }
 			</Card>
 		);
 	}
