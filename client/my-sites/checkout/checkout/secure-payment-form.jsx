@@ -41,6 +41,7 @@ const SecurePaymentForm = React.createClass( {
 
 	propTypes: {
 		handleCheckoutCompleteRedirect: React.PropTypes.func.isRequired,
+		handleCountryChange: React.PropTypes.func.isRequired,
 		products: React.PropTypes.object.isRequired,
 		redirectTo: React.PropTypes.func.isRequired,
 	},
@@ -48,13 +49,14 @@ const SecurePaymentForm = React.createClass( {
 	getInitialState() {
 		return {
 			userSelectedPaymentBox: null,
+			counrty: null,
 			visiblePaymentBox: this.getVisiblePaymentBox( this.props.cart, this.props.paymentMethods ),
 			previousCart: null
 		};
 	},
 
 	getVisiblePaymentBox( cart, paymentMethods ) {
-		const primary = 0, secondary = 1;
+		let i;
 
 		if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
@@ -64,10 +66,12 @@ const SecurePaymentForm = React.createClass( {
 			return 'free-trial';
 		} else if ( this.state && this.state.userSelectedPaymentBox ) {
 			return this.state.userSelectedPaymentBox;
-		} else if ( cartValues.isPaymentMethodEnabled( cart, get( paymentMethods, [ primary ] ) ) ) {
-			return paymentMethods[ primary ];
-		} else if ( cartValues.isPaymentMethodEnabled( cart, get( paymentMethods, [ secondary ] ) ) ) {
-			return paymentMethods[ secondary ];
+		}
+
+		for ( i = 0; i < paymentMethods.length; i++ ) {
+			if ( cartValues.isPaymentMethodEnabled( cart, get( paymentMethods, [ i ] ) ) ) {
+				return paymentMethods[ i ];
+			}
 		}
 
 		return null;
@@ -81,6 +85,11 @@ const SecurePaymentForm = React.createClass( {
 		this.setState( {
 			visiblePaymentBox: this.getVisiblePaymentBox( nextProps.cart, nextProps.paymentMethods )
 		} );
+	},
+
+	handleCountryChange( event ) {
+		const { value } = event.target;
+		this.props.handleCountryChange( value );
 	},
 
 	handlePaymentBoxSubmit( event ) {
@@ -117,7 +126,8 @@ const SecurePaymentForm = React.createClass( {
 				newPayment = storeTransactions.fullCreditsPayment();
 				break;
 
-			case 'credit-card':
+				case 'credits':
+				case 'credit-card':
 				if ( this.getInitialCard() ) {
 					newPayment = storeTransactions.storedCardPayment( this.getInitialCard() );
 				} else {
@@ -146,7 +156,7 @@ const SecurePaymentForm = React.createClass( {
 		} );
 	},
 
-	renderCreditsPayentBox() {
+	renderCreditsPaymentBox() {
 		return (
 			<CreditsPaymentBox
 				cart={ this.props.cart }
@@ -186,6 +196,7 @@ const SecurePaymentForm = React.createClass( {
 				selectedSite={ this.props.selectedSite }
 				onToggle={ this.selectPaymentBox }
 				onSubmit={ this.handlePaymentBoxSubmit }
+				onCountryChange={ this.handleCountryChange }
 				transactionStep={ this.props.transaction.step } />
 		);
 	},
@@ -198,6 +209,7 @@ const SecurePaymentForm = React.createClass( {
 				countriesList={ countriesListForPayments }
 				selectedSite={ this.props.selectedSite }
 				onToggle={ this.selectPaymentBox }
+				onCountryChange={ this.handleCountryChange }
 				redirectTo={ this.props.redirectTo } />
 		);
 	},
@@ -225,7 +237,7 @@ const SecurePaymentForm = React.createClass( {
 
 		switch ( visiblePaymentBox ) {
 			case 'credits':
-				return this.renderCreditsPayentBox();
+				return this.renderCreditsPaymentBox();
 
 			case 'free-trial':
 				return this.renderFreeTrialConfirmationBox();
@@ -238,6 +250,7 @@ const SecurePaymentForm = React.createClass( {
 
 			case 'paypal':
 				return this.renderPayPalPaymentBox();
+
 			default:
 				debug( 'WARN: %o payment unknown', visiblePaymentBox );
 				return null;

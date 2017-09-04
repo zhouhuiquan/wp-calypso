@@ -19,6 +19,13 @@ function setPayment( payment ) {
 	} );
 }
 
+function setCountry( country ) {
+	Dispatcher.handleViewAction( {
+		type: ActionTypes.TRANSACTION_COUNTRY_SET,
+		country
+	} );
+}
+
 function setNewCreditCardDetails( options ) {
 	const { rawDetails, maskedDetails } = options;
 
@@ -58,6 +65,7 @@ export {
 	resetTransaction,
 	setDomainDetails,
 	setNewCreditCardDetails,
+	setCountry,
 	setPayment,
 	submitTransaction
 };

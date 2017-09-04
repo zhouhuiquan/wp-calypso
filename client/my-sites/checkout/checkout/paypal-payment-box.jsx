@@ -154,7 +154,7 @@ module.exports = React.createClass( {
 						name="country"
 						label={ this.translate( 'Country', { textOnly: true } ) }
 						countriesList={ this.props.countriesList }
-						value={ this.state.country }
+						value={ this.state.country || this.props.country }
 						onChange={ this.handleChange }
 						disabled={ this.state.formDisabled }
 						eventFormName="Checkout Form" />
@@ -205,6 +205,9 @@ module.exports = React.createClass( {
 		return (
 			<PaymentBox
 				classSet="paypal-payment-box"
+				countriesList={ this.props.countriesList }
+				country={ this.props.country }
+				onCountryChange={ this.props.onCountryChange }
 				title={ this.translate( 'Secure Payment with PayPal' ) }>
 				{ this.content() }
 			</PaymentBox>

@@ -10,6 +10,7 @@ import classNames from 'classnames';
  */
 import Card from 'components/card';
 import SectionHeader from 'components/section-header';
+import CountrySelect from 'my-sites/domains/components/form/country-select';
 
 export default class PaymentBox extends PureComponent {
 	static displayName = 'PaymentBox';
@@ -32,6 +33,13 @@ export default class PaymentBox extends PureComponent {
 					<Card className={ cardClass }>
 						<div className="checkout__box-padding">
 							<div className={ contentClass }>
+								{ this.props.countriesList ?
+								<CountrySelect
+									countriesList={ this.props.countriesList }
+									value={ this.props.country }
+									onChange={ this.props.onCountryChange } />
+								: null }
+
 								{ this.props.children }
 							</div>
 						</div>

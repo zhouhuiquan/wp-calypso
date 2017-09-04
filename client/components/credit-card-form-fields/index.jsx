@@ -90,9 +90,12 @@ const CreditCardFormFields = React.createClass( {
 						} )
 					} ) }
 
-					{ this.field( 'country', CountrySelect, {
+					{ false && this.props.card.country
+						? <strong>{ this.props.countriesList [ this.props.card.country ] }</strong>
+						: this.field( 'country', CountrySelect, {
 						label: this.translate( 'Country' ),
-						countriesList: this.props.countriesList
+						countriesList: this.props.countriesList,
+						value: this.props.country
 					} ) }
 
 					{ this.field( 'postal-code', Input, {

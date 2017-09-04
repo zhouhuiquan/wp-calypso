@@ -261,6 +261,12 @@ const Checkout = React.createClass( {
 			: `/checkout/thank-you/${ selectedSiteSlug }/${ receiptId }`;
 	},
 
+	handleCountryChange: function( country ) {
+		console.log(country);
+		upgradesActions.setCountry( country );
+		this.setState( { country } );
+	},
+
 	handleCheckoutCompleteRedirect: function() {
 		let product,
 			purchasedProducts,
@@ -391,10 +397,12 @@ const Checkout = React.createClass( {
 				transaction={ this.props.transaction }
 				cards={ this.props.cards }
 				paymentMethods={ this.props.paymentMethods }
+				country={ this.props.country }
 				products={ this.props.productsList.get() }
 				selectedSite={ selectedSite }
 				redirectTo={ this.getCheckoutCompleteRedirectPath }
 				handleCheckoutCompleteRedirect={ this.handleCheckoutCompleteRedirect }
+				handleCountryChange={ this.handleCountryChange }
 			/>
 		);
 	},

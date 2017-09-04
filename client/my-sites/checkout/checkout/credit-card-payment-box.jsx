@@ -77,7 +77,7 @@ var CreditCardPaymentBox = React.createClass( {
 		}
 	},
 
-	handleToggle: function( event ) {
+	handlePayPalToggle: function( event ) {
 		event.preventDefault();
 
 		analytics.ga.recordEvent( 'Upgrades', 'Clicked Or Use Paypal Link' );
@@ -114,8 +114,8 @@ var CreditCardPaymentBox = React.createClass( {
 					cart={ this.props.cart }
 					transactionStep={ this.props.transactionStep } />
 
-				{ cartValues.isPayPalExpressEnabled( cart )
-					? <a className={ paypalButtonClasses } href="" onClick={ this.handleToggle }>
+					{ cartValues.isPayPalExpressEnabled( cart )
+					? <a className={ paypalButtonClasses } href="" onClick={ this.handlePayPalToggle }>
 						{ this.props.translate( 'or use {{paypal/}}', {
 							components: {
 								paypal: paypalLinkContent
@@ -179,10 +179,14 @@ var CreditCardPaymentBox = React.createClass( {
 		);
 	},
 
+
 	render: function() {
 		return (
 			<PaymentBox
 				classSet="credit-card-payment-box"
+				countriesList={ this.props.countriesList }
+				country={ this.props.country }
+				onCountryChange={ this.props.onCountryChange }
 				title={ this.props.translate( 'Secure Payment' ) }>
 				{ this.content() }
 			</PaymentBox>

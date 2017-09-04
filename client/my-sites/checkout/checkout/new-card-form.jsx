@@ -43,6 +43,7 @@ module.exports = React.createClass( {
 					<CreditCardFormFields
 						card={ this.props.transaction.newCardFormFields }
 						countriesList={ this.props.countriesList }
+						country={ this.props.transaction.country }
 						eventFormName="Checkout Form"
 						isFieldInvalid={ this.isFieldInvalid }
 						onFieldChange={ this.handleFieldChange } />
@@ -52,6 +53,7 @@ module.exports = React.createClass( {
 	},
 
 	handleFieldChange: function( rawDetails, maskedDetails ) {
+		upgradesActions.setCountry( rawDetails.country );
 		upgradesActions.setNewCreditCardDetails( {
 			rawDetails: rawDetails,
 			maskedDetails: maskedDetails

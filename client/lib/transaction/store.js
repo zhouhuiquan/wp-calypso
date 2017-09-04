@@ -33,6 +33,7 @@ function replaceData( newData ) {
 function createInitialTransaction() {
 	return {
 		errors: {},
+		country: null,
 		newCardFormFields: {},
 		step: { name: transactionStepTypes.BEFORE_SUBMIT },
 		domainDetails: null
@@ -45,6 +46,10 @@ function reset() {
 
 function setDomainDetails( domainDetails ) {
 	replaceData( merge( _transaction, { domainDetails: domainDetails } ) );
+}
+
+function setCountry( country ) {
+	replaceData( merge( _transaction, { country: country } ) );
 }
 
 function setPayment( payment ) {
@@ -81,6 +86,10 @@ TransactionStore.dispatchToken = Dispatcher.register( function( payload ) {
 
 		case UpgradesActionTypes.TRANSACTION_PAYMENT_SET:
 			setPayment( action.payment );
+			break;
+
+		case UpgradesActionTypes.TRANSACTION_COUNTRY_SET:
+			setCountry( action.country );
 			break;
 
 		case UpgradesActionTypes.TRANSACTION_NEW_CREDIT_CARD_DETAILS_SET:
