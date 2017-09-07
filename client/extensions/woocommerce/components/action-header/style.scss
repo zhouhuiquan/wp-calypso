@@ -65,22 +65,23 @@
 }
 
 .sticky-panel {
+	position: fixed;
+	z-index: z-index( 'root', '.sticky-panel.is-sticky .sticky-panel__content' );
+	
 	@include breakpoint( ">960px" ) {
-		position: fixed;
-		z-index: z-index( 'root', '.sticky-panel.is-sticky .sticky-panel__content' );
-		width: calc(100% - 273px);
 		top: 47px;
+		width: calc(100% - 273px);
 		left: 273px;
 	}
 	@include breakpoint( "660px-960px" ) {
-		position: fixed;
-		z-index: z-index( 'root', '.sticky-panel.is-sticky .sticky-panel__content' );
-		width: calc(100% - 229px);
 		top: 47px;
+		width: calc(100% - 229px);
 		left: 229px;
 	}
-	@include breakpoint( ">660px" ) {
-		margin-bottom: 58px;
+	@include breakpoint( "<660px" ) {
+		top: 0;
+		margin-top: -58px;
+		width: 100%;
 	}
 }
 

@@ -1,10 +1,7 @@
 .order__container,
 .order-create__container {
 	padding-bottom: 0;
-
-	@include breakpoint( ">660px" ) {
-		margin-top: 58px;
-	}
+	margin-top: 58px;
 
 	@include breakpoint( ">960px" ) {
 		display: flex;

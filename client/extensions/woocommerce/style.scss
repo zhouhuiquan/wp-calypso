@@ -61,9 +61,7 @@
 	}
 
 	.section-nav {
-		@include breakpoint( ">660px" ) {
-			margin-top: 58px;
-		}
+		margin-top: 58px;
 	}
 
 	.pagination__list {
