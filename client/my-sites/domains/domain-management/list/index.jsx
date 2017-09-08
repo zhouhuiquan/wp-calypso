@@ -237,9 +237,9 @@ export class List extends React.Component {
 	};
 
 	headerButtons() {
-		if ( this.props.selectedSite && this.props.selectedSite.jetpack ) {
-			return null;
-		}
+		// if ( this.props.selectedSite && this.props.selectedSite.jetpack ) {
+		// 	return null;
+		// }
 
 		if ( this.state.changePrimaryDomainModeEnabled ) {
 			return (

@@ -422,20 +422,21 @@ module.exports = {
 		const basePath = route.sectionify( context.path );
 		const selectedSite = getSelectedSite( getState() );
 
-		if ( selectedSite && selectedSite.jetpack && ! isATEnabled( selectedSite ) ) {
-			renderWithReduxStore( (
-				<Main>
-					<JetpackManageErrorPage
-						template="noDomainsOnJetpack"
-						siteId={ selectedSite.ID }
-					/>
-				</Main>
-			), document.getElementById( 'primary' ), context.store );
-
-			analytics.pageView.record( basePath, '> No Domains On Jetpack' );
-		} else {
-			next();
-		}
+		// if ( selectedSite && selectedSite.jetpack && ! isATEnabled( selectedSite ) ) {
+		// 	renderWithReduxStore( (
+		// 		<Main>
+		// 			<JetpackManageErrorPage
+		// 				template="noDomainsOnJetpack"
+		// 				siteId={ selectedSite.ID }
+		// 			/>
+		// 		</Main>
+		// 	), document.getElementById( 'primary' ), context.store );
+		//
+		// 	analytics.pageView.record( basePath, '> No Domains On Jetpack' );
+		// } else {
+		// 	next();
+		// }
+		next();
 	},
 
 	sites( context ) {

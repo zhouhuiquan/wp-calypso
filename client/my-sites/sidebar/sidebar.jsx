@@ -300,9 +300,9 @@ export class MySitesSidebar extends Component {
 			return null;
 		}
 
-		if ( this.props.isJetpack && ! this.props.isSiteAutomatedTransfer ) {
-			return null;
-		}
+		// if ( this.props.isJetpack && ! this.props.isSiteAutomatedTransfer ) {
+		// 	return null;
+		// }
 
 		return (
 			<SidebarItem
