@@ -430,6 +430,9 @@ export default {
 					data: data
 				} );
 			} )
+			.then( ( data ) => {
+				tracksEvent( dispatch, 'calypso_jpc_auth_sitesrefresh_success' );
+			} ) 
 			.catch( ( error ) => {
 				debug( 'Authorize error', error );
 				tracksEvent( dispatch, 'calypso_jpc_authorize_error', {
