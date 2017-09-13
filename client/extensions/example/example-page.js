@@ -2,6 +2,9 @@
  * External dependencies
  */
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { localize } from 'i18n-calypso';
 
 /**
  * Internal Dependencies
@@ -9,8 +12,20 @@ import React, { Component } from 'react';
 import Main from 'components/main';
 import Card from 'components/card';
 import SectionHeader from 'components/section-header';
+import { errorNotice } from 'state/notices/actions';
+import { fetchMyLikes } from 'example/state/likes/actions';
 
-export default class HelloDollyPage extends Component {
+class ExamplePage extends Component {
+	componentWillMount() {
+		const { translate } = this.props;
+
+		this.props.fetchMyLikes(
+			errorNotice(
+				translate( 'Sorry, couldn\'t fetch your likes.' )
+			)
+		);
+	}
+
 	render() {
 		return (
 			<Main className="example__main">
@@ -24,4 +39,19 @@ export default class HelloDollyPage extends Component {
 		);
 	}
 }
+
+function mapStateToProps( state ) {
+	return {};
+}
+
+function mapDispatchToProps( dispatch ) {
+	return bindActionCreators(
+		{
+			fetchMyLikes,
+		},
+		dispatch
+	);
+}
+
+export default connect( mapStateToProps, mapDispatchToProps )( localize( ExamplePage ) );
 
