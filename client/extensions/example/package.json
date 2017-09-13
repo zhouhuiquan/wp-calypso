@@ -1,0 +1,14 @@
+{
+	"name": "example",
+	"author": "Automattic",
+	"description": "Example Calypso Example",
+	"version": "0.0.1",
+	"env_id": [ "development", "wpcalypso" ],
+	"section": {
+		"name": "example",
+		"paths": [ "/extensions/example" ],
+		"module": "example",
+		"group": "sites",
+		"secondary": true
+	}
+}
