@@ -14,6 +14,7 @@ import Card from 'components/card';
 import SectionHeader from 'components/section-header';
 import { errorNotice } from 'state/notices/actions';
 import { fetchMyLikes } from 'example/state/likes/actions';
+import { getLikes } from 'example/state/selectors/likes';
 
 class ExamplePage extends Component {
 	componentWillMount() {
@@ -27,6 +28,8 @@ class ExamplePage extends Component {
 	}
 
 	render() {
+		const { likesFound } = this.props;
+
 		return (
 			<Main className="example__main">
 				<SectionHeader label="Example Calypso Extension!">🐑</SectionHeader>
@@ -34,6 +37,7 @@ class ExamplePage extends Component {
 					<p>
 						This is an example extension for Calypso!
 					</p>
+					<span>Found { likesFound } likes</span>
 				</Card>
 			</Main>
 		);
@@ -41,7 +45,12 @@ class ExamplePage extends Component {
 }
 
 function mapStateToProps( state ) {
-	return {};
+	const likes = getLikes( state );
+	const likesFound = likes && likes.found || 0;
+
+	return {
+		likesFound,
+	};
 }
 
 function mapDispatchToProps( dispatch ) {
