@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import page from 'page';
 import { flowRight } from 'lodash';
-import { localize } from 'i18n-calypso';
-
 /**
  * Internal dependencies
  */
@@ -73,7 +71,6 @@ const redirectNonJetpack = redirectRoute => WrappedComponent => {
 
 	return flowRight(
 		connectComponent,
-		localize
 	)( RedirectNonJetpack );
 };
 
