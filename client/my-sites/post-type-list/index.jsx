@@ -16,6 +16,7 @@ import {
 import AutoSizer from 'react-virtualized/AutoSizer';
 import WindowScroller from 'react-virtualized/WindowScroller';
 import List from 'react-virtualized/List';
+import debugFactory from 'debug';
 
 /**
  * Internal dependencies
@@ -37,6 +38,7 @@ const DEFAULT_POST_ROW_HEIGHT_NORMAL = 84;
 const DEFAULT_POST_ROW_HEIGHT_LARGE = 89;
 const DEFAULT_POSTS_PER_PAGE = 20;
 const LOAD_OFFSET = 10;
+const debug = debugFactory( 'calypso:post-type-list' );
 
 class PostTypeList extends Component {
 	static propTypes = {
@@ -68,6 +70,7 @@ class PostTypeList extends Component {
 		this.state = {
 			requestedPages: this.getInitialRequestedPages( this.props )
 		};
+		debug( 'init', { requestedPages: this.getInitialRequestedPages( this.props ) } );
 	}
 
 	componentWillMount() {
@@ -90,6 +93,11 @@ class PostTypeList extends Component {
 		if ( ! isEqual( this.props.query, nextProps.query ) ) {
 			this.setState( {
 				requestedPages: this.getInitialRequestedPages( nextProps )
+			} );
+			debug( 'reset requested pages due to query change', {
+				requestedPages: this.getInitialRequestedPages( nextProps ),
+				prevQuery: this.props.query,
+				nextQuery: nextProps.query,
 			} );
 		}
 	}
@@ -140,6 +148,14 @@ class PostTypeList extends Component {
 		if ( ! pagesToRequest.length ) {
 			return;
 		}
+
+		debug( 'setRequestedPages', {
+			startIndex,
+			stopIndex,
+			prevRequestedPages: requestedPages.join( ',' ),
+			pagesToRequest: pagesToRequest.join( ',' ),
+			nextRequestedPages: requestedPages.concat( pagesToRequest ).join( ',' ),
+		} );
 
 		this.setState( {
 			requestedPages: requestedPages.concat( pagesToRequest )
