@@ -14,6 +14,8 @@ import {
 	includes,
 	partial,
 } from 'lodash';
+import url from 'url';
+import goToPage from 'page';
 
 /**
  * Internal dependencies
@@ -95,8 +97,8 @@ class Page extends Component {
 			return window.open( previewURL );
 		}
 
-		this.props.setPreviewUrl( previewURL );
-		this.props.setLayoutFocus( 'preview' );
+		const parsed = url.parse( page.URL );
+		goToPage( '/view/' + this.props.siteSlugOrId + '?initial=' + encodeURIComponent( parsed.pathname ) );
 	}
 
 	getViewItem() {
