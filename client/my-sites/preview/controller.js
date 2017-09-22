@@ -13,6 +13,7 @@ export default {
 		context.primary = (
 			<PreviewMain
 				site={ context.params.site }
+				initialPage={ context.query.initial }
 			/>
 		);
 		next();

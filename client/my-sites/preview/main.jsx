@@ -72,17 +72,18 @@ class PreviewMain extends React.Component {
 		}
 
 		const baseUrl = this.getBasePreviewUrl();
+		const subpage = this.props.initialPage ? decodeURIComponent( this.props.initialPage ) : '/';
 		const newUrl = addQueryArgs( {
 			theme_preview: true,
 			iframe: true,
 			'frame-nonce': this.props.site.options.frame_nonce
-		}, baseUrl );
+		}, baseUrl + subpage );
 
 		if ( this.iframeUrl !== newUrl ) {
 			debug( 'loading', newUrl );
 			this.setState( {
 				previewUrl: newUrl,
-				externalUrl: this.props.site.URL,
+				externalUrl: this.props.site.URL + subpage,
 			} );
 		}
 	}
