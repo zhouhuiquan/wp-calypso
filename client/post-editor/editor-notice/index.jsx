@@ -251,6 +251,36 @@ export class EditorNotice extends Component {
 		const { siteId, message, status, onDismissClick } = this.props;
 		const text = this.getErrorMessage() || this.getText( message );
 
+		// Test all editor notices at once
+		return (
+			<div className={ classNames( 'editor-notice', { 'is-global': true } ) }>
+				{ siteId && <QueryPostTypes siteId={ siteId } /> }
+				{ [
+					'warnPublishDateChange',
+					'publishFailure',
+					'saveFailure',
+					'trashFailure',
+					'published',
+					'scheduled',
+					'publishedPrivately',
+					'view',
+					'preview',
+					'updated',
+				].map( message => (
+					<Notice
+						{ ...{ status, onDismissClick } }
+						text={ (
+							<span>
+								<strong>{ message }: </strong>
+								<span>{ this.getText( message ) }</span>
+							</span>
+						) }
+						showDismiss={ true }
+					/>
+				) ) }
+			</div>
+		);
+
 		return (
 			<div className={ classNames( 'editor-notice', { 'is-global': true } ) }>
 				{ siteId && <QueryPostTypes siteId={ siteId } /> }
