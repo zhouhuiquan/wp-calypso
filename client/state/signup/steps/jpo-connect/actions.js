@@ -1,4 +1,3 @@
-/** @format */
 /**
  * External dependencies
  */
@@ -19,6 +18,6 @@ export function setJpoConnect( connect ) {
 
 	return {
 		type: SIGNUP_STEPS_JPO_CONNECT_SET,
-		connect,
+		connect
 	};
 }
