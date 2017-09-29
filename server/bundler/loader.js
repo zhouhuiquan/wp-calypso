@@ -102,11 +102,11 @@ function splitTemplate( path, section ) {
 		'		return;',
 		'	}',
 		'	context.store.dispatch( { type: "SECTION_SET", isLoading: true } );',
-		'	require.ensure([], function( require ) {',
+		'	import( /* webpackChunkName: "' + moduleString + '" */' + moduleString + ' ).then( sectionModule => {',
 		'		context.store.dispatch( { type: "SECTION_SET", isLoading: false } );',
 		'		controller.setSection( ' + sectionString + ' )( context );',
 		'		if ( ! _loadedSections[ ' + moduleString + ' ] ) {',
-		'			require( ' + moduleString + ' )( controller.clientRouter );',
+		'			sectionModule( controller.clientRouter );',
 		'			_loadedSections[ ' + moduleString + ' ] = true;',
 		'		}',
 		'		context.store.dispatch( activateNextLayoutFocus() );',
@@ -120,8 +120,7 @@ function splitTemplate( path, section ) {
 		'			LoadingError.show( ' + sectionNameString + ' );',
 		'		}',
 		'		return;',
-		'	},',
-		sectionNameString + ' );',
+		'	} );',
 		'} );\n'
 	];
 
@@ -150,7 +149,8 @@ function requireTemplate( section ) {
 			'		return next();',
 			'	}',
 			'	controller.setSection( ' + JSON.stringify( section ) + ' )( context );',
-			'	require( ' + JSON.stringify( section.module ) + ' )( controller.clientRouter );',
+			'	import( /* webpackChunkName: ' + JSON.stringify( section.module ) + ' */ ' + JSON.stringify( section.module ) + ' )',
+			'		.then( sectionModule => sectionModule( controller.clientRouter ) );',
 			'	next();',
 			'} );\n'
 		] );
@@ -162,7 +162,8 @@ function requireTemplate( section ) {
 function singleEnsure( chunkName ) {
 	var result = [
 		'case ' + JSON.stringify( chunkName ) + ':',
-		'	return require.ensure([], function() {}, ' + JSON.stringify( chunkName ) + ' );',
+		//'	return require.ensure([], function() {}, ' + JSON.stringify( chunkName ) + ' );',
+		//'	return import( /* webpackChunkName: '+JSON.stringify( chunkName )+' */ ' + JSON.stringify( chunkName ) + ' );',
 		'	break;\n'
 	];
 

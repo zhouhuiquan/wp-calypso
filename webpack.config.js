@@ -154,12 +154,6 @@ const webpackConfig = {
 			] )
 		} ),
 		new webpack.NamedModulesPlugin(),
-		new webpack.NamedChunksPlugin( chunk => {
-			if ( chunk.name ) {
-				return chunk.name;
-			}
-			return chunk.modules.map( m => path.relative( m.context, m.request ) ).join( '_' );
-		} ),
 		new NameAllModulesPlugin(),
 	] ),
 	externals: [ 'electron' ]
