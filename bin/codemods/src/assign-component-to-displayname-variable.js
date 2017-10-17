@@ -53,10 +53,10 @@ const isComponent = arg => isCreateClassComponent( arg ) || isEs6ClassComponent(
 
 const getComponentFromArgs = args => _.filter( args, isComponent )[ 0 ];
 
-const classToIdentifier = ( displayName, j ) => arg =>
+const createClassToIdentifier = j => displayName => arg =>
 	isComponent( arg ) ? j.identifier( displayName ) : arg;
 
-const extractDisplayName = ( reactComponent, j ) => {
+const createExtractDisplayName = j => reactComponent => {
 	if ( ! reactComponent ) {
 		return;
 	}
@@ -74,16 +74,19 @@ export default function transformer( file, api ) {
 	const j = api.jscodeshift;
 	const root = j( file.source );
 
+	const classToIdentifier = createClassToIdentifier( j );
+	const extractDisplayName = createExtractDisplayName( j );
+
 	const defaultExportDeclaration = _.head( root.find( j.ExportDefaultDeclaration ).nodes() );
 	const hocIdentifier = _.get( defaultExportDeclaration, [ 'declaration', 'callee', 'name' ] );
 
 	const hocArgs = _.get( defaultExportDeclaration, [ 'declaration', 'arguments' ] );
 	const component = getComponentFromArgs( hocArgs );
-	const displayName = extractDisplayName( component, j );
+	const displayName = extractDisplayName( component );
 
 	// noop if the file does not have a default export of a react component that has a displayName
 	if ( ! defaultExportDeclaration || ! component || ! displayName ) {
-		return file;
+		return file.source;
 	}
 
 	const isCreateClass = isCreateClassComponent( component );
@@ -103,7 +106,7 @@ export default function transformer( file, api ) {
 			j.exportDefaultDeclaration(
 				j.callExpression(
 					j.identifier( hocIdentifier ),
-					hocArgs.map( classToIdentifier( displayName, j ) )
+					hocArgs.map( classToIdentifier( displayName ) )
 				)
 			),
 		] )
