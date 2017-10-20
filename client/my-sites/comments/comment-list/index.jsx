@@ -40,6 +40,7 @@ import {
 } from 'state/analytics/actions';
 import { isJetpackSite } from 'state/sites/selectors';
 import { COMMENTS_PER_PAGE, NEWEST_FIRST } from '../constants';
+import commentsManager from './comments-manager';
 
 export class CommentList extends Component {
 	static propTypes = {
@@ -604,4 +605,6 @@ const mapDispatchToProps = ( dispatch, { siteId } ) => ( {
 		),
 } );
 
-export default connect( mapStateToProps, mapDispatchToProps )( localize( CommentList ) );
+export default connect( mapStateToProps, mapDispatchToProps )(
+	localize( commentsManager( CommentList ) )
+);
