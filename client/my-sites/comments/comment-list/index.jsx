@@ -63,7 +63,6 @@ export class CommentList extends Component {
 	state = {
 		// TODO: replace with [] when adding back Bulk Actions
 		lastUndo: null,
-		persistedComments: [],
 		sortOrder: NEWEST_FIRST,
 	};
 
@@ -100,19 +99,12 @@ export class CommentList extends Component {
 
 	hasCommentJustMovedBackToCurrentStatus = commentId => this.state.lastUndo === commentId;
 
-	isCommentPersisted = commentId => -1 !== this.state.persistedComments.indexOf( commentId );
-
 	isCommentSelected = commentId => !! find( this.state.selectedComments, { commentId } );
 
 	isSelectedAll = () => {
 		const { comments, selectedComments } = this.props;
 		return selectedComments.length && selectedComments.length === comments.length;
 	};
-
-	removeFromPersistedComments = commentId =>
-		this.setState( ( { persistedComments } ) => ( {
-			persistedComments: persistedComments.filter( c => c !== commentId ),
-		} ) );
 
 	replyComment = ( commentText, parentComment ) => {
 		const { translate } = this.props;
@@ -182,9 +174,9 @@ export class CommentList extends Component {
 		}
 
 		if ( doPersist ) {
-			this.updatePersistedComments( commentId, isUndo );
+			this.props.updatePersistedComments( commentId, isUndo );
 		} else {
-			this.removeFromPersistedComments( commentId );
+			this.props.removeFromPersistedComments( commentId );
 		}
 
 		this.props.removeNotice( `comment-notice-${ commentId }` );
@@ -314,7 +306,7 @@ export class CommentList extends Component {
 		if ( alsoApprove ) {
 			this.props.removeNotice( `comment-notice-${ commentId }` );
 			this.setCommentStatus( comment, 'approved', { doPersist: true, showNotice: true } );
-			this.updatePersistedComments( commentId );
+			this.props.updatePersistedComments( commentId );
 		}
 	};
 
@@ -332,16 +324,6 @@ export class CommentList extends Component {
 	};
 
 	toggleSelectAll = selectedComments => this.setState( { selectedComments } );
-
-	updatePersistedComments = ( commentId, isUndo ) => {
-		if ( isUndo ) {
-			this.removeFromPersistedComments( commentId );
-		} else if ( ! this.isCommentPersisted( commentId ) ) {
-			this.setState( ( { persistedComments } ) => ( {
-				persistedComments: persistedComments.concat( commentId ),
-			} ) );
-		}
-	};
 
 	render() {
 		const {

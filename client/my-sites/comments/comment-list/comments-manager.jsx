@@ -72,6 +72,8 @@ export const commentsManager = CommentList => {
 
 		getTotalPagesOfComments = () => Math.ceil( this.getComments().length / COMMENTS_PER_PAGE );
 
+		isCommentPersisted = commentId => -1 !== this.state.persistedComments.indexOf( commentId );
+
 		isCommentSelected = commentId => !! find( this.state.selectedComments, { commentId } );
 
 		isRequestedPageValid = () => this.getTotalPagesOfComments() >= this.props.page;
@@ -79,6 +81,11 @@ export const commentsManager = CommentList => {
 		isSelectedAllComments = () =>
 			this.state.selectedComments.length &&
 			this.state.selectedComments.length > this.getPageOfComments( this.props.page ).length;
+
+		removeFromPersistedComments = commentId =>
+			this.setState( ( { persistedComments } ) => ( {
+				persistedComments: persistedComments.filter( c => c !== commentId ),
+			} ) );
 
 		setSortOrder = sortOrder => () => {
 			this.setState( { sortOrder } );
@@ -105,6 +112,16 @@ export const commentsManager = CommentList => {
 			this.setState( { selectedComments } );
 		};
 
+		updatePersistedComments = ( commentId, isUndo ) => {
+			if ( isUndo ) {
+				this.removeFromPersistedComments( commentId );
+			} else if ( ! this.isCommentPersisted( commentId ) ) {
+				this.setState( ( { persistedComments } ) => ( {
+					persistedComments: persistedComments.concat( commentId ),
+				} ) );
+			}
+		};
+
 		render() {
 			const props = omit( this.props, [ 'changePage', 'comments' ] );
 			const state = pick( this.state, [ 'isBulkEdit', 'selectedComments', 'sortOrder' ] );
@@ -118,9 +135,11 @@ export const commentsManager = CommentList => {
 					disableBulkEdit={ this.disableBulkEdit }
 					enableBulkEdit={ this.enableBulkEdit }
 					isSelectedAllComments={ this.isSelectedAllComments() }
+					removeFromPersistedComments={ this.removeFromPersistedComments }
 					setSortOrder={ this.setSortOrder }
 					toggleSelectAllComments={ this.toggleSelectAllComments }
 					totalCommentsCount={ this.getTotalCommentsCount() }
+					updatePersistedComments={ this.updatePersistedComments }
 				/>
 			);
 		}
