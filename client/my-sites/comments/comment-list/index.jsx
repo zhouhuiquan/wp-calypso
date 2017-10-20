@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
-import { each, find, get, map, noop, size } from 'lodash';
+import { each, get, map, noop, size } from 'lodash';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 /**
@@ -99,13 +99,6 @@ export class CommentList extends Component {
 
 	hasCommentJustMovedBackToCurrentStatus = commentId => this.state.lastUndo === commentId;
 
-	isCommentSelected = commentId => !! find( this.state.selectedComments, { commentId } );
-
-	isSelectedAll = () => {
-		const { comments, selectedComments } = this.props;
-		return selectedComments.length && selectedComments.length === comments.length;
-	};
-
 	replyComment = ( commentText, parentComment ) => {
 		const { translate } = this.props;
 		const { commentId: parentCommentId, postId, status } = parentComment;
@@ -132,7 +125,12 @@ export class CommentList extends Component {
 	};
 
 	setBulkStatus = status => () => {
-		const { status: listStatus } = this.props;
+		const {
+			clearSelectedComments,
+			selectedComments,
+			status: listStatus,
+			toggleBulkEdit,
+		} = this.props;
 		this.props.removeNotice( 'comment-notice-bulk' );
 
 		// Only persist comments if they toggle between approved and unapproved
@@ -140,7 +138,7 @@ export class CommentList extends Component {
 			( 'approved' === listStatus && 'unapproved' === status ) ||
 			( 'unapproved' === listStatus && 'approved' === status );
 
-		each( this.state.selectedComments, comment => {
+		each( selectedComments, comment => {
 			if ( 'delete' === status ) {
 				this.props.deleteComment( comment.commentId, comment.postId, { showSuccessNotice: false } );
 				return;
@@ -155,7 +153,8 @@ export class CommentList extends Component {
 
 		this.showBulkNotice( status );
 
-		this.setState( { isBulkEdit: false, selectedComments: [] } );
+		toggleBulkEdit();
+		clearSelectedComments();
 	};
 
 	setCommentStatus = (
@@ -310,29 +309,15 @@ export class CommentList extends Component {
 		}
 	};
 
-	toggleCommentSelected = comment => {
-		if ( this.isCommentSelected( comment.commentId ) ) {
-			return this.setState( ( { selectedComments } ) => ( {
-				selectedComments: selectedComments.filter(
-					( { commentId } ) => comment.commentId !== commentId
-				),
-			} ) );
-		}
-		this.setState( ( { selectedComments } ) => ( {
-			selectedComments: selectedComments.concat( comment ),
-		} ) );
-	};
-
-	toggleSelectAll = selectedComments => this.setState( { selectedComments } );
-
 	render() {
 		const {
+			areAllCommentsSelected,
 			changePage,
 			comments,
 			isBulkEdit,
+			isCommentSelected,
 			isJetpack,
 			isLoading,
-			isSelectedAllComments,
 			page,
 			selectedComments,
 			setSortOrder,
@@ -341,6 +326,9 @@ export class CommentList extends Component {
 			siteFragment,
 			sortOrder,
 			status,
+			toggleBulkEdit,
+			toggleCommentSelected,
+			toggleSelectAllComments,
 			totalCommentsCount,
 		} = this.props;
 
@@ -366,7 +354,7 @@ export class CommentList extends Component {
 				<CommentNavigation
 					commentsPage={ comments }
 					isBulkEdit={ isBulkEdit }
-					isSelectedAll={ isSelectedAllComments }
+					isSelectedAll={ areAllCommentsSelected }
 					selectedCount={ size( selectedComments ) }
 					setBulkStatus={ this.setBulkStatus }
 					setSortOrder={ setSortOrder }
@@ -374,8 +362,8 @@ export class CommentList extends Component {
 					siteId={ siteId }
 					siteFragment={ siteFragment }
 					status={ status }
-					toggleBulkEdit={ this.toggleBulkEdit }
-					toggleSelectAll={ this.toggleSelectAll }
+					toggleBulkEdit={ toggleBulkEdit }
+					toggleSelectAll={ toggleSelectAllComments }
 				/>
 				<ReactCSSTransitionGroup
 					className="comment-list__transition-wrapper"
@@ -386,7 +374,7 @@ export class CommentList extends Component {
 					{ map( comments, commentId => (
 						<CommentDetail
 							commentId={ commentId }
-							commentIsSelected={ this.isCommentSelected( commentId ) }
+							commentIsSelected={ isCommentSelected( commentId ) }
 							deleteCommentPermanently={ this.deleteCommentPermanently }
 							editComment={ this.editComment }
 							isBulkEdit={ isBulkEdit }
@@ -399,7 +387,7 @@ export class CommentList extends Component {
 							siteBlacklist={ siteBlacklist }
 							siteId={ siteId }
 							toggleCommentLike={ this.toggleCommentLike }
-							toggleCommentSelected={ this.toggleCommentSelected }
+							toggleCommentSelected={ toggleCommentSelected }
 						/>
 					) ) }
 

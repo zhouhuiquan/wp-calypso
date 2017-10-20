@@ -47,6 +47,10 @@ export const commentsManager = CommentList => {
 			}
 		}
 
+		areAllCommentsSelected = () =>
+			this.state.selectedComments.length &&
+			this.state.selectedComments.length === this.getPageOfComments( this.props.page ).length;
+
 		changePage = page => {
 			this.props.recordChangePage( page, this.getTotalPagesOfComments() );
 			this.clearSelectedComments();
@@ -54,10 +58,6 @@ export const commentsManager = CommentList => {
 		};
 
 		clearSelectedComments = () => this.setState( { selectedComments: [] } );
-
-		disableBulkEdit = () => this.setState( { isBulkEdit: false, selectedComments: [] } );
-
-		enableBulkEdit = () => this.setState( { isBulkEdit: true, selectedComments: [] } );
 
 		getComments = () => uniq( [ ...this.state.persistedComments, ...this.props.comments ] );
 
@@ -78,10 +78,6 @@ export const commentsManager = CommentList => {
 
 		isRequestedPageValid = () => this.getTotalPagesOfComments() >= this.props.page;
 
-		isSelectedAllComments = () =>
-			this.state.selectedComments.length &&
-			this.state.selectedComments.length > this.getPageOfComments( this.props.page ).length;
-
 		removeFromPersistedComments = commentId =>
 			this.setState( ( { persistedComments } ) => ( {
 				persistedComments: persistedComments.filter( c => c !== commentId ),
@@ -90,6 +86,10 @@ export const commentsManager = CommentList => {
 		setSortOrder = sortOrder => () => {
 			this.setState( { sortOrder } );
 			this.changePage( 1 );
+		};
+
+		toggleBulkEdit = () => {
+			this.setState( ( { isBulkEdit } ) => ( { isBulkEdit: ! isBulkEdit } ) );
 		};
 
 		toggleCommentSelected = comment => {
@@ -106,7 +106,7 @@ export const commentsManager = CommentList => {
 		};
 
 		toggleSelectAllComments = selectedComments => {
-			if ( this.isSelectedAllComments() ) {
+			if ( this.areAllCommentsSelected() ) {
 				this.clearSelectedComments();
 			}
 			this.setState( { selectedComments } );
@@ -129,14 +129,15 @@ export const commentsManager = CommentList => {
 				<CommentList
 					{ ...props }
 					{ ...state }
+					areAllCommentsSelected={ this.areAllCommentsSelected() }
 					changePage={ this.changePage }
 					clearSelectedComments={ this.clearSelectedComments }
 					comments={ this.getPageOfComments( this.props.page ) }
-					disableBulkEdit={ this.disableBulkEdit }
-					enableBulkEdit={ this.enableBulkEdit }
-					isSelectedAllComments={ this.isSelectedAllComments() }
+					isCommentSelected={ this.isCommentSelected }
 					removeFromPersistedComments={ this.removeFromPersistedComments }
 					setSortOrder={ this.setSortOrder }
+					toggleBulkEdit={ this.toggleBulkEdit }
+					toggleCommentSelected={ this.toggleCommentSelected }
 					toggleSelectAllComments={ this.toggleSelectAllComments }
 					totalCommentsCount={ this.getTotalCommentsCount() }
 					updatePersistedComments={ this.updatePersistedComments }
