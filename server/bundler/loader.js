@@ -106,7 +106,7 @@ function splitTemplate( path, section ) {
 		'		context.store.dispatch( { type: "SECTION_SET", isLoading: false } );',
 		'		controller.setSection( ' + sectionString + ' )( context );',
 		'		if ( ! _loadedSections[ ' + moduleString + ' ] ) {',
-		'			require( ' + moduleString + ' )( controller.clientRouter );',
+		'			require( ' + moduleString + ' ).default( controller.clientRouter );',
 		'			_loadedSections[ ' + moduleString + ' ] = true;',
 		'		}',
 		'		context.store.dispatch( activateNextLayoutFocus() );',
@@ -151,7 +151,7 @@ function requireTemplate( section ) {
 			'		return next();',
 			'	}',
 			'	controller.setSection( ' + JSON.stringify( section ) + ' )( context );',
-			'	require( ' + JSON.stringify( section.module ) + ' )( controller.clientRouter );',
+			'	require( ' + JSON.stringify( section.module ) + ' ).default( controller.clientRouter );',
 			'	next();',
 			'} );\n'
 		] );

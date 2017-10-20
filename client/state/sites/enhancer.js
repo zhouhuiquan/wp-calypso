@@ -28,14 +28,14 @@ export default createStore => ( ...args ) => {
 
 	// Ugly hack by which we hook into the sites sync mechanism, since a change
 	// event may or may not occur as a result of fresh data being received.
-	const sites = require( 'lib/sites-list' )();
+	const sites = require( 'lib/sites-list' ).default();
 	sites.sync = flow( sites.sync.bind( sites ), () =>
 		store.dispatch( receiveSiteUpdates( sites.get() ) )
 	);
 
 	// To sync changes made to an individual site in sites-list, override the
 	// prototype of Site's `set` method, used in updating a set of attributes.
-	const Site = require( 'lib/site' );
+	const Site = require( 'lib/site' ).default;
 	const originalSet = Site.prototype.set;
 	Site.prototype.set = function() {
 		// Preserve original behavior

@@ -52,11 +52,11 @@ import { getPreference } from 'state/preferences/selectors';
 import JITM from 'blocks/jitm';
 
 if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
-	KeyboardShortcutsMenu = require( 'lib/keyboard-shortcuts/menu' );
+	KeyboardShortcutsMenu = require( 'lib/keyboard-shortcuts/menu' ).default;
 }
 
 if ( config.isEnabled( 'support-user' ) ) {
-	SupportUser = require( 'support/support-user' );
+	SupportUser = require( 'support/support-user' ).default;
 }
 /* eslint-disable react/no-deprecated */
 const Layout = React.createClass( {

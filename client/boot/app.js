@@ -3,7 +3,7 @@
 import './polyfills';
 
 if ( process.env.NODE_ENV === 'development' ) {
-	require( 'lib/wrap-es6-functions' )();
+	require( 'lib/wrap-es6-functions' ).default();
 }
 
 /**
@@ -26,7 +26,7 @@ const debug = debugFactory( 'calypso' );
 const boot = currentUser => {
 	debug( "Starting Calypso. Let's do this." );
 
-	const project = require( `./project/${ PROJECT_NAME }` );
+	const project = require( `./project/${ PROJECT_NAME }` ).default;
 	utils();
 	invoke( project, 'utils' );
 	createReduxStoreFromPersistedInitialState( reduxStore => {

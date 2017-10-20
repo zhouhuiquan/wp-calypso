@@ -97,7 +97,7 @@ const reducers = {
 	currentUser,
 	documentHead,
 	domains,
-	extensions,
+	// extensions,
 	form,
 	geo,
 	googleAppsUsers,

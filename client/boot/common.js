@@ -97,7 +97,7 @@ const loggedOutMiddleware = currentUser => {
 		} );
 	}
 
-	const sections = require( 'sections' );
+	const sections = require( 'sections' ).default;
 	const validSections = sections.get().reduce( ( acc, section ) => {
 		return section.enableLoggedOut ? acc.concat( section.paths ) : acc;
 	}, [] );
@@ -114,7 +114,7 @@ const loggedOutMiddleware = currentUser => {
 const oauthTokenMiddleware = () => {
 	if ( config.isEnabled( 'oauth' ) ) {
 		// Forces OAuth users to the /login page if no token is present
-		page( '*', require( 'auth/controller' ).checkToken );
+		page( '*', require( 'auth/controller' ).default.checkToken );
 	}
 };
 
@@ -128,7 +128,7 @@ const setRouteMiddleware = () => {
 
 const clearNoticesMiddleware = () => {
 	//TODO: remove this one when notices are reduxified - it is for old notices
-	page( '*', require( 'notices' ).clearNoticesOnNavigation );
+	page( '*', require( 'notices' ).default.clearNoticesOnNavigation );
 };
 
 const unsavedFormsMiddleware = () => {
@@ -156,7 +156,7 @@ export const utils = () => {
 	debug( 'Executing Calypso utils.' );
 
 	if ( process.env.NODE_ENV === 'development' ) {
-		require( './dev-modules' )();
+		require( './dev-modules' ).default();
 	}
 
 	// Infer touch screen by checking if device supports touch events

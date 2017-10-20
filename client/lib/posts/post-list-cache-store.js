@@ -117,7 +117,7 @@ function isListKeyFresh( listKey ) {
 
 PostsListCache.dispatchToken = Dispatcher.register( function( payload ) {
 	var action = payload.action,
-		PostListStore = require( './post-list-store-factory' )();
+		PostListStore = require( './post-list-store-factory' ).default();
 
 	Dispatcher.waitFor( [ PostListStore.dispatchToken ] );
 
