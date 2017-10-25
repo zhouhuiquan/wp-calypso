@@ -171,34 +171,36 @@ if ( calypsoEnv === 'desktop' ) {
 	webpackConfig.output.filename = '[name].js';
 } else {
 	// vendor chunk
-	webpackConfig.entry.vendor = [
-		'classnames',
-		'create-react-class',
-		'gridicons',
-		'i18n-calypso',
-		'lodash',
-		'moment',
-		'page',
-		'prop-types',
-		'react',
-		'react-dom',
-		'react-redux',
-		'redux',
-		'redux-thunk',
-		'social-logos',
-		'store',
-		'wpcom',
-	];
+	if ( config.isEnabled( 'code-splitting' )) {
+		webpackConfig.entry.vendor = [
+			'classnames',
+			'create-react-class',
+			'gridicons',
+			'i18n-calypso',
+			'lodash',
+			'moment',
+			'page',
+			'prop-types',
+			'react',
+			'react-dom',
+			'react-redux',
+			'redux',
+			'redux-thunk',
+			'social-logos',
+			'store',
+			'wpcom',
+		];
 
-	// for details on what the manifest is, see: https://webpack.js.org/guides/caching/
-	// tldr: webpack maintains a mapping from chunk ids --> filenames.  whenever a filename changes
-	// then the mapping changes.  By providing a non-existing chunkname to CommonsChunkPlugin,
-	// it extracts the "runtime" so that the frequently changing mapping doesn't break caching of the entry chunks
-	// NOTE: order matters. vendor must be before manifest.
-	webpackConfig.plugins = webpackConfig.plugins.concat( [
-		new webpack.optimize.CommonsChunkPlugin( { name: 'vendor', minChunks: Infinity } ),
-		new webpack.optimize.CommonsChunkPlugin( { name: 'manifest' } )
-	] );
+		// for details on what the manifest is, see: https://webpack.js.org/guides/caching/
+		// tldr: webpack maintains a mapping from chunk ids --> filenames.  whenever a filename changes
+		// then the mapping changes.  By providing a non-existing chunkname to CommonsChunkPlugin,
+		// it extracts the "runtime" so that the frequently changing mapping doesn't break caching of the entry chunks
+		// NOTE: order matters. vendor must be before manifest.
+		webpackConfig.plugins = webpackConfig.plugins.concat( [
+			new webpack.optimize.CommonsChunkPlugin( { name: 'vendor', minChunks: Infinity } ),
+			new webpack.optimize.CommonsChunkPlugin( { name: 'manifest' } )
+		] );
+	}
 
 	// jquery is only needed in the build for the desktop app
 	// see electron bug: https://github.com/atom/electron/issues/254
