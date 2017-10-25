@@ -119,9 +119,9 @@ class ActivityLogItem extends Component {
 	}
 
 	renderItemAction() {
-		const { disableRestore, hideRestore, translate, log: { activityIsRewindable } } = this.props;
+		const { disableRestore, hideRestore, translate } = this.props;
 
-		if ( hideRestore || ! activityIsRewindable ) {
+		if ( hideRestore ) {
 			return null;
 		}
 
