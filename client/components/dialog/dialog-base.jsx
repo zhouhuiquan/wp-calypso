@@ -83,18 +83,14 @@ class DialogBase extends Component {
 		);
 	}
 
-	_getButtonClasses( button ) {
-		let classes = button.className || 'button';
-
-		if ( button.isPrimary || this.props.buttons.length === 1 ) {
-			classes += ' is-primary';
-		}
-
-		if ( button.additionalClassNames ) {
-			classes += ' ' + button.additionalClassNames;
-		}
-
-		return classes;
+	_getButtonClasses( { additionalClassNames, className, isPrimary } ) {
+		return classnames(
+			className || 'button',
+			{
+				'is-primary': isPrimary || this.props.buttons.length === 1,
+			},
+			additionalClassNames
+		);
 	}
 
 	_onButtonClick = button => {
