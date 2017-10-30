@@ -12,6 +12,7 @@ import Gridicon from 'gridicons';
 /**
  * Internal dependencies
  */
+import Button from 'components/button';
 import DomainProductPrice from 'components/domains/domain-product-price';
 
 class DomainSuggestion extends React.Component {
@@ -43,14 +44,19 @@ class DomainSuggestion extends React.Component {
 			<div
 				className={ classes }
 				onClick={ this.props.onButtonClick }
-				role="button"
 				data-e2e-domain={ this.props.domain }
 			>
 				<div className="domain-suggestion__content">
 					{ children }
 					{ ! hidePrice && <DomainProductPrice rule={ priceRule } price={ price } /> }
 				</div>
-				<div className="domain-suggestion__action">{ this.props.buttonContent }</div>
+				<Button
+					borderless
+					onClick={ this.props.onButtonClick }
+					className="domain-suggestion__action"
+				>
+					{ this.props.buttonContent }
+				</Button>
 				<Gridicon className="domain-suggestion__chevron" icon="chevron-right" />
 			</div>
 		);
