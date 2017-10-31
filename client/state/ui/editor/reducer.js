@@ -30,10 +30,22 @@ export function postId( state = null, action ) {
 	return state;
 }
 
+export function tester( state = null, action ) {
+	switch ( action.type ) {
+		case 'tester':
+			console.log( '==== tester', action );
+
+			return action.num;
+	}
+
+	return state;
+}
+
 export default combineReducers( {
 	postId,
 	imageEditor,
 	videoEditor,
 	lastDraft,
 	contactForm,
+	tester,
 } );

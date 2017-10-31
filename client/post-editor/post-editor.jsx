@@ -10,6 +10,7 @@ import ReactDom from 'react-dom';
 import page from 'page';
 import PropTypes from 'prop-types';
 import { debounce, throttle, get } from 'lodash';
+import { partial, sample, range, flow } from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { localize } from 'i18n-calypso';
@@ -157,6 +158,9 @@ export const PostEditor = createReactClass( {
 	},
 
 	componentDidUpdate( prevProps, prevState ) {
+		this.props.testerOutside()
+		this.props.testerInside()
+
 		if (
 			prevState.nestedSidebar !== NESTED_SIDEBAR_NONE &&
 			this.state.nestedSidebar === NESTED_SIDEBAR_NONE
@@ -1384,6 +1388,13 @@ export const PostEditor = createReactClass( {
 	},
 } );
 
+const tester = num => ( {
+	type: 'tester',
+	num
+} )
+
+const testerOutside = partial( tester, sample( range( 100 ) ) );
+
 export default connect(
 	state => {
 		const siteId = getSelectedSiteId( state );
@@ -1422,6 +1433,8 @@ export default connect(
 				setNextLayoutFocus,
 				saveConfirmationSidebarPreference,
 				recordTracksEvent,
+				testerOutside,
+				testerInside: partial( tester, sample( range( 100 ) ) ),
 			},
 			dispatch
 		);
