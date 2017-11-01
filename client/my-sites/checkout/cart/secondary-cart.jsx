@@ -70,10 +70,14 @@ const SecondaryCart = createReactClass( {
 			'secondary-cart__hidden': ! this.state.cartVisible,
 		} );
 
+		const cartMessages = selectedSite ? (
+			<CartMessages cart={ cart } selectedSite={ selectedSite } />
+		) : null;
+
 		if ( ! cart.hasLoadedFromServer ) {
 			return (
 				<Sidebar className={ cartClasses }>
-					<CartMessages cart={ cart } selectedSite={ selectedSite } />
+					{ cartMessages }
 					<CartSummaryBar additionalClasses="cart-header" />
 					<CartBodyLoadingPlaceholder />
 				</Sidebar>
@@ -82,7 +86,7 @@ const SecondaryCart = createReactClass( {
 
 		return (
 			<Sidebar className={ cartClasses }>
-				<CartMessages cart={ cart } selectedSite={ selectedSite } />
+				{ cartMessages }
 				<CartSummaryBar additionalClasses="cart-header" />
 				<CartPlanAd selectedSite={ selectedSite } cart={ cart } />
 				<CartBody ref="cartBody" cart={ cart } selectedSite={ selectedSite } showCoupon={ true } />
