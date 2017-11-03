@@ -28,6 +28,8 @@ class TokenInput extends React.PureComponent {
 	componentDidUpdate() {
 		if ( this.props.hasFocus ) {
 			this.textInput.focus();
+		} else {
+			this.textInput.blur();
 		}
 	}
 

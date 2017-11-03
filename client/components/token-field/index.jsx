@@ -201,6 +201,7 @@ class TokenField extends PureComponent {
 			debug( '_onBlur not adding current token' );
 			this.setState( this.constructor.initialState );
 		}
+		return false;
 	};
 
 	_onTokenClickRemove = event => {
@@ -259,6 +260,9 @@ class TokenField extends PureComponent {
 				break;
 			case 13: // enter/return
 				preventDefault = this._addCurrentToken();
+				break;
+			case 27: // escape
+				preventDefault = this._onBlur();
 				break;
 			case 37: // left arrow
 				preventDefault = this._handleLeftArrowKey();
