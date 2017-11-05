@@ -9,7 +9,6 @@ import deepFreeze from 'deep-freeze';
  * Internal dependencies
  */
 import { logItems } from '../reducer';
-import ActivityQueryManager from 'lib/query-manager/activity';
 import { ACTIVITY_LOG_UPDATE, DESERIALIZE, SERIALIZE } from 'state/action-types';
 import { useSandbox } from 'test/helpers/use-sinon';
 
@@ -33,9 +32,6 @@ const ACTIVITY_ITEM = deepFreeze( {
 	actorWpcomId: 123456,
 } );
 
-const populateQueryManager = ( data = [], query = {} ) =>
-	new ActivityQueryManager().receive( data, { found: data.length, query } );
-
 describe( 'reducer', () => {
 	useSandbox( sandbox => {
 		sandbox.stub( console, 'warn' );
@@ -54,18 +50,16 @@ describe( 'reducer', () => {
 				type: ACTIVITY_LOG_UPDATE,
 				siteId: SITE_ID,
 				data,
-				found: data.length,
-				query: {},
 			} );
 
 			expect( state ).to.eql( {
-				[ SITE_ID ]: populateQueryManager( data, {} ),
+				[ SITE_ID ]: data,
 			} );
 		} );
 
 		test( 'should persist state', () => {
 			const original = deepFreeze( {
-				[ SITE_ID ]: populateQueryManager( [ ACTIVITY_ITEM ], {} ),
+				[ SITE_ID ]: [ ACTIVITY_ITEM ],
 			} );
 			const state = logItems( original, { type: SERIALIZE } );
 

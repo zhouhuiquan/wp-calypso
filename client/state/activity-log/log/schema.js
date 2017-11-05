@@ -42,48 +42,11 @@ export const logItemsSchema = {
 	type: 'object',
 	additionalProperties: false,
 	properties: {
-		data: {
-			type: 'object',
-			additionalProperties: false,
-			required: [ 'items', 'queries' ],
-			properties: {
+		patternProperties: {
+			'd+': {
+				type: 'array',
 				items: {
-					patternProperties: {
-						'^.+$': activityItemSchema,
-					},
-				},
-				queries: {
-					type: 'object',
-					additionalProperties: false,
-					patternProperties: {
-						// Query key pairs
-						'^\\[.*\\]$': {
-							type: 'object',
-							additionalProperties: false,
-							required: [ 'itemKeys' ],
-							properties: {
-								itemKeys: {
-									type: 'array',
-									items: {
-										type: 'string',
-									},
-								},
-								found: {
-									type: 'integer',
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		options: {
-			type: 'object',
-			additionalProperties: false,
-			required: [ 'itemKey' ],
-			properties: {
-				itemKey: {
-					type: 'string',
+					type: activityItemSchema,
 				},
 			},
 		},

@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { get } from 'lodash';
+import { find, get } from 'lodash';
 
 /**
  * Returns an Activity log.
@@ -13,10 +13,10 @@ import { get } from 'lodash';
  * @return {?Object}                  Activity log item if found, otherwise null
  */
 export default function getActivityLog( state, siteId, activityId ) {
-	const manager = get( state, [ 'activityLog', 'logItems', siteId ], null );
-	if ( ! manager ) {
-		return null;
-	}
-
-	return manager.getItem( activityId );
+	return (
+		find(
+			get( state, [ 'activityLog', 'logItems', siteId ], [] ),
+			log => log.activityId === activityId
+		) || null
+	);
 }
