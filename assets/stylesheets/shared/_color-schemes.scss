@@ -65,10 +65,10 @@
 
 	&.is-dark {
 		--masterbar-color: $white;
-		--masterbar-background: $gray-dark;
-		--masterbar-border-color: $white;
-		--masterbar-item-hover-background: darken( $gray, 10% );
-		--masterbar-item-active-background: $gray-text-min;
+		--masterbar-background: darken( $gray, 50% );
+		--masterbar-border-color: darken( $gray, 50% );
+		--masterbar-item-hover-background: darken( $gray, 40% );
+		--masterbar-item-active-background: $white;
 		--masterbar-item-new-color: $gray-dark;
 		--masterbar-item-new-editor-background: $gray-text-min;
 		--masterbar-item-new-editor-hover-background: lighten( $gray-text-min, 5% );
@@ -76,21 +76,21 @@
 		--masterbar-toggle-drafts-editor-border-color: $gray-dark;
 		--masterbar-toggle-drafts-editor-hover-background: lighten( $gray-text-min, 5% );
 
-		--sidebar-color: $white;
-		--sidebar-background: darken( $gray, 30% );
+		--sidebar-color: $gray-light;
+		--sidebar-background: darken( $gray, 50% );
 		--sidebar-gridicon-fill: $white;
 		--sidebar-heading-color: $white;
 		--sidebar-footer-button-color: $white;
 		--sidebar-menu-link-secondary-text-color: $white;
-		--sidebar-menu-a-first-child-after-background: hex-to-rgb( darken( $gray, 30% ) );
-		--sidebar-menu-selected-background-color: $gray-dark;
+		--sidebar-menu-a-first-child-after-background: hex-to-rgb( darken( $gray, 50% ) );
+		--sidebar-menu-selected-background-color: $blue-medium;
 		--sidebar-menu-selected-a-color: $white;
-		--sidebar-menu-selected-a-first-child-after-background: hex-to-rgb( $gray-dark );
+		--sidebar-menu-selected-a-first-child-after-background: hex-to-rgb( $blue-medium );
 
 		--button-is-borderless-color: $white;
 		--count-border-color: $white;
 		--count-color: $white;
-		--current-site-switch-sites-background: darken( $gray, 30% );
+		--current-site-switch-sites-background: darken( $gray, 50% );
 		--profile-gravatar-user-secondary-info-color: $white;
 	}
 }
