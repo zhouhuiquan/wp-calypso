@@ -85,22 +85,19 @@ $autobar-height: 20px;
 		cursor: pointer;
 	}
 
-	.masterbar__item-content {
-		color: var( --masterbar-color );
-	}
-
 	.gridicon + .masterbar__item-content {
 		padding: 0 0 0 6px;
 	}
 
 	&:hover,
 	&:focus {
+		color: var( --masterbar-item-hover-color );
 		background: var( --masterbar-item-hover-background );
-		color: var( --masterbar-color );
 		outline: 0;
 	}
 
 	&.is-active {
+		color: var( --masterbar-item-active-color );
 		background: var( --masterbar-item-active-background );
 	}
 
@@ -168,7 +165,7 @@ $autobar-height: 20px;
 }
 
 .masterbar__item-new {
-	background: $white;
+	background: var( --masterbar-item-new-background );
 	border-radius: 3px;
 	color: var( --masterbar-item-new-color );
 	height: 36px;
@@ -185,7 +182,7 @@ $autobar-height: 20px;
 
 	&:hover,
 	&:focus {
-		background: $gray-light;
+		background: var( --masterbar-item-new-hover-background );
 		color: var( --masterbar-item-new-color );
 	}
 
@@ -362,9 +359,9 @@ $autobar-height: 20px;
 }
 
 .masterbar__toggle-drafts.button.is-borderless {
-	background: lighten( $gray, 26% );
-	border-left: 1px solid lighten( $gray, 10% );
-	color: $gray-text-min;
+	background: var( --masterbar-toggle-drafts-background );
+	border-left: 1px solid var( --masterbar-toggle-drafts-border-color );
+	color: var( --masterbar-toggle-drafts-color );
 	height: 36px;
 	margin: 5px 8px 5px -10px;
 	padding: 0 8px;
@@ -383,10 +380,10 @@ $autobar-height: 20px;
 	}
 
 	&:hover {
-		background: $white;
+		background: var( --masterbar-toggle-drafts-hover-background );
 
 		.count {
-			color: $blue-wordpress;
+			color: var( --masterbar-toggle-drafts-hover-color );
 		}
 	}
 

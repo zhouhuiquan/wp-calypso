@@ -1,17 +1,39 @@
 //default color scheme
 :root {
+	// Masterbar
 	--masterbar-color: $white;
 	--masterbar-background: $blue-wordpress;
 	--masterbar-border-color: darken( $blue-wordpress, 4% );
+
+	// Masterbar Tabs
+	--masterbar-item-hover-color: $white;
 	--masterbar-item-hover-background: lighten( $blue-wordpress, 5% );
+	--masterbar-item-active-color: $white;
 	--masterbar-item-active-background: darken( $blue-wordpress, 17% );
+
+	// Write Button
+	// Default
 	--masterbar-item-new-color: $blue-wordpress;
-	--masterbar-item-new-editor-background: darken( $blue-wordpress, 17% );
+	--masterbar-item-new-background: $white;
+	--masterbar-item-new-hover-background: $gray-light;
+	// In Editor
 	--masterbar-item-new-editor-hover-background: darken( $blue-wordpress, 13% );
+	--masterbar-item-new-editor-background: darken( $blue-wordpress, 17% );
+	
+	// Draft Counter
+	// Default
+	--masterbar-toggle-drafts-color: $gray-text-min;
+	--masterbar-toggle-drafts-background: lighten( $gray, 26% );
+	--masterbar-toggle-drafts-border-color: lighten( $gray, 10% );
+	--masterbar-toggle-drafts-hover-color: $blue-wordpress;
+	--masterbar-toggle-drafts-hover-background: $white;
+	// In Editor
 	--masterbar-toggle-drafts-editor-background: darken( $blue-wordpress, 12% );
 	--masterbar-toggle-drafts-editor-border-color: darken( $blue-wordpress, 5% );
 	--masterbar-toggle-drafts-editor-hover-background: darken( $blue-wordpress, 17% );
 
+
+	// Sidebar
 	--sidebar-color: $gray-dark;
 	--sidebar-background: lighten( $gray, 30% );
 	--sidebar-gridicon-fill: darken( $gray, 20% );
@@ -33,18 +55,39 @@
 //additional color schemes
 .color-scheme {
 	&.is-light {
+		// Masterbar
 		--masterbar-color: darken( $blue-dark, 30% );
 		--masterbar-background: $white;
 		--masterbar-border-color: #d9e3ea;
+
+		// Masterbar Tabs
+		--masterbar-item-hover-color: darken( $blue-dark, 30% );
 		--masterbar-item-hover-background: lighten( $gray, 30 );
+		--masterbar-item-active-color: $white;
 		--masterbar-item-active-background: $gray-dark;
+		
+		// Write Button
+		// Default
 		--masterbar-item-new-color: darken( $blue-dark, 30% );
+		--masterbar-item-new-background: lighten( $gray, 30% );
+		--masterbar-item-new-hover-background: lighten( $gray, 20% );
+		// In Editor
 		--masterbar-item-new-editor-background: darken( $gray, 10% );
 		--masterbar-item-new-editor-hover-background: darken( $gray, 20% );
+		
+		// Draft Count
+		// Default
+		--masterbar-toggle-drafts-color: $gray-text-min;
+		--masterbar-toggle-drafts-background: lighten( $gray, 30% );
+		--masterbar-toggle-drafts-border-color: $white;
+		--masterbar-toggle-drafts-hover-background: lighten( $gray, 20% );
+		--masterbar-toggle-drafts-hover-color: $gray-text;
+		// In Editor
 		--masterbar-toggle-drafts-editor-background: darken( $gray, 30% );
 		--masterbar-toggle-drafts-editor-border-color: darken( $gray, 20% );
 		--masterbar-toggle-drafts-editor-hover-background: darken( $gray, 30% );
 
+		// Sidebar
 		--sidebar-color: $gray-dark;
 		--sidebar-background: $white;
 		--sidebar-gridicon-fill: $gray-dark;
@@ -64,18 +107,39 @@
 	}
 
 	&.is-dark {
+		// Masterbar
 		--masterbar-color: $white;
 		--masterbar-background: darken( $gray, 50% );
 		--masterbar-border-color: darken( $gray, 50% );
+		
+		// Masterbar Tabs
+		--masterbar-item-hover-color: $white;
 		--masterbar-item-hover-background: darken( $gray, 40% );
-		--masterbar-item-active-background: $white;
+		--masterbar-item-active-color: $white;
+		--masterbar-item-active-background: $blue-medium;
+		
+		// Write Button
+		// Default
 		--masterbar-item-new-color: $gray-dark;
+		--masterbar-item-new-background: $white;
+		--masterbar-item-new-hover-background: $gray-light;
+		// In Editor
 		--masterbar-item-new-editor-background: $gray-text-min;
 		--masterbar-item-new-editor-hover-background: lighten( $gray-text-min, 5% );
+		
+		// Draft Count
+		// Default
+		--masterbar-toggle-drafts-color: $gray-text-min;
+		--masterbar-toggle-drafts-background: lighten( $gray, 26% );
+		--masterbar-toggle-drafts-border-color: lighten( $gray, 10% );
+		--masterbar-toggle-drafts-hover-background: $white;
+		--masterbar-toggle-drafts-hover-color: $blue-wordpress;
+		// In Editor
 		--masterbar-toggle-drafts-editor-background: darken( $gray, 10% );
 		--masterbar-toggle-drafts-editor-border-color: $gray-dark;
 		--masterbar-toggle-drafts-editor-hover-background: lighten( $gray-text-min, 5% );
 
+		// Sidebar
 		--sidebar-color: $gray-light;
 		--sidebar-background: darken( $gray, 50% );
 		--sidebar-gridicon-fill: $white;
