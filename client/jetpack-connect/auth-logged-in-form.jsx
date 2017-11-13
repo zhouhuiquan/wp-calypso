@@ -60,6 +60,7 @@ import {
  */
 const MAX_AUTH_ATTEMPTS = 3;
 const PLANS_PAGE = '/jetpack/connect/plans/';
+const STORE_PAGE = '/store/';
 const debug = debugModule( 'calypso:jetpack-connect:authorize-form' );
 
 class LoggedInForm extends Component {
@@ -133,11 +134,16 @@ class LoggedInForm extends Component {
 			authorizeError,
 		} = nextProps.jetpackConnectAuthorize;
 
-		// For SSO, WooCommerce Services, and JPO users, do not display plans page
+		// For SSO and JPO users, do not display plans page
 		// Instead, redirect back to admin as soon as we're connected
-		if ( nextProps.isSSO || nextProps.isWoo || this.isFromJpo( nextProps ) ) {
+		if ( nextProps.isSSO || this.isFromJpo( nextProps ) ) {
 			if ( ! isRedirectingToWpAdmin && authorizeSuccess ) {
 				return goBackToWpAdmin( redirectAfterAuth );
+			}
+		// For WooCommerce Services users, go to the store after they're connected
+		} else if ( nextProps.isWoo ) {
+			if ( ! isRedirectingToWpAdmin && authorizeSuccess ) {
+				return this.redirect();
 			}
 		} else if ( siteReceived ) {
 			return this.redirect();
@@ -165,7 +171,7 @@ class LoggedInForm extends Component {
 		const { goBackToWpAdmin, redirectAfterAuth } = this.props;
 		const { queryObject } = this.props.jetpackConnectAuthorize;
 
-		if ( this.props.isSSO || this.props.isWoo || this.isFromJpo( this.props ) ) {
+		if ( this.props.isSSO || this.isFromJpo( this.props ) ) {
 			debug(
 				'Going back to WP Admin.',
 				'Connection initiated via: ',
@@ -174,6 +180,8 @@ class LoggedInForm extends Component {
 				this.props.isSSO
 			);
 			goBackToWpAdmin( redirectAfterAuth );
+		} else if ( this.props.isWoo ) {
+			page.redirect( this.getWooRedirectionTarget() );
 		} else {
 			page.redirect( this.getRedirectionTarget() );
 		}
@@ -469,6 +477,10 @@ class LoggedInForm extends Component {
 
 	getRedirectionTarget() {
 		return PLANS_PAGE + this.props.siteSlug;
+	}
+
+	getWooRedirectionTarget() {
+		return STORE_PAGE + this.props.siteSlug;
 	}
 
 	renderFooterLinks() {
