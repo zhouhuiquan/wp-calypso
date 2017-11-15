@@ -34,7 +34,7 @@ export default class TimeSince extends PureComponent {
 	update = date => {
 		date = date || this.props.date;
 		this.smartSetState( {
-			humanDate: humanDate( date ),
+			humanDate: humanDate( date, this.props.showTimeAfterAWeek ? 'lll' : null ),
 			fullDate: moment( date ).format( 'llll' ),
 		} );
 	};
