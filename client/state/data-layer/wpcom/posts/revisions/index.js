@@ -87,6 +87,9 @@ export const receiveSuccess = ( { dispatch }, { siteId, postId }, revisions ) =>
  */
 export const fetchPostRevisions = ( { dispatch }, action ) => {
 	const { siteId, postId, postType } = action;
+	if ( ! ( siteId && postId ) ) {
+		return;
+	}
 	const resourceName = postType === 'page' ? 'pages' : 'posts';
 	dispatch(
 		http(
