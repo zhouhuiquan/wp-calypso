@@ -307,6 +307,8 @@ PostActions = {
 			post: attributes,
 		} );
 
+		console.log( 'actions.saveEdited' );
+
 		post = PostEditStore.get();
 
 		// Don't send a request to the API if the post has no content (title,
@@ -376,6 +378,8 @@ PostActions = {
 		postHandle[ isNew ? 'add' : 'update' ]( query, changedAttributes, function( error, data ) {
 			var original, currentMode;
 
+			console.log( 'postHandle' + isNew ? 'add' : 'update' )
+
 			currentMode = PreferencesStore.get( 'editor-mode' );
 
 			if ( ! error ) {
@@ -407,6 +411,8 @@ PostActions = {
 	 */
 	update: function( post, attributes, callback ) {
 		var postHandle = wpcom.site( post.site_ID ).post( post.ID );
+
+		console.log( 'actions.update' );
 
 		postHandle.update( attributes, PostActions.receiveUpdate.bind( null, callback ) );
 	},

@@ -29,26 +29,26 @@ const getCombinedLength = list =>
 		0
 	);
 
-
 export function getSerializedQuery( state, siteId, postId, revisionId ) {
-	const key = [ siteId, postId, revisionId ].join(':');
+	const key = [ 'post-revisions', siteId, postId, revisionId ].join( ':' );
 
 	console.log( { key } );
 
 	return key;
 }
 
-let count = 0
+let count = 0;
 
 const getPostRevisionChanges = createSelector(
 	( state, siteId, postId, revisionId ) => {
 		const noChanges = { content: [], summary: {}, title: [] };
 
-		console.log( { revisionId } );
+		console.log( { siteId, postId, revisionId } );
 
-		count += 1
+		count += 1;
 
-		if (count >= 20 ) {
+		if ( count >= 200 ) {
+			count = 0;
 			debugger;
 		}
 
@@ -79,12 +79,23 @@ const getPostRevisionChanges = createSelector(
 			title,
 		};
 	},
-	( state, x, y, z ) => {
-		// console.log( x, y, z );
-		console.log( state.posts.revisions.revisions );
-		return [ get( state, [ 'posts', 'revisions', 'revisions', x, y, z ] ) ];
-	},
-	getSerializedQuery
+	( state, siteId, postId, revisionId ) => {
+		// if (
+		// 	// false &&
+		// 	siteId && postId && revisionId
+		// ) {
+		// 	// console.log( 'in if' );
+		// 	const orderedRevisions = getPostRevisions( state, siteId, postId, 'display' );
+		// 	const revisionIndex = findIndex( orderedRevisions, { id: revisionId } );
+		// 	const revision = orderedRevisions[ revisionIndex ];
+		// 	const previousRevision = get( orderedRevisions, [ revisionIndex + 1 ] );
+		// 	return revision && previousRevision ? [ revision, previousRevision ] : undefined;
+		// }
+		// what to do when the above condition isn't met?
+		return state.posts.revisions.revisions.length;
+		// return undefined;
+	}
+	// getSerializedQuery
 );
 
 export default getPostRevisionChanges;

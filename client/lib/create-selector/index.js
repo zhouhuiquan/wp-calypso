@@ -4,7 +4,7 @@
  * External dependencies
  */
 
-import { memoize } from 'lodash';
+import { includes, memoize } from 'lodash';
 import shallowEqual from 'react-pure-render/shallowEqual';
 
 /**
@@ -38,14 +38,16 @@ const DEFAULT_GET_DEPENDANTS = state => state;
  *
  * @type {Function} Function returning cache key for memoized selector
  */
+// let includes;
 const DEFAULT_GET_CACHE_KEY = ( () => {
-	let warn, includes;
+	let warn;
+	// includes;
 	if ( 'production' !== process.env.NODE_ENV ) {
 		// Webpack can optimize bundles if it can detect that a block will
 		// never be reached. Since `NODE_ENV` is defined using DefinePlugin,
 		// these debugging modules will be excluded from the production build.
 		warn = require( 'lib/warn' );
-		includes = require( 'lodash/includes' );
+		// includes = require( 'lodash/includes' );
 	} else {
 		return ( state, ...args ) => args.join();
 	}
@@ -57,6 +59,10 @@ const DEFAULT_GET_CACHE_KEY = ( () => {
 
 		if ( hasInvalidArg ) {
 			warn( 'Do not pass complex objects as arguments for a memoized selector' );
+		}
+
+		if ( includes( args, 390 ) && includes( args, 397 ) ) {
+			// console.log( 'args', args );
 		}
 
 		return args.join();
@@ -88,6 +94,7 @@ export default function createSelector(
 	getDependants = DEFAULT_GET_DEPENDANTS,
 	getCacheKey = DEFAULT_GET_CACHE_KEY
 ) {
+	// includes = require( 'lodash/includes' );
 	const memoizedSelector = memoize( selector, getCacheKey );
 	let lastDependants;
 
@@ -102,8 +109,22 @@ export default function createSelector(
 				currentDependants = [ currentDependants ];
 			}
 
+			// if ( includes( args, 390 ) && includes( args, 397 ) ) {
+			// debugg( { lastDependants, doesntEql: ! shallowEqual( currentDependants, lastDependants ) } );
+			// }
+
 			if ( lastDependants && ! shallowEqual( currentDependants, lastDependants ) ) {
+				// debugg( '::clearing cache' );
+
+				// if ( includes( args, 390 ) && includes( args, 397 ) ) {
+				// 	debugger;
+				// }
+				// debugg( lastDependants, currentDependants );
+				// debugg( shallowEqual( [ 1, 2], [1, 2] ) )
+				// if ( includes( args, 390 ) && contains( [ 397 ] args[ 4 ] ) ) { debugger; }
 				memoizedSelector.cache.clear();
+			} else {
+				// debugg( 'dont clear cache' );
 			}
 
 			lastDependants = currentDependants;

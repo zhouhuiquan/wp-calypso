@@ -86,3 +86,8 @@ export const closePostRevisionsDialog = () => ( {
 export const openPostRevisionsDialog = () => ( {
 	type: POST_REVISIONS_DIALOG_OPEN,
 } );
+
+export const setPostRevsionsCount = count => ( {
+	type: 'POST_REVISIONS_SET_COUNT',
+	count,
+} );

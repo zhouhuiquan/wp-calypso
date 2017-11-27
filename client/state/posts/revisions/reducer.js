@@ -4,7 +4,7 @@
  * External dependencies
  */
 
-import { keyBy, merge } from 'lodash';
+import { get, differenceBy, uniqBy, keyBy, merge, assign } from 'lodash';
 
 /**
  * Internal dependencies
@@ -20,6 +20,7 @@ import {
 	POST_REVISIONS_DIALOG_OPEN,
 	SELECTED_SITE_SET,
 } from 'state/action-types';
+
 import { combineReducers } from 'state/utils';
 
 export function requesting( state = {}, action ) {
@@ -37,14 +38,42 @@ export function requesting( state = {}, action ) {
 	return state;
 }
 
+export const mergeNewRevisions = ( revisions, newRevisions ) =>
+	assign( revisions, keyBy( newRevisions, 'id' ), keyBy( revisions, 'id' ) );
+
 export function revisions( state = {}, action ) {
 	if ( action.type === POST_REVISIONS_RECEIVE ) {
 		const { siteId, postId } = action;
+
+		// console.log( { revisionsState: state } );
+		// const uniqueRevisions = uniqBy( action.revisions, get( state, [ siteId, postId ]) );
+
+		const revisions = get( state, [ siteId, postId ] );
+
+		// if ( revisions && action.revisions ) {
+		// 	forEach( action.revisions, r => revisions[ r.id ] = r );
+		// } else {
+		// 	revisions = keyBy( action.revisions, 'id' );
+		// }
+		// console.log( 'before return' );
+
+		const merged = mergeNewRevisions( revisions, action.revisions );
+
+		// const merged = assign(
+		// revisions,
+		// keyBy( action.revisions, 'id' ),
+		// keyBy( revisions, 'id' )
+		// {}
+		// );
+
+		// console.log( { merged } );
+		// console.log( 'before return 2', { merged } );
+
 		return {
 			...state,
 			[ siteId ]: {
 				...state[ siteId ],
-				[ postId ]: keyBy( action.revisions, 'id' ),
+				[ postId ]: merged,
 			},
 		};
 	}
@@ -77,9 +106,19 @@ export function ui( state = {}, action ) {
 	}
 }
 
+export function count( state = 0, action ) {
+	switch ( action.type ) {
+		case 'POST_REVISIONS_COUNT_SET':
+			return action.count;
+		default:
+			return state;
+	}
+}
+
 export default combineReducers( {
 	requesting,
 	revisions,
 	selection,
 	ui,
+	count,
 } );

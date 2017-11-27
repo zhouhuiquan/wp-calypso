@@ -10,6 +10,7 @@ import deepFreeze from 'deep-freeze';
  * Internal dependencies
  */
 import reducer, { requesting, revisions, selection, ui } from '../reducer';
+import { mergeNewRevisions } from '../reducer';
 import {
 	POST_EDIT,
 	POST_REVISIONS_DIALOG_CLOSE,
@@ -363,5 +364,27 @@ describe( 'reducer', () => {
 				} );
 			} );
 		} );
+	} );
+} );
+
+describe( 'mergeNewRevisions', () => {
+	const oldRevisions = { a: { id: 'a', x: 1 } };
+	const newRevisions = [ { id: 'a', x: 2 }, { id: 'b', x: 4 } ];
+
+	test( 'returns the original revisions object', () => {
+		const actual = mergeNewRevisions( oldRevisions, { revisions: newRevisions } );
+		const expected = oldRevisions;
+
+		expect( actual ).to.equal( expected );
+	} );
+
+	test( 'merges new revisions in to existing revisions object', () => {
+		const actual = mergeNewRevisions( oldRevisions, { revisions: newRevisions } ).a;
+		const expected = oldRevisions.a;
+
+		console.log( newRevisions, oldRevisions );
+
+		expect( actual.x ).to.equal( 1 );
+		// expect( actual ).to.equal( expected );
 	} );
 } );

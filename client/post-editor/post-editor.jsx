@@ -70,6 +70,10 @@ import { isSitePreviewable, getSiteDomain } from 'state/sites/selectors';
 import { removep } from 'lib/formatting';
 import getAllPostsUrl from 'state/selectors/get-all-posts-url';
 
+
+import getPostRevisionsCount from 'state/selectors/get-post-revisions-count';
+import setPostRevsionsCount from 'state/posts/revisions/actions';
+
 export const PostEditor = createReactClass( {
 	displayName: 'PostEditor',
 
@@ -836,11 +840,13 @@ export const PostEditor = createReactClass( {
 				}
 			}.bind( this )
 		);
-
+		console.log( 'this.props.setPostRevsionsCount( 1 );');
+		this.props.setPostRevsionsCount( 1 );
 		this.setState( {
 			isSaving: true,
 			isPublishing: true,
 		} );
+
 	},
 
 	onPublishFailure: function( error ) {
@@ -1295,6 +1301,7 @@ const enhance = flow(
 			const type = getEditedPostValue( state, siteId, postId, 'type' );
 
 			return {
+				// postRevisionsCount: getPostRevisionsCount( state )
 				siteId,
 				postId,
 				type,
@@ -1316,6 +1323,7 @@ const enhance = flow(
 		},
 		{
 			setEditorLastDraft,
+			setPostRevsionsCount,
 			resetEditorLastDraft,
 			receivePost,
 			editPost,

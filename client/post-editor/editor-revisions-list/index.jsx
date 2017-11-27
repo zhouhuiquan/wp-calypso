@@ -16,7 +16,7 @@ import { findIndex, get, head, isEmpty, map } from 'lodash';
 import EditorRevisionsListHeader from './header';
 import EditorRevisionsListItem from './item';
 import { selectPostRevision } from 'state/posts/revisions/actions';
-import { getPostRevision, getPostRevisionsSelectedRevisionId } from 'state/selectors';
+import { getPostRevisionsCount, getPostRevision, getPostRevisionsSelectedRevisionId, getPostRevisions } from 'state/selectors';
 import KeyboardShortcuts from 'lib/keyboard-shortcuts';
 
 class EditorRevisionsList extends PureComponent {
@@ -111,6 +111,8 @@ class EditorRevisionsList extends PureComponent {
 			'is-loading': isEmpty( revisions ),
 		} );
 
+		console.log( 'postRevisionsCount: ', this.props.postRevisionsCount );
+
 		return (
 			<div className={ classes }>
 				<EditorRevisionsListHeader numRevisions={ revisions.length } />
@@ -138,17 +140,35 @@ class EditorRevisionsList extends PureComponent {
 }
 
 export default connect(
-	( state, { revisions } ) => {
+	( state, { revisions, siteId, postId } ) => {
+
+		// Is the last revision the same as the content?
+		// Have changes been made since we last opened post revisions UI?
+		// Is it dirty?
+		// If so can we show some placeholder, do we know how many to show placeholders for?
+		// If not do we just show loading state for the whole view?
+
 		const selectedRevisionId = getPostRevisionsSelectedRevisionId( state );
+
+		const postRevisionsCount = getPostRevisionsCount( state );
+
 		const selectedIdIndex = findIndex( revisions, { id: selectedRevisionId } );
 		const nextRevisionId = selectedRevisionId && get( revisions, [ selectedIdIndex - 1, 'id' ] );
 		const prevRevisionId = selectedRevisionId && get( revisions, [ selectedIdIndex + 1, 'id' ] );
+
+
+		const revisionsx = getPostRevisions( state, siteId, postId, 'display' );
+		// console.log( {
+		// 	revisions: revisions.length,
+		// 	revisionsx: revisionsx.length,
+		// } )
 
 		return {
 			selectedRevision: getPostRevision( state, selectedRevisionId ),
 			nextRevisionId,
 			prevRevisionId,
 			selectedRevisionId,
+			postRevisionsCount,
 		};
 	},
 	{ selectPostRevision }

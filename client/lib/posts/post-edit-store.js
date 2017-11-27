@@ -83,6 +83,7 @@ function startEditing( post ) {
 }
 
 function updatePost( post ) {
+	//
 	post = normalize( post );
 	if ( post.title ) {
 		post.title = decodeEntities( post.title );
@@ -92,6 +93,8 @@ function updatePost( post ) {
 	_post = _savedPost;
 	_isNew = false;
 	_loadingError = null;
+
+	console.log('in update post');
 
 	// To ensure that edits made while an update is inflight are not lost, we need to apply them to the updated post.
 	_queue.forEach( function( change ) {
@@ -274,6 +277,7 @@ function dispatcherCallback( payload ) {
 			break;
 
 		case 'RECEIVE_POST_BEING_EDITED':
+			//
 			if ( ! action.error ) {
 				updatePost( action.post );
 				if ( typeof action.rawContent === 'string' ) {
