@@ -300,6 +300,7 @@ PostActions = {
 	 * @param {object} options object with optional recordSaveEvent property. True if you want to record the save event.
 	 */
 	saveEdited: function( attributes, context, callback, options ) {
+		//
 		var post, postHandle, query, changedAttributes, rawContent, mode, isNew;
 
 		Dispatcher.handleViewAction( {
@@ -397,6 +398,8 @@ PostActions = {
 				original: original,
 				post: data,
 			} );
+
+			console.log( '...', data );
 
 			callback( error, data );
 		} );

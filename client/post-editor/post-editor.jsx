@@ -7,7 +7,7 @@ import createReactClass from 'create-react-class';
 import ReactDom from 'react-dom';
 import page from 'page';
 import PropTypes from 'prop-types';
-import { debounce, flow, get, partial, throttle } from 'lodash';
+import { defer, debounce, flow, get, partial, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
@@ -666,7 +666,12 @@ export const PostEditor = createReactClass( {
 		actions.saveEdited(
 			edits,
 			{ isConfirmationSidebarEnabled: this.props.isConfirmationSidebarEnabled },
-			function( error ) {
+			function( error, data ) {
+				/////////
+				console.log( 'post-editor:: state:', get( this.state, 'post.revisions.length', 0 ), 'redux:', get( this.props, 'postRevisionsCount', 0 ) )
+				console.log( { data }, error && 'NO_CHANGE' !== error.message );
+
+
 				if ( error && 'NO_CHANGE' !== error.message ) {
 					this.onSaveDraftFailure( error );
 				} else {
@@ -676,6 +681,12 @@ export const PostEditor = createReactClass( {
 				if ( 'function' === typeof callback ) {
 					callback( error );
 				}
+
+				// I'd thought about calling setRevisionsCount here but it never gets called.
+				// 'x' will log, but 'y' won't
+				console.log( 'x' )
+				setRevsionsCount( get( data, 'revisions.length', 0 ) );
+				console.log( 'y' )
 			}.bind( this )
 		);
 
@@ -840,8 +851,7 @@ export const PostEditor = createReactClass( {
 				}
 			}.bind( this )
 		);
-		console.log( 'this.props.setPostRevsionsCount( 1 );');
-		this.props.setPostRevsionsCount( 1 );
+		// this.props.setPostRevsionsCount( 1 );
 		this.setState( {
 			isSaving: true,
 			isPublishing: true,
@@ -1301,7 +1311,7 @@ const enhance = flow(
 			const type = getEditedPostValue( state, siteId, postId, 'type' );
 
 			return {
-				// postRevisionsCount: getPostRevisionsCount( state )
+				postRevisionsCount: getPostRevisionsCount( state, siteId, postId ),
 				siteId,
 				postId,
 				type,

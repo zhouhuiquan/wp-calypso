@@ -43,7 +43,7 @@ const getPostRevisionChanges = createSelector(
 	( state, siteId, postId, revisionId ) => {
 		const noChanges = { content: [], summary: {}, title: [] };
 
-		console.log( { siteId, postId, revisionId } );
+		// console.log( { siteId, postId, revisionId } );
 
 		count += 1;
 

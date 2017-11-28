@@ -108,6 +108,9 @@ export function ui( state = {}, action ) {
 
 export function count( state = 0, action ) {
 	switch ( action.type ) {
+		case POST_REVISIONS_RECEIVE:
+			console.log( POST_REVISIONS_RECEIVE,  get( action, 'revisions.length' ) )
+			return get( action, 'revisions.length', 0 );
 		case 'POST_REVISIONS_COUNT_SET':
 			return action.count;
 		default:

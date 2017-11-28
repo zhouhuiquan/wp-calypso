@@ -64,7 +64,7 @@ export const receivePostRevisionsFailure = ( siteId, postId, error ) => ( {
  * @param {Object} revisions already normalized
  * @return {Object} action object
  */
-export const receivePostRevisions = ( siteId, postId, revisions ) => ( {
+export const receivePostRevisions = ( siteId, postId, revisions ) => console.log( { fetchedRevisions: revisions } ) || ( {
 	// NOTE: We expect all revisions to be on the same post, thus highly
 	// coupling it to how the WP-API returns revisions, instead of being able
 	// to "receive" large (possibly unrelated) batch of revisions.
@@ -87,7 +87,10 @@ export const openPostRevisionsDialog = () => ( {
 	type: POST_REVISIONS_DIALOG_OPEN,
 } );
 
-export const setPostRevsionsCount = count => ( {
-	type: 'POST_REVISIONS_SET_COUNT',
-	count,
-} );
+export const setPostRevsionsCount = count => {
+	console.log( 'calling setPostRevsionsCount' )
+	return ( {
+		type: 'POST_REVISIONS_SET_COUNT',
+		count,
+	} );
+}

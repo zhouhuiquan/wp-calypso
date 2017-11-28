@@ -74,6 +74,7 @@ export const receiveError = ( { dispatch }, { siteId, postId }, rawError ) =>
  * @param {Array} revisions raw data from post revisions API
  */
 export const receiveSuccess = ( { dispatch }, { siteId, postId }, revisions ) => {
+	console.log( 'dataLayer:', { revisions } );
 	const normalizedRevisions = map( revisions, normalizeRevision );
 	dispatch( receivePostRevisionsSuccess( siteId, postId ) );
 	dispatch( receivePostRevisions( siteId, postId, normalizedRevisions ) );
