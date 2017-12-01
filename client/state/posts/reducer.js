@@ -202,10 +202,14 @@ export const queries = ( () => {
 				if ( ! siteId ) { // Handle site-specific queries only
 					return state;
 				}
+				console.time( 'queries POSTS_REQUEST_SUCCESS' );
 				const normalizedPosts = posts.map( normalizePostForState );
-				return applyToManager( state, siteId, 'receive', true, normalizedPosts, { query, found } );
+				const retVal = applyToManager( state, siteId, 'receive', true, normalizedPosts, { query, found } );
+				console.timeEnd( 'queries POSTS_REQUEST_SUCCESS' );
+				return retVal;
 			},
 			[ POSTS_RECEIVE ]: ( state, { posts } ) => {
+				console.time( 'queries POSTS_RECEIVE' );
 				const postsBySiteId = reduce(
 					posts,
 					( memo, post ) => {
@@ -219,13 +223,16 @@ export const queries = ( () => {
 					{}
 				);
 
-				return reduce(
+				const retVal = reduce(
 					postsBySiteId,
 					( memo, sitePosts, siteId ) => {
 						return applyToManager( memo, siteId, 'receive', true, sitePosts );
 					},
 					state
 				);
+
+				console.timeEnd( 'queries POSTS_RECEIVE' );
+				return retVal;
 			},
 			[ POST_RESTORE ]: ( state, { siteId, postId } ) => {
 				return applyToManager(
@@ -335,13 +342,19 @@ export const allSitesQueries = ( () => {
 				if ( siteId ) { // Handle all-sites queries only.
 					return state;
 				}
-				return state.receive(
+				console.time( 'allSitesQueries POSTS_REQUEST_SUCCESS' );
+				const retVal = state.receive(
 					posts.map( normalizePostForState ),
 					{ query, found }
 				);
+				console.timeEnd( 'allSitesQueries POSTS_REQUEST_SUCCESS' );
+				return retVal;
 			},
 			[ POSTS_RECEIVE ]: ( state, { posts } ) => {
-				return state.receive( posts );
+				console.time( 'allSitesQueries POSTS_RECEIVE' );
+				const retVal = state.receive( posts );
+				console.timeEnd( 'allSitesQueries POSTS_RECEIVE' );
+				return retVal;
 			},
 			[ POST_RESTORE ]: ( state, { siteId, postId } ) => {
 				const globalId = findItemKey( state, siteId, postId );

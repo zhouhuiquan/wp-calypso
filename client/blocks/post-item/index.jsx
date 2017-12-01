@@ -186,8 +186,14 @@ PostItem.propTypes = {
 	hideSharePanel: PropTypes.func,
 };
 
+let renderCount = 0;
+
 export default connect(
 	( state, { globalId } ) => {
+		if ( globalId === 'bd3ac00cad9a53a115983ab009b71679' ) {
+			console.log( 'PostItem re-render', ++renderCount );
+		}
+
 		const post = getNormalizedPost( state, globalId );
 		if ( ! post ) {
 			return {};
