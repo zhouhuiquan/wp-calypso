@@ -121,6 +121,36 @@ export default function createSelector(
 	getCacheKey = DEFAULT_GET_CACHE_KEY
 ) {
 	const memo = new LazyWeakMap();
+	/* first pass with deps [ a, b ]:
+		{
+			[ a ]: new LazyWeakMap(),
+			[ b ]: new LazyWeakMap( {
+				[ cacheKey ]: selector( ... with [ a, b ] )
+			} ),
+		}
+		*/
+	/* second pass with deps [ b, c ]:
+		{
+			[ a ]: new LazyWeakMap(),
+			[ b ]: new LazyWeakMap( {
+				[ cacheKey ]: selector( ... with [ a, b ] ) // ( from first run )
+			} ),
+			[ c ]: new LazyWeakMap( {
+				[ cacheKey ]: selector( ... with [ b, c ] )
+			} ),
+		}
+		*/
+	/* second pass with deps [ a, c ]:
+		{
+			[ a ]: new LazyWeakMap(),
+			[ b ]: new LazyWeakMap( {
+				[ cacheKey ]: selector( ... with [ a, b ] ) // ( from first run )
+			} ),
+			[ c ]: new LazyWeakMap( {
+				[ cacheKey ]: selector( ... with [ b, c ] ) // ( from second run )
+			} ),
+		}
+		*/
 
 	if ( Array.isArray( getDependants ) ) {
 		getDependants = makeSelectorFromArray( getDependants );
@@ -135,14 +165,22 @@ export default function createSelector(
 		// the reason this charade is beneficial over standard memoization techniques is that now we can
 		// garbage collect any values that are based on outdated dependents so the memory usage
 		// should never balloon
-		let currMemo = memo;
+		let currMemo;
+		// First pass: Call someSelector with [ a, b ];
+		// 		In the forEach below, [ a, b ] will eventually assign b as currMemo (after assigning a first)
+		// Second pass: We'll later call someSelector with [ b, c ] as deps.
+		// Third pass: What if we then have a use case where we call with [ a, c ]?
 		forEach( currentDependants, dependent => {
-			if ( ! currMemo.has( dependent ) ) {
-				currMemo.set( dependent, new LazyWeakMap() );
+			// Third pass: memo.has( dependent ) is true, pass the flow without creating a new LWM
+			if ( ! memo.has( dependent ) ) {
+				memo.set( dependent, new LazyWeakMap() );
 			}
-			currMemo = currMemo.get( dependent );
+			// Third pass: set currMemo to the same value for [ c ] as in second pass.
+			currMemo = memo.get( dependent );
 		} );
-
+		// Second pass: currMemo.has( cacheKey ) is false so set( cacheKey, selector... );
+		// Third pass: currMemo.has( cacheKey ) is true so skip, returning cached selector from second pass
+		//		Trouble is, the [ ...currentDependants ] are still [ b, c ], not [ a, c ]
 		if ( ! currMemo.has( cacheKey ) ) {
 			// call the selector with all of the dependents as args so it can use the fruits of
 			// the cpu cycles used during dependent calculation

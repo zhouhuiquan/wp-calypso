@@ -180,6 +180,50 @@ describe( 'index', () => {
 		expect( selector ).to.have.been.calledTwice;
 	} );
 
+	test( 'should keep the cache on a per-key basis, with dynamic arguments', () => {
+		const getPostByIdWithDataSpy = sinon.spy( ( state, postId, otherPostId ) =>
+			state.posts[ postId ].global_ID + ':' + state.posts[ otherPostId ].global_ID
+		);
+		const getPostByIdWithData = createSelector(
+			getPostByIdWithDataSpy,
+			( state, postId, otherPostId ) => [ postId, otherPostId ]
+		);
+
+		const post1 = { global_ID: '3d097cb7c5473c169bba0eb8e3c6cb64' };
+		const post2 = { global_ID: '6c831c187ffef321eb43a67761a525a3' };
+		const post3 = { global_ID: '7c831c187ffef321eb43a67761a525a3' };
+		const post4 = { global_ID: '8c831c187ffef321eb43a67761a525a3' };
+
+		const prevState = {
+			posts: {
+				[ post1.global_ID ]: post1,
+				[ post2.global_ID ]: post2,
+				[ post3.global_ID ]: post3,
+			},
+		};
+
+		getPostByIdWithData( prevState, post1.global_ID, post2.global_ID );
+
+		const nextState = {
+			posts: {
+				[ post1.global_ID ]: post1,
+				[ post2.global_ID ]: post2,
+				[ post3.global_ID ]: post3,
+			},
+		};
+
+		expect( getPostByIdWithData( nextState, post1.global_ID, post2.global_ID ) ).to.eql( '3d097cb7c5473c169bba0eb8e3c6cb64:6c831c187ffef321eb43a67761a525a3' );
+		expect( getPostByIdWithData( nextState, post2.global_ID, post3.global_ID ) ).to.eql( '6c831c187ffef321eb43a67761a525a3:7c831c187ffef321eb43a67761a525a3' );
+		expect( getPostByIdWithData( nextState, post1.global_ID, post3.global_ID ) ).to.eql( '3d097cb7c5473c169bba0eb8e3c6cb64:7c831c187ffef321eb43a67761a525a3' );
+
+		// expect( getPostByIdWithData( nextState, post2.global_ID ) ).to.eql( {
+		// 	...post2,
+		// 	withData: true,
+		// } );
+		// getPostByIdWithData( nextState, post1.global_ID );
+		// expect( getPostByIdWithDataSpy ).to.have.been.calledTwice;
+	} );
+
 	test( 'should keep the cache on a per-key basis', () => {
 		const getPostByIdWithDataSpy = sinon.spy( ( state, postId ) => {
 			return {

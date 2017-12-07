@@ -30,6 +30,8 @@ const getCombinedLength = list =>
 
 const getPostRevisionChanges = createSelector(
 	( state, siteId, postId, revisionId ) => {
+		console.log( 'selecting for:', revisionId );
+
 		const noChanges = { content: [], summary: {}, title: [] };
 		if ( ! isEnabled( 'post-editor/revisions' ) ) {
 			return noChanges;
