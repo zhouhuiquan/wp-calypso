@@ -103,10 +103,10 @@ export default {
 	condensedPostList: {
 		datestamp: '20171113',
 		variations: {
-			condensedPosts: 5,
-			largePosts: 95,
+			condensedPosts: 100,
+			largePosts: 0,
 		},
-		defaultVariation: 'largePosts',
+		defaultVariation: 'condensedPosts',
 	},
 	showNewPaymentMethods: {
 		datestamp: '20171115',
