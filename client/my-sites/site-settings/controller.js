@@ -58,7 +58,7 @@ const controller = {
 		page.redirect( '/settings/general' );
 	},
 
-	redirectIfCantDeleteSite( context ) {
+	redirectIfCantDeleteSite( context, next ) {
 		const state = context.store.getState();
 		const dispatch = context.store.dispatch;
 		const siteId = getSelectedSiteId( state );
@@ -81,6 +81,8 @@ const controller = {
 				},
 			} );
 		}
+
+		next();
 	},
 
 	general( context ) {
@@ -103,10 +105,6 @@ const controller = {
 	},
 
 	deleteSite( context ) {
-		const redirectIfCantDeleteSite = controller.redirectIfCantDeleteSite;
-
-		redirectIfCantDeleteSite( context );
-
 		renderPage( context, <DeleteSite path={ context.path } /> );
 	},
 
@@ -124,10 +122,6 @@ const controller = {
 	},
 
 	startOver( context ) {
-		const redirectIfCantDeleteSite = controller.redirectIfCantDeleteSite;
-
-		redirectIfCantDeleteSite( context );
-
 		renderPage( context, <StartOver path={ context.path } /> );
 	},
 

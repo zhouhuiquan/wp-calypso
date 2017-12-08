@@ -42,6 +42,7 @@ export default function() {
 		siteSelection,
 		navigation,
 		settingsController.setScroll,
+		controller.redirectIfCantDeleteSite,
 		controller.deleteSite
 	);
 
@@ -67,6 +68,7 @@ export default function() {
 		siteSelection,
 		navigation,
 		settingsController.setScroll,
+		controller.redirectIfCantDeleteSite,
 		controller.startOver
 	);
 	page(
