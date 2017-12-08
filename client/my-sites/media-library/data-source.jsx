@@ -98,7 +98,7 @@ export class MediaLibraryDataSource extends Component {
 		} );
 
 		if ( ! config.isEnabled( 'external-media' ) ) {
-			return null;
+			//return null;
 		}
 
 		return (
