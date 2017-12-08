@@ -50,6 +50,7 @@ class PopoverMenu extends React.Component {
 				rootClassName={ this.props.rootClassName }
 				popoverTitle={ this.props.popoverTitle }
 			>
+				<p>I AM IN THE POPOVER</p>
 				<div
 					ref="menu"
 					role="menu"

@@ -75,7 +75,8 @@ class Popover extends Component {
 
 	constructor( props ) {
 		super( props );
-
+		console.error('POPOVER PROPS COMIN IN');
+		console.error('isVisible is ' + props.isVisible);
 		this.setPopoverId( props.id );
 
 		// bound methods
@@ -421,6 +422,7 @@ class Popover extends Component {
 
 	render() {
 		if ( ! this.state.show ) {
+			console.error('OH DEAR IS HIDDEN POPOVER');
 			this.debug( 'is hidden. return no render' );
 			return null;
 		}

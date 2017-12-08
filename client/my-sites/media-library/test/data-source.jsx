@@ -7,7 +7,7 @@
  * External dependencies
  */
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
@@ -23,19 +23,20 @@ describe( 'MediaLibraryDataSource', () => {
 	describe( 'render data sources', () => {
 		test( 'excludes data sources listed in disabledSources', () => {
 			const store = createReduxStore();
-			const wrapper = shallow(
+			const wrapper = mount(
 				<ReduxProvider store={ store }>
 					<MediaLibraryDataSource
 						source={ '' }
 						onSourceChange={ () => null }
-						disabledSources={ [ 'google_photos' ] }
 					/>
 				</ReduxProvider>
 			);
-			// this complains there is no store, and says we should wrap the element in a provider. I have done.
-			console.error( wrapper.html() );
-			// this can't find a button to click
-			wrapper.find( Button ).simulate( 'click' );
+			// this click works now!
+			wrapper.find( 'button' ).simulate( 'click' );
+			// but the new state doesn't propogate down to the children, so the PopoverMenuItems stay hidden :(
+			wrapper.update();
+			// should be more than 1!
+			console.error( wrapper.find('button'));
 		} );
 	} );
 } );

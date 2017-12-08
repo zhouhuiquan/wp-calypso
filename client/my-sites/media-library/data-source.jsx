@@ -37,6 +37,7 @@ export class MediaLibraryDataSource extends Component {
 	}
 
 	togglePopover = () => {
+		console.error('TOGGLE TOGGLE, EVERYTHIN SHOULD BE SHOWN NOW!');
 		this.setState( { popover: ! this.state.popover } );
 	};
 
@@ -60,7 +61,7 @@ export class MediaLibraryDataSource extends Component {
 
 	renderMenuItems( sources ) {
 		return sources
-			.filter( item => -1 === this.props.disabledSources.indexOf( item.value ) )
+//			.filter( item => -1 === this.props.disabledSources.indexOf( item.value ) )
 			.map( item => (
 				<PopoverMenuItem action={ item.value } key={ item.value } onClick={ this.changeSource }>
 					{ item.icon }
