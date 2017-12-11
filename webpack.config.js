@@ -78,7 +78,9 @@ const babelLoader = {
 
 const webpackConfig = {
 	bail: ! isDevelopment,
-	entry: {},
+	entry: {
+		build: path.join( __dirname, 'client', 'boot', 'app' ),
+	},
 	devtool: 'false',
 	output: {
 		path: path.join( __dirname, 'public' ),
@@ -151,10 +153,7 @@ const webpackConfig = {
 			{ from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' },
 		] ),
 		new HappyPack( {
-			loaders: _.compact( [
-				isDevelopment && config.isEnabled( 'webpack/hot-loader' ) && 'react-hot-loader',
-				babelLoader,
-			] ),
+			loaders: [ babelLoader ],
 		} ),
 		new webpack.NamedModulesPlugin(),
 		new webpack.NamedChunksPlugin( chunk => {
@@ -222,14 +221,9 @@ if ( isDevelopment ) {
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.LoaderOptionsPlugin( { debug: true } ),
 	] );
-	webpackConfig.entry.build = [
-		'webpack-hot-middleware/client',
-		path.join( __dirname, 'client', 'boot', 'app' ),
-	];
 	webpackConfig.devServer = { hot: true, inline: true };
 	webpackConfig.devtool = '#eval';
 } else {
-	webpackConfig.entry.build = path.join( __dirname, 'client', 'boot', 'app' );
 	webpackConfig.devtool = false;
 }
 
