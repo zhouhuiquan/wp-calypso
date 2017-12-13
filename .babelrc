@@ -19,6 +19,7 @@
 		"transform-react-display-name",
 		"transform-react-jsx",
 		"transform-runtime",
+		["react-hot-loader/babel"],
 		[
 			"transform-imports",
 			{

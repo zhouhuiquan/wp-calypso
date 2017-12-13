@@ -8,6 +8,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import page from 'page';
+import { AppContainer } from 'react-hot-loader';
 
 /**
  * Internal Dependencies
@@ -75,5 +76,8 @@ export function redirectLoggedIn( context, next ) {
 }
 
 export function render( context ) {
-	ReactDom.render( context.layout, document.getElementById( 'wpcom' ) );
+	ReactDom.render(
+		<AppContainer>{ context.layout }</AppContainer>,
+		document.getElementById( 'wpcom' )
+	);
 }

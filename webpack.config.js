@@ -153,12 +153,7 @@ const webpackConfig = {
 		new CopyWebpackPlugin( [
 			{ from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' },
 		] ),
-		new HappyPack( {
-			loaders: _.compact( [
-				isDevelopment && config.isEnabled( 'webpack/hot-loader' ) && 'react-hot-loader',
-				babelLoader,
-			] ),
-		} ),
+		new HappyPack( { loaders: [ babelLoader ] } ),
 		new webpack.NamedModulesPlugin(),
 		new webpack.NamedChunksPlugin( chunk => {
 			if ( chunk.name ) {
@@ -226,7 +221,7 @@ if ( isDevelopment ) {
 		new webpack.LoaderOptionsPlugin( { debug: true } ),
 	] );
 	webpackConfig.entry.build = [
-		'webpack-hot-middleware/client',
+		'react-hot-loader/patch',
 		path.join( __dirname, 'client', 'boot', 'app' ),
 	];
 	webpackConfig.devServer = { hot: true, inline: true };
