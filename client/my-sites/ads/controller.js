@@ -16,10 +16,10 @@ import analytics from 'lib/analytics';
 import titlecase from 'to-title-case';
 import { canAccessWordads } from 'lib/ads/utils';
 import { setDocumentHeadTitle as setTitle } from 'state/document-head/actions';
-import { userCan } from 'lib/site/utils';
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import { isJetpackSite } from 'state/sites/selectors';
 import Ads from 'my-sites/ads/main';
+import { canCurrentUser } from 'state/selectors';
 
 function _recordPageView( context, analyticsPageTitle ) {
 	var basePath = route.sectionify( context.path );
@@ -49,13 +49,17 @@ export default {
 	},
 
 	layout: function( context, next ) {
-		const site = getSelectedSite( context.store.getState() );
+		const state = context.store.getState();
+
+		const site = getSelectedSite( state );
+		const siteId = getSelectedSiteId( state );
+
 		const pathSuffix = site ? '/' + site.slug : '';
 		const layoutTitle = _getLayoutTitle( context );
 
 		context.store.dispatch( setTitle( layoutTitle ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		if ( ! userCan( 'manage_options', site ) ) {
+		if ( ! canCurrentUser( state, siteId, 'manage_options' ) ) {
 			page.redirect( '/stats' + pathSuffix );
 			return;
 		}
