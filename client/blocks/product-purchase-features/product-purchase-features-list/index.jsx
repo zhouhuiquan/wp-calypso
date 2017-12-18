@@ -46,6 +46,7 @@ import { isWordadsInstantActivationEligible } from 'lib/ads/utils';
 import { hasDomainCredit } from 'state/sites/plans/selectors';
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import { recordTracksEvent } from 'state/analytics/actions';
+import { canCurrentUser } from 'state/selectors';
 
 class ProductPurchaseFeaturesList extends Component {
 	static propTypes = {
@@ -70,7 +71,7 @@ class ProductPurchaseFeaturesList extends Component {
 	};
 
 	getBusinessFeatures() {
-		const { selectedSite, planHasDomainCredit } = this.props;
+		const { selectedSite, planHasDomainCredit, canUserActivateWordads } = this.props;
 		return [
 			<CustomDomain
 				selectedSite={ selectedSite }
@@ -91,14 +92,14 @@ class ProductPurchaseFeaturesList extends Component {
 			isEnabled( 'manage/plugins/upload' ) ? (
 				<UploadPlugins selectedSite={ selectedSite } key="uploadPluginsFeature" />
 			) : null,
-			isWordadsInstantActivationEligible( selectedSite ) ? (
+			isWordadsInstantActivationEligible( selectedSite, canUserActivateWordads ) ? (
 				<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />
 			) : null,
 		];
 	}
 
 	getPremiumFeatures() {
-		const { selectedSite, planHasDomainCredit } = this.props;
+		const { selectedSite, planHasDomainCredit, canUserActivateWordads } = this.props;
 
 		return [
 			<CustomDomain
@@ -110,7 +111,7 @@ class ProductPurchaseFeaturesList extends Component {
 			<GoogleVouchers selectedSite={ selectedSite } key="googleVouchersFeature" />,
 			<CustomizeTheme selectedSite={ selectedSite } key="customizeThemeFeature" />,
 			<VideoAudioPosts selectedSite={ selectedSite } key="videoAudioPostsFeature" />,
-			isWordadsInstantActivationEligible( selectedSite ) ? (
+			isWordadsInstantActivationEligible( selectedSite, canUserActivateWordads ) ? (
 				<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />
 			) : null,
 		];
@@ -227,6 +228,7 @@ export default connect(
 		return {
 			selectedSite,
 			planHasDomainCredit: hasDomainCredit( state, selectedSiteId ),
+			canUserActivateWordads: canCurrentUser( state, selectedSiteId, 'activate_wordads' ),
 		};
 	},
 	{

@@ -4,7 +4,6 @@
  * Internal dependencies
  */
 
-import { userCan } from 'lib/site/utils';
 import { isBusiness, isPremium } from 'lib/products-values';
 
 /**
@@ -12,27 +11,23 @@ import { isBusiness, isPremium } from 'lib/products-values';
  * @param  {Site} site Site object
  * @return {boolean}      true if site has WordAds access
  */
-export function canAccessWordads( site ) {
+export function canAccessWordads( site, canUserManageOptions, canUserActivateWordads ) {
 	if ( site ) {
-		if ( isWordadsInstantActivationEligible( site ) ) {
+		if ( isWordadsInstantActivationEligible( site, canUserActivateWordads ) ) {
 			return true;
 		}
 
 		const jetpackPremium = site.jetpack && ( isPremium( site.plan ) || isBusiness( site.plan ) );
-		return (
-			site.options &&
-			( site.options.wordads || jetpackPremium ) &&
-			userCan( 'manage_options', site )
-		);
+		return site.options && ( site.options.wordads || jetpackPremium ) && canUserManageOptions;
 	}
 
 	return false;
 }
 
-export function isWordadsInstantActivationEligible( site ) {
+export function isWordadsInstantActivationEligible( site, canUserActivateWordads ) {
 	if (
 		( isBusiness( site.plan ) || isPremium( site.plan ) ) &&
-		userCan( 'activate_wordads', site ) &&
+		canUserActivateWordads &&
 		! site.jetpack
 	) {
 		return true;

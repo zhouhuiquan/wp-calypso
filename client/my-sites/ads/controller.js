@@ -59,12 +59,16 @@ export default {
 
 		context.store.dispatch( setTitle( layoutTitle ) ); // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 
-		if ( ! canCurrentUser( state, siteId, 'manage_options' ) ) {
+		const canUserManageOptions = canCurrentUser( state, siteId, 'manage_options' );
+
+		if ( ! canUserManageOptions ) {
 			page.redirect( '/stats' + pathSuffix );
 			return;
 		}
 
-		if ( ! canAccessWordads( site ) ) {
+		const canUserActivateWordads = canCurrentUser( state, siteId, 'activate_wordads' );
+
+		if ( ! canAccessWordads( site, canUserManageOptions, canUserActivateWordads ) ) {
 			page.redirect( '/stats' + pathSuffix );
 			return;
 		}

@@ -8,6 +8,7 @@ import { find } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'i18n-calypso';
+import { connect } from 'react-redux';
 
 /**
  * Internal dependencies
@@ -21,8 +22,16 @@ import { isPremium, isGoogleApps } from 'lib/products-values';
 import paths from 'lib/paths';
 import PurchaseDetail from 'components/purchase-detail';
 import QuerySiteVouchers from 'components/data/query-site-vouchers';
+import { canCurrentUser } from 'state/selectors';
+import { getSelectedSite } from 'state/ui/selectors';
 
-const PremiumPlanDetails = ( { selectedSite, sitePlans, selectedFeature, purchases } ) => {
+const PremiumPlanDetails = ( {
+	selectedSite,
+	sitePlans,
+	selectedFeature,
+	purchases,
+	canUserActivateWordads,
+} ) => {
 	const adminUrl = selectedSite.URL + '/wp-admin/';
 	const customizerInAdmin =
 		adminUrl + 'customize.php?return=' + encodeURIComponent( window.location.href );
@@ -86,7 +95,7 @@ const PremiumPlanDetails = ( { selectedSite, sitePlans, selectedFeature, purchas
 				buttonText={ i18n.translate( 'Start a new post' ) }
 				href={ paths.newPost( selectedSite ) }
 			/>
-			{ isWordadsInstantActivationEligible( selectedSite ) && (
+			{ isWordadsInstantActivationEligible( selectedSite, canUserActivateWordads ) && (
 				<PurchaseDetail
 					icon={ <img src="/calypso/images/upgrades/word-ads.svg" /> }
 					title={ i18n.translate( 'Easily monetize your site' ) }
@@ -108,4 +117,12 @@ PremiumPlanDetails.propTypes = {
 	sitePlans: PropTypes.object.isRequired,
 };
 
-export default PremiumPlanDetails;
+export default connect( ( state, { selectedSite = getSelectedSite( state ) } ) => {
+	const siteId = selectedSite.ID;
+
+	const canUserActivateWordads = canCurrentUser( state, siteId, 'activate_wordads' );
+
+	return {
+		canUserActivateWordads,
+	};
+} )( PremiumPlanDetails );

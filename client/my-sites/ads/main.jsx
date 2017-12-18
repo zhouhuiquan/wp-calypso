@@ -36,6 +36,7 @@ import QueryWordadsStatus from 'components/data/query-wordads-status';
 import { isSiteWordadsUnsafe, isRequestingWordadsStatus } from 'state/wordads/status/selectors';
 import { wordadsUnsafeValues } from 'state/wordads/status/schema';
 import { getSelectedSite, getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
+import { canCurrentUser } from 'state/selectors';
 
 class AdsMain extends Component {
 	static propTypes = {
@@ -59,10 +60,10 @@ class AdsMain extends Component {
 	}
 
 	getFilters() {
-		const { site, siteSlug, translate } = this.props;
+		const { site, siteSlug, translate, canUserManageOptions, canUserActivateWordads } = this.props;
 		const pathSuffix = siteSlug ? '/' + siteSlug : '';
 
-		return canAccessWordads( site )
+		return canAccessWordads( site, canUserManageOptions, canUserActivateWordads )
 			? [
 					{
 						title: translate( 'Earnings' ),
@@ -191,7 +192,7 @@ class AdsMain extends Component {
 	}
 
 	render() {
-		const { translate } = this.props;
+		const { translate, canUserActivateWordads } = this.props;
 		let component = this.getComponent( this.props.section );
 		let notice = null;
 
@@ -203,7 +204,7 @@ class AdsMain extends Component {
 			);
 		} else if (
 			! this.props.site.options.wordads &&
-			isWordadsInstantActivationEligible( this.props.site )
+			isWordadsInstantActivationEligible( this.props.site, canUserActivateWordads )
 		) {
 			component = this.renderInstantActivationToggle( component );
 		}
@@ -246,6 +247,8 @@ const mapStateToProps = state => {
 		wordAdsSuccess: getWordAdsSuccessForSite( state, site ),
 		isUnsafe: isSiteWordadsUnsafe( state, siteId ),
 		isRequestingWordadsStatus: isRequestingWordadsStatus( state, siteId ),
+		canUserManageOptions: canCurrentUser( state, siteId, 'manage_options' ),
+		canUserActivateWordads: canCurrentUser( state, siteId, 'activate_wordads' ),
 	};
 };
 
