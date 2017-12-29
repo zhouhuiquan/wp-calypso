@@ -267,10 +267,7 @@ class DeleteUser extends React.PureComponent {
 	};
 
 	render() {
-		// A user should not be able to remove themself.
-		if ( ! this.props.isJetpack && this.props.user.ID === this.props.currentUser.ID ) {
-			return null;
-		}
+		// A Jetpack user should not be able to remove themself.
 		if ( this.props.isJetpack && this.props.user.linked_user_ID === this.props.currentUser.ID ) {
 			return null;
 		}
