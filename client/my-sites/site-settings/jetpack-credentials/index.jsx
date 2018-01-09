@@ -13,7 +13,7 @@ import CompactCard from 'components/card/compact';
 import CredentialsSetupFlow from './credentials-setup-flow/index';
 import CredentialsConfigured from './credentials-configured/index';
 import Gridicon from 'gridicons';
-import QueryRewindStatus from 'components/data/query-rewind-status';
+import QueryRewindState from 'components/data/query-rewind-state';
 import QueryJetpackCredentials from 'components/data/query-jetpack-credentials';
 import { isRewindActive } from 'state/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
@@ -56,7 +56,7 @@ class Backups extends Component {
 
 		return (
 			<div className="jetpack-credentials">
-				<QueryRewindStatus siteId={ this.props.siteId } />
+				<QueryRewindState siteId={ this.props.siteId } />
 				<QueryJetpackCredentials siteId={ this.props.siteId } />
 				{ isRewindActive && (
 					<CompactCard className="jetpack-credentials__header">

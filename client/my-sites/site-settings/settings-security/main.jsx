@@ -25,7 +25,7 @@ import JetpackMonitor from 'my-sites/site-settings/form-jetpack-monitor';
 import JetpackManageErrorPage from 'my-sites/jetpack-manage-error-page';
 import Placeholder from 'my-sites/site-settings/placeholder';
 import Backups from 'my-sites/site-settings/jetpack-credentials';
-import QueryRewindStatus from 'components/data/query-rewind-status';
+import QueryRewindState from 'components/data/query-rewind-state';
 
 const SiteSettingsSecurity = ( { rewindActive, site, siteId, siteIsJetpack, translate } ) => {
 	if ( ! site ) {
@@ -63,7 +63,7 @@ const SiteSettingsSecurity = ( { rewindActive, site, siteId, siteIsJetpack, tran
 
 	return (
 		<Main className="settings-security__main site-settings">
-			<QueryRewindStatus siteId={ siteId } />
+			<QueryRewindState siteId={ siteId } />
 			<DocumentHead title={ translate( 'Site Settings' ) } />
 			<JetpackDevModeNotice />
 			<SidebarNavigation />
