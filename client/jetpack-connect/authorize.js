@@ -102,9 +102,9 @@ export class JetpackAuthorize extends Component {
 	retryingAuth = false;
 
 	componentWillMount() {
-		const { recordTracksEvent } = this.props;
+		const { recordTracksEvent, siteSlug } = this.props;
 		recordTracksEvent( 'calypso_jpc_authorize_form_view' );
-		recordTracksEvent( 'calypso_jpc_auth_view' );
+		recordTracksEvent( 'calypso_jpc_auth_view', { site: siteSlug } );
 
 		if ( this.shouldAutoAuthorize() ) {
 			debug( 'Authorizing automatically on component mount' );
