@@ -3,7 +3,6 @@
 /**
  * External dependencies
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { partial } from 'lodash';
@@ -19,6 +18,8 @@ import SelectDropdown from 'components/select-dropdown';
 import DropdownItem from 'components/select-dropdown/item';
 import ClipboardButtonInput from 'components/clipboard-button-input';
 import { recordTracksEvent } from 'state/analytics/actions';
+import { getSelectedSiteId, getSectionName } from 'state/ui/selectors';
+import { getEditorPostId } from 'state/ui/editor/selectors';
 
 const possibleDevices = [ 'computer', 'tablet', 'phone' ];
 
@@ -93,11 +94,13 @@ class PreviewToolbar extends Component {
 			showEdit,
 			showExternal,
 			showSEO,
+			isEditorShowing,
 			translate,
 		} = this.props;
 
 		const selectedDevice = this.devices[ currentDevice ];
-		const devicesToShow = showSEO ? possibleDevices.concat( 'seo' ) : possibleDevices;
+		const devicesToShow =
+			showSEO && isEditorShowing ? possibleDevices.concat( 'seo' ) : possibleDevices;
 
 		return (
 			<div className="web-preview__toolbar">
@@ -169,6 +172,16 @@ class PreviewToolbar extends Component {
 	}
 }
 
-export default connect( null, {
+function mapStateToProps( state ) {
+	const siteId = getSelectedSiteId( state );
+	const postId = getEditorPostId( state );
+	const isEditorShowing = 'post-editor' === getSectionName( state );
+
+	return {
+		isEditorShowing: siteId && postId && isEditorShowing,
+	};
+}
+
+export default connect( mapStateToProps, {
 	recordTracksEvent,
 } )( localize( PreviewToolbar ) );
