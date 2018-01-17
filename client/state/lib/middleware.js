@@ -46,13 +46,13 @@ const globalKeyBoardShortcutsEnabled = config.isEnabled( 'keyboard-shortcuts' );
 let globalKeyboardShortcuts;
 
 if ( globalKeyBoardShortcutsEnabled ) {
-	globalKeyboardShortcuts = require( 'lib/keyboard-shortcuts/global' )();
+	globalKeyboardShortcuts = require( 'lib/keyboard-shortcuts/global' ).default();
 }
 
 const desktopEnabled = config.isEnabled( 'desktop' );
 let desktop;
 if ( desktopEnabled ) {
-	desktop = require( 'lib/desktop' );
+	desktop = require( 'lib/desktop' ).default;
 }
 
 /*

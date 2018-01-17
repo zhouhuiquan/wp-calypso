@@ -207,7 +207,7 @@ export function setupMiddlewares( currentUser, reduxStore ) {
 		} );
 	}
 
-	require( 'my-sites' )();
+	require( 'my-sites' ).default();
 
 	const state = reduxStore.getState();
 	if ( config.isEnabled( 'happychat' ) ) {
@@ -218,7 +218,7 @@ export function setupMiddlewares( currentUser, reduxStore ) {
 	}
 
 	if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
-		require( 'lib/keyboard-shortcuts/global' )();
+		require( 'lib/keyboard-shortcuts/global' ).default();
 	}
 
 	if ( config.isEnabled( 'desktop' ) ) {
