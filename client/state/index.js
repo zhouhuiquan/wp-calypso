@@ -7,6 +7,7 @@
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { reducer as form } from 'redux-form';
+import { mapValues } from 'lodash';
 
 /**
  * Internal dependencies
@@ -17,7 +18,7 @@ import activityLog from './activity-log/reducer';
 import analyticsTracking from './analytics/reducer';
 import navigationMiddleware from './navigation/middleware';
 import noticesMiddleware from './notices/middleware';
-// import extensionsModule from 'extensions';
+import extensionsModule from 'extensions';
 import application from './application/reducer';
 import accountRecovery from './account-recovery/reducer';
 import automatedTransfer from './automated-transfer/reducer';
@@ -89,7 +90,12 @@ import config from 'config';
  */
 
 // Consolidate the extension reducers under 'extensions' for namespacing.
-// const extensions = combineReducers( extensionsModule.reducers() );
+console.error(
+	extensionsModule,
+	extensionsModule.reducers(),
+	mapValues( extensionsModule.reducers(), 'default' )
+);
+const extensions = combineReducers( mapValues( extensionsModule.reducers(), 'default' ) );
 
 const reducers = {
 	analyticsTracking,
@@ -108,7 +114,7 @@ const reducers = {
 	dataRequests,
 	documentHead,
 	domains,
-	// extensions,
+	extensions,
 	form,
 	geo,
 	googleAppsUsers,
