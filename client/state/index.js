@@ -90,12 +90,12 @@ import config from 'config';
  */
 
 // Consolidate the extension reducers under 'extensions' for namespacing.
-console.error(
-	extensionsModule,
-	extensionsModule.reducers(),
-	mapValues( extensionsModule.reducers(), 'default' )
+const extensions = combineReducers(
+	mapValues(
+		extensionsModule.reducers(),
+		reducer => ( reducer.default ? reducer.default : reducer )
+	)
 );
-const extensions = combineReducers( mapValues( extensionsModule.reducers(), 'default' ) );
 
 const reducers = {
 	analyticsTracking,
