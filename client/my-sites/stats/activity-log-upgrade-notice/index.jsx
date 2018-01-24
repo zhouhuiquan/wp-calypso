@@ -12,7 +12,6 @@ import { localize } from 'i18n-calypso';
 import QuerySitePlans from 'components/data/query-site-plans';
 import Banner from 'components/banner';
 import { getSelectedSiteSlug } from 'state/ui/selectors';
-import { isCurrentPlanPaid } from 'state/sites/selectors';
 
 class ActivityLogUpgradeNotice extends Component {
 	static propTypes = {
@@ -20,17 +19,12 @@ class ActivityLogUpgradeNotice extends Component {
 
 		// Connected props
 		siteSlug: PropTypes.string.isRequired,
-		hasPlan: PropTypes.bool.isRequired,
 
 		// localize
 		translate: PropTypes.func.isRequired,
 	};
 
 	render() {
-		if ( null === this.props.hasPlan || this.props.hasPlan ) {
-			return false;
-		}
-
 		const {
 			siteId,
 			siteSlug,
@@ -50,10 +44,7 @@ class ActivityLogUpgradeNotice extends Component {
 }
 
 export default connect(
-	( state, { siteId } ) => {
-		return {
-			siteSlug: getSelectedSiteSlug( state, siteId ),
-			hasPlan: isCurrentPlanPaid( state, siteId ),
-		};
-	}
+	( state, { siteId } ) => ( {
+		siteSlug: getSelectedSiteSlug( state, siteId ),
+	} )
 )( localize( ActivityLogUpgradeNotice ) );

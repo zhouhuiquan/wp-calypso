@@ -36,7 +36,7 @@ import StatsPeriodNavigation from 'my-sites/stats/stats-period-navigation';
 import SuccessBanner from '../activity-log-banner/success-banner';
 import { adjustMoment, getActivityLogQuery, getStartMoment } from './utils';
 import { getSelectedSiteId } from 'state/ui/selectors';
-import { getSiteSlug, getSiteTitle } from 'state/sites/selectors';
+import { getSiteSlug, getSiteTitle, isCurrentPlanPaid } from 'state/sites/selectors';
 import { recordTracksEvent, withAnalytics } from 'state/analytics/actions';
 import {
 	activityLogRequest,
@@ -225,6 +225,7 @@ class ActivityLog extends Component {
 		siteId: PropTypes.number,
 		siteTitle: PropTypes.string,
 		slug: PropTypes.string,
+		hasPlan: PropTypes.bool.isRequired,
 
 		// FIXME: Testing only
 		isPressable: PropTypes.bool,
@@ -461,6 +462,7 @@ class ActivityLog extends Component {
 			siteId,
 			slug,
 			translate,
+			hasPlan,
 		} = this.props;
 
 		if ( false === canViewActivityLog ) {
@@ -511,7 +513,7 @@ class ActivityLog extends Component {
 				<StatsFirstView />
 				<SidebarNavigation />
 				<StatsNavigation selectedItem={ 'activity' } siteId={ siteId } slug={ slug } />
-				{ siteId && <ActivityLogUpgradeNotice siteId={ siteId } /> }
+				{ siteId && ! hasPlan && <ActivityLogUpgradeNotice siteId={ siteId } /> }
 				{ 'awaitingCredentials' === rewindState.state && (
 					<Banner
 						icon="history"
@@ -636,6 +638,7 @@ export default connect(
 			siteTitle: getSiteTitle( state, siteId ),
 			slug: getSiteSlug( state, siteId ),
 			timezone,
+			hasPlan: isCurrentPlanPaid( state, siteId ),
 
 			// FIXME: Testing only
 			isPressable: get( state.activityLog.rewindStatus, [ siteId, 'isPressable' ], null ),
