@@ -25,6 +25,12 @@ module.exports = {
 		camelcase: 0, // REST API objects include underscores
 		'jest/valid-expect': 0,
 		'jsx-a11y/anchor-has-content': 0, // i18n-calypso translate triggers false failures
+		'jsx-a11y/label-has-for': [ 2, {
+			components: [ 'FormLabel', 'ScreenReaderLabel' ],
+			required: {
+				some: [ 'nesting', 'id' ],
+			},
+		} ],
 		'max-len': [ 2, { code: 140 } ],
 		'no-restricted-imports': [ 2, 'lib/sites-list', 'lib/mixins/data-observe' ],
 		'no-restricted-modules': [ 2, 'lib/sites-list', 'lib/mixins/data-observe' ],
