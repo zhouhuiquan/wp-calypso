@@ -33,6 +33,7 @@ import {
 import OrderAddItems from './add-items';
 import OrderLineItem from './line-item';
 import OrderTotalRow from './row-total';
+import ScreenReaderLabel from 'components/screen-reader-text/label';
 import ScreenReaderText from 'components/screen-reader-text';
 import Table from 'woocommerce/components/table';
 import TableRow from 'woocommerce/components/table/table-row';
@@ -152,11 +153,9 @@ class OrderDetailsTable extends Component {
 		if ( isEditing ) {
 			return (
 				<Fragment>
-					<ScreenReaderText>
-						<label htmlFor={ inputId }>
-							{ translate( 'Quantity of %(item)s', { args: { item: item.name } } ) }
-						</label>
-					</ScreenReaderText>
+					<ScreenReaderLabel htmlFor={ inputId }>
+						{ translate( 'Quantity of %(item)s', { args: { item: item.name } } ) }
+					</ScreenReaderLabel>
 					<FormTextInput
 						type="number"
 						id={ inputId }

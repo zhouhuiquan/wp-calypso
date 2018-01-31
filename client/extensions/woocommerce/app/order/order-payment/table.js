@@ -23,7 +23,7 @@ import { getOrderFeeCost, getOrderRefundTotal } from 'woocommerce/lib/order-valu
 import OrderLineItem from '../order-details/line-item';
 import OrderTotalRow from '../order-details/row-total';
 import PriceInput from 'woocommerce/components/price-input';
-import ScreenReaderText from 'components/screen-reader-text';
+import ScreenReaderLabel from 'components/screen-reader-text/label';
 import Table from 'woocommerce/components/table';
 import TableRow from 'woocommerce/components/table/table-row';
 import TableItem from 'woocommerce/components/table/table-item';
@@ -155,11 +155,9 @@ class OrderRefundTable extends Component {
 		const inputId = `quantity-${ item.id }`;
 		return (
 			<OrderLineItem key={ item.id } isEditing item={ item } order={ order } site={ site }>
-				<ScreenReaderText>
-					<label htmlFor={ inputId }>
-						{ translate( 'Quantity of %(item)s', { args: { item: item.name } } ) }
-					</label>
-				</ScreenReaderText>
+				<ScreenReaderLabel htmlFor={ inputId }>
+					{ translate( 'Quantity of %(item)s', { args: { item: item.name } } ) }
+				</ScreenReaderLabel>
 				<FormTextInput
 					type="number"
 					id={ inputId }
@@ -190,11 +188,9 @@ class OrderRefundTable extends Component {
 					</span>
 				</TableItem>
 				<TableItem colSpan="2" className="order-payment__item-total order-details__item-total">
-					<ScreenReaderText>
-						<label htmlFor={ inputId }>
-							{ translate( 'Value of fee %(item)s', { args: { item: item.name } } ) }
-						</label>
-					</ScreenReaderText>
+					<ScreenReaderLabel htmlFor={ inputId }>
+						{ translate( 'Value of fee %(item)s', { args: { item: item.name } } ) }
+					</ScreenReaderLabel>
 					<PriceInput
 						id={ inputId }
 						currency={ order.currency }
