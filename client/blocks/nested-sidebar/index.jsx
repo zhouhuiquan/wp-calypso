@@ -9,31 +9,36 @@ import { get } from 'lodash';
 /**
  * internal dependencies
  */
-import { getRouteData, getRouteComponent } from './docs/access';
-import NestedSidebarLink from './nested-sidebar-link';
+import { getRouteComponent } from './docs/access';
+import Transitioner from 'components/transitioner';
 
 export class NestedSidebar extends Component {
 	render() {
-		const { route } = this.props;
+		const { route, transition } = this.props;
 
+		const transitioningRoute = get( transition, 'route' );
+		const transitionDirection = get( transition, 'direction' );
+
+		const TransitioningComponent = transitioningRoute && getRouteComponent( transitioningRoute );
 		const SidebarComponent = getRouteComponent( route );
-		const parentRoute = getRouteData( route ).parent;
 
 		return (
-			<div>
-				<div style={ { border: '1px solid black', padding: '10px 15px' } }>
-					{ parentRoute ? (
-						<NestedSidebarLink route={ parentRoute }>Back</NestedSidebarLink>
-					) : (
-						<p>No Parent Route</p>
-					) }
-					{ SidebarComponent && <SidebarComponent /> }
-				</div>
+			<div className="nested-sidebar">
+				{
+					<Transitioner
+						direction={ transitionDirection }
+						IncomingComponent={ TransitioningComponent }
+					>
+						{ SidebarComponent && <SidebarComponent /> }
+					</Transitioner>
+				}
 			</div>
 		);
 	}
 }
 
 export default connect( state => ( {
-	route: get( state, 'sidebar.route' ) || 'settings',
+	// @TODO: Create/Use proper selectors for these.
+	route: get( state, 'sidebar.route' ),
+	transition: get( state, 'sidebar.transition' ) || {},
 } ) )( NestedSidebar );

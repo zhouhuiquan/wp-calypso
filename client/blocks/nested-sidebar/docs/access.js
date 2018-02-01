@@ -8,6 +8,10 @@ import DiscussionExample from './example-components/discussion';
 import DomainsManageExample from './example-components/domains-manage';
 import DomainUpgradesExample from './example-components/domains-upgrades';
 
+import MainSidebar from 'my-sites/sidebar/wrapper';
+
+console.log( { MainSidebar})
+
 const sidebarRouteData = {};
 
 export const isValidRouteData = data => has( data, 'component' );
@@ -26,10 +30,20 @@ export const setRouteData = ( route, data ) =>
 		: false;
 
 // ==============
+// This wouldn't normally be done here...
+// This file is mostly just a hodge-podge version of what should be selectors, actions and implementations of those actions
+
+// setRouteData(
+// 	'test', {
+// 		parent: null,
+// 		something: 'else',
+// 		component: MainSidebar,
+// 	}
+// );
 
 setRouteData(
 	'settings', {
-		parent: null,
+		parent: 'root',
 		component: SettingsExample,
 	}
 );

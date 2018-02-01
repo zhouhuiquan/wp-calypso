@@ -4,9 +4,12 @@
  */
 import React from 'react';
 
+import NestedSidebarParentLink from '../../nested-sidebar-parent-link';
+
 export const DiscussionExample = () => (
 	<div>
 		<h4>Discussion</h4>
+		<NestedSidebarParentLink route="settings/discussion">Back</NestedSidebarParentLink>
 		<ul>
 			<li>Link 1</li>
 			<li>Link 2</li>

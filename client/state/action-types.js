@@ -9,7 +9,10 @@
  *  - https://wpcalypso.wordpress.com/devdocs/docs/our-approach-to-data.md#actions
  */
 
+// @TODO: reorder once we settle on the action names
 export const SIDEBAR_ROUTE_SET = 'SIDEBAR_ROUTE_SET';
+export const SIDEBAR_ROUTE_TRANSITION_SET = 'SIDEBAR_ROUTE_TRANSITION_SET';
+export const SIDEBAR_ROUTE_TRANSITION_DONE = 'SIDEBAR_ROUTE_TRANSITION_DONE';
 
 export const ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR = 'ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR';
 export const ACCOUNT_RECOVERY_RESET_OPTIONS_RECEIVE = 'ACCOUNT_RECOVERY_RESET_OPTIONS_RECEIVE';
