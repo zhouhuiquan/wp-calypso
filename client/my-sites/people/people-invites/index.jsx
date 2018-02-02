@@ -22,7 +22,8 @@ import QuerySiteInvites from 'components/data/query-site-invites';
 import InvitesListEnd from './invites-list-end';
 import {
 	isRequestingInvitesForSite,
-	getInvitesForSite,
+	getPendingInvitesForSite,
+	getAcceptedInvitesForSite,
 	getNumberOfInvitesFoundForSite,
 } from 'state/invites/selectors';
 
@@ -109,9 +110,12 @@ class PeopleInvites extends React.PureComponent {
 export default connect( ( state, ownProps ) => {
 	const siteId = ownProps.site && ownProps.site.ID;
 
+	const pendingInvites = getPendingInvitesForSite( state, siteId ) || [];
+	const acceptedInvites = getAcceptedInvitesForSite( state, siteId ) || [];
+
 	return {
 		requesting: isRequestingInvitesForSite( state, siteId ),
-		invites: getInvitesForSite( state, siteId ),
+		invites: pendingInvites.concat( acceptedInvites ),
 		invitesFound: getNumberOfInvitesFoundForSite( state, siteId ),
 	};
 } )( localize( PeopleInvites ) );

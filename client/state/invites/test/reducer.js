@@ -50,7 +50,7 @@ describe( 'reducer', () => {
 	} );
 
 	describe( '#items()', () => {
-		test( 'should key invites by site ID', () => {
+		test( 'should key invites by site ID and pending/accepted status', () => {
 			const state = items(
 				{},
 				{
@@ -69,43 +69,74 @@ describe( 'reducer', () => {
 									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
 							},
 						},
+						{
+							invite_key: 'jkl789asd12345',
+							role: 'subscriber',
+							is_pending: false,
+							user: {
+								login: 'grilledchicken',
+								email: false,
+								name: 'Pollo Asado',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
+						},
 					],
 				}
 			);
 			expect( state ).to.eql( {
-				12345: [
-					{
-						key: '123456asdf789',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'chicken',
-							email: false,
-							name: 'Pollo',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+				12345: {
+					pending: [
+						{
+							key: '123456asdf789',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'chicken',
+								email: false,
+								name: 'Pollo',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
+					],
+					accepted: [
+						{
+							key: 'jkl789asd12345',
+							role: 'subscriber',
+							isPending: false,
+							user: {
+								login: 'grilledchicken',
+								email: false,
+								name: 'Pollo Asado',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
+						},
+					],
+				},
 			} );
 		} );
 
 		test( 'should accumulate sites', () => {
 			const original = {
-				12345: [
-					{
-						key: '123456asdf789',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'chicken',
-							email: false,
-							name: 'Pollo',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+				12345: {
+					pending: [
+						{
+							key: '123456asdf789',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'chicken',
+								email: false,
+								name: 'Pollo',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
+					],
+					accepted: [],
+				},
 			};
 			const state = items( original, {
 				type: INVITES_REQUEST_SUCCESS,
@@ -126,53 +157,75 @@ describe( 'reducer', () => {
 				],
 			} );
 			expect( state ).to.eql( {
-				12345: [
-					{
-						key: '123456asdf789',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'chicken',
-							email: false,
-							name: 'Pollo',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+				12345: {
+					pending: [
+						{
+							key: '123456asdf789',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'chicken',
+								email: false,
+								name: 'Pollo',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
-				67890: [
-					{
-						key: '9876fdas54321',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'celery',
-							email: false,
-							name: 'Apio',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/e2c5df270c7adcd0f6a70fa9cfde7d0f?s=96&d=identicon&r=G',
+					],
+					accepted: [],
+				},
+				67890: {
+					pending: [
+						{
+							key: '9876fdas54321',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'celery',
+								email: false,
+								name: 'Apio',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/e2c5df270c7adcd0f6a70fa9cfde7d0f?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
+					],
+					accepted: [],
+				},
 			} );
 		} );
 
 		test( 'should persist state', () => {
 			const original = deepFreeze( {
-				12345: [
-					{
-						key: '123456asdf789',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'chicken',
-							email: false,
-							name: 'Pollo',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+				12345: {
+					pending: [
+						{
+							key: '123456asdf789',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'chicken',
+								email: false,
+								name: 'Pollo',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
+					],
+					accepted: [
+						{
+							key: 'jkl789asd12345',
+							role: 'subscriber',
+							isPending: false,
+							user: {
+								login: 'grilledchicken',
+								email: false,
+								name: 'Pollo Asado',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
+						},
+					],
+				},
 			} );
 			const state = items( original, { type: SERIALIZE } );
 
@@ -181,20 +234,36 @@ describe( 'reducer', () => {
 
 		test( 'should load valid persisted state', () => {
 			const original = deepFreeze( {
-				12345: [
-					{
-						key: '123456asdf789',
-						role: 'follower',
-						isPending: true,
-						user: {
-							login: 'chicken',
-							email: false,
-							name: 'Pollo',
-							avatar_URL:
-								'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+				12345: {
+					pending: [
+						{
+							key: '123456asdf789',
+							role: 'follower',
+							isPending: true,
+							user: {
+								login: 'chicken',
+								email: false,
+								name: 'Pollo',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
 						},
-					},
-				],
+					],
+					accepted: [
+						{
+							key: 'jkl789asd12345',
+							role: 'subscriber',
+							isPending: false,
+							user: {
+								login: 'grilledchicken',
+								email: false,
+								name: 'Pollo Asado',
+								avatar_URL:
+									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+							},
+						},
+					],
+				},
 			} );
 			const state = items( original, { type: DESERIALIZE } );
 
@@ -208,21 +277,24 @@ describe( 'reducer', () => {
 
 			test( 'should not load invalid persisted state (1)', () => {
 				const original = deepFreeze( {
-					12345: [
-						{
-							key: '123456asdf789',
-							role: 'follower',
-							isPending: true,
-							user: {
-								login: 'chicken',
-								email: false,
-								name: 'Pollo',
-								avatar_URL:
-									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+					12345: {
+						pending: [
+							{
+								key: '123456asdf789',
+								role: 'follower',
+								isPending: true,
+								user: {
+									login: 'chicken',
+									email: false,
+									name: 'Pollo',
+									avatar_URL:
+										'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+								},
+								hasExtraInvalidProperty: true,
 							},
-							hasExtraInvalidProperty: true,
-						},
-					],
+						],
+						accepted: [],
+					},
 				} );
 				const state = items( original, { type: DESERIALIZE } );
 
@@ -231,20 +303,41 @@ describe( 'reducer', () => {
 
 			test( 'should not load invalid persisted state (2)', () => {
 				const original = deepFreeze( {
-					12345: [
-						{
-							key: '123456asdf789',
-							role: 'follower',
-							isPending: null,
-							user: {
-								login: 'chicken',
-								email: false,
-								name: 'Pollo',
-								avatar_URL:
-									'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+					12345: {
+						pending: [],
+						accepted: [
+							{
+								key: '123456asdf789',
+								role: 'follower',
+								isPending: null,
+								user: {
+									login: 'chicken',
+									email: false,
+									name: 'Pollo',
+									avatar_URL:
+										'https://2.gravatar.com/avatar/eba3ff8480f481053bbd52b2a08c6136?s=96&d=identicon&r=G',
+								},
 							},
-						},
-					],
+						],
+					},
+				} );
+				const state = items( original, { type: DESERIALIZE } );
+
+				expect( state ).to.eql( {} );
+			} );
+
+			test( 'should not load invalid persisted state (3)', () => {
+				const original = deepFreeze( {
+					12345: { pending: [] /* accepted: missing */ },
+				} );
+				const state = items( original, { type: DESERIALIZE } );
+
+				expect( state ).to.eql( {} );
+			} );
+
+			test( 'should not load invalid persisted state (4)', () => {
+				const original = deepFreeze( {
+					12345: { pending: [], accepted: [], fileNotFound: [] },
 				} );
 				const state = items( original, { type: DESERIALIZE } );
 

@@ -53,19 +53,30 @@ export const items = createReducer(
 	{},
 	{
 		[ INVITES_REQUEST_SUCCESS ]: ( state, action ) => {
+			// Invites are returned from the API in descending order by
+			// `invite_date`, which is what we want here.
+
+			const siteInvites = { pending: [], accepted: [] };
+			action.invites.forEach( invite => {
+				// Not renaming `avatar_URL` because it is used as-is by <Gravatar>
+				const user = pick( invite.user, 'login', 'email', 'name', 'avatar_URL' );
+				const inviteForState = {
+					key: invite.invite_key,
+					role: invite.role,
+					isPending: invite.is_pending,
+					user,
+				};
+
+				if ( inviteForState.isPending ) {
+					siteInvites.pending.push( inviteForState );
+				} else {
+					siteInvites.accepted.push( inviteForState );
+				}
+			} );
+
 			return {
 				...state,
-				[ action.siteId ]: action.invites.map( invite => {
-					// Not renaming `avatar_URL` because it is used as-is by <Gravatar>
-					const user = pick( invite.user, 'login', 'email', 'name', 'avatar_URL' );
-
-					return {
-						key: invite.invite_key,
-						role: invite.role,
-						isPending: invite.is_pending,
-						user,
-					};
-				} ),
+				[ action.siteId ]: siteInvites,
 			};
 		},
 	},
