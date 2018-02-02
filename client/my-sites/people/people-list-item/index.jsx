@@ -88,8 +88,6 @@ class PeopleListItem extends React.PureComponent {
 
 		return (
 			<div className={ className }>
-				{ ! isPending && <Gridicon icon="checkmark" size={ 18 } /> }
-				{ isPending ? translate( 'Pending' ) : translate( 'Accepted' ) }
 				{ isPending && (
 					<Button
 						className={ buttonClassName }
