@@ -58,6 +58,20 @@ export const items = createReducer(
 
 			const siteInvites = { pending: [], accepted: [] };
 			action.invites.forEach( invite => {
+				switch ( window.inviteStatus ) {
+					case 'pending':
+						// Show all invites as pending
+						invite.is_pending = true;
+						break;
+					case 'accepted':
+						// Show all invites as accepted
+						invite.is_pending = false;
+						break;
+					case 'none':
+						// Don't show any invites at all
+						return;
+				}
+
 				// Not renaming `avatar_URL` because it is used as-is by <Gravatar>
 				const user = pick( invite.user, 'login', 'email', 'name', 'avatar_URL' );
 				const inviteForState = {

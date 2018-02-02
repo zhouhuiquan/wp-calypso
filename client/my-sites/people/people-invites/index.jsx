@@ -52,6 +52,10 @@ class PeopleInvites extends React.PureComponent {
 	}
 
 	renderInvitesList() {
+		if ( window.inviteStatus === 'loading' ) {
+			return this.renderPlaceholder();
+		}
+
 		const {
 			acceptedInvites,
 			pendingInvites,
