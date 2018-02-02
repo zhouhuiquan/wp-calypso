@@ -101,6 +101,15 @@ KeyBindings.prototype.get = function() {
 				},
 			},
 			{
+				eventName: 'open-site-selector',
+				keys: [ 'g', 'w' ],
+				type: 'sequence',
+				description: {
+					keys: [ 'g', 'w' ],
+					text: i18n.translate( 'Switch Site' ),
+				},
+			},
+			{
 				eventName: 'go-to-stats',
 				keys: [ 'g', 's' ],
 				type: 'sequence',
