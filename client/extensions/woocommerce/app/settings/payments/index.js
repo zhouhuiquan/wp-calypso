@@ -114,6 +114,11 @@ class SettingsPayments extends Component {
 				label: translate( 'Offline' ),
 				description: translate( 'Take payments in-person.' ),
 			},
+			{
+				methodType: 'other',
+				label: translate( 'Other' ),
+				description: translate( 'And the rest' ),
+			},
 		];
 
 		return <div>{ paymentSections.map( this.renderPaymentSection ) }</div>;

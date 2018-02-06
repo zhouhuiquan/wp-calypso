@@ -13,5 +13,5 @@ import detailsMappings from './details-mappings';
  * @return {Object} Method additional details.
  */
 export default function getPaymentMethodDetails( methodId ) {
-	return detailsMappings[ methodId ] || {};
+	return detailsMappings[ methodId ] || { methodType: 'other' };
 }
