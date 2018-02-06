@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import { isArray } from 'lodash';
+import striptags from 'striptags';
 
 /**
  * Internal dependencies
@@ -16,7 +17,9 @@ import Dialog from 'components/dialog';
 import FormFieldset from 'components/forms/form-fieldset';
 import FormLabel from 'components/forms/form-label';
 import FormPasswordInput from 'components/forms/form-password-input';
+import FormSectionHeading from 'components/forms/form-section-heading';
 import FormSelect from 'components/forms/form-select';
+import FormSettingExplanation from 'components/forms/form-setting-explanation';
 import FormTextInput from 'components/forms/form-text-input';
 import FormTextarea from 'components/forms/form-textarea';
 import PaymentMethodEditFormToggle from './payment-method-edit-form-toggle';
@@ -59,16 +62,21 @@ class PaymentMethodEdit extends Component {
 		if ( method.fields && isArray( method.fields ) && method.fields.indexOf( editField ) < 0 ) {
 			return;
 		}
+
 		const setting = method.settings[ editField ];
 		return (
 			<FormFieldset className="payments__method-edit-field-container" key={ editField }>
-				<FormLabel>{ setting.label }</FormLabel>
+				{ 'title' !== setting.type && <FormLabel>{ setting.label }</FormLabel> }
 				{ 'checkbox' === setting.type && this.renderEditCheckbox( setting ) }
 				{ 'email' === setting.type && this.renderEditTextbox( setting ) }
 				{ 'password' === setting.type && this.renderEditPassword( setting ) }
 				{ 'text' === setting.type && this.renderEditTextbox( setting ) }
 				{ 'textarea' === setting.type && this.renderEditTextarea( setting ) }
 				{ 'select' === setting.type && this.renderEditSelect( setting ) }
+				{ 'title' === setting.type && this.renderSectionTitle( setting ) }
+				{ setting.description && (
+					<FormSettingExplanation>{ setting.description }</FormSettingExplanation>
+				) }
 			</FormFieldset>
 		);
 	};
@@ -92,6 +100,12 @@ class PaymentMethodEdit extends Component {
 				} ) }
 			</FormSelect>
 		);
+	};
+
+	renderSectionTitle = setting => {
+		const strippedLabel = striptags( setting.label );
+
+		return <FormSectionHeading>{ strippedLabel }</FormSectionHeading>;
 	};
 
 	renderEditTextbox = setting => {
@@ -135,6 +149,7 @@ class PaymentMethodEdit extends Component {
 	render() {
 		const { method } = this.props;
 		const settingsFieldsKeys = method.settings && Object.keys( method.settings );
+
 		return (
 			<Dialog
 				additionalClassNames="payments__dialog woocommerce"
