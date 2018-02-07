@@ -68,6 +68,9 @@ hotReloader = {
 		} );
 
 		cssHotReloader( io );
+
+		// WBM announcements
+		global.wbmChannel = io.of( '/webpack-build-monitor' );
 	},
 
 	close: function() {
