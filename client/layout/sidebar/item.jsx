@@ -23,6 +23,7 @@ export default class extends React.Component {
 		className: PropTypes.string,
 		link: PropTypes.string.isRequired,
 		onNavigate: PropTypes.func,
+		hasNestedSidebar: PropTypes.bool,
 		icon: PropTypes.string,
 		selected: PropTypes.bool,
 		preloadSectionName: PropTypes.string,
@@ -60,7 +61,9 @@ export default class extends React.Component {
 				>
 					<Gridicon icon={ this.props.icon } size={ 24 } />
 					<span className="menu-link-text">{ this.props.label }</span>
-					{ showAsExternal && <Gridicon icon="external" size={ 24 } /> }
+					{ this.props.hasNestedSidebar && <Gridicon icon="chevron-right" size={ 24 } /> }
+					{ ! this.props.hasNestedSidebar &&
+						showAsExternal && <Gridicon icon="external" size={ 24 } /> }
 				</a>
 				{ this.props.children }
 			</li>

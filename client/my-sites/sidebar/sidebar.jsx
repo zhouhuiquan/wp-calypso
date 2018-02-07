@@ -482,6 +482,7 @@ export class MySitesSidebarX extends Component {
 					className={ this.itemLinkClass( '/settings', 'settings' ) }
 					link={ null && siteSettingsLink /* nestedSidebar link will handle this */ }
 					onNavigate={ this.onNavigate }
+					hasNestedSidebar={ true }
 					icon="cog"
 					preloadSectionName="settings"
 					tipTarget="settings"
