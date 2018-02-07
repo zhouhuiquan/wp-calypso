@@ -15,7 +15,7 @@
 
 	&.nested-sidebar__transition-right {
 		transition: all 0.2s ease-in-out;
-		transform: translate( -50% ); // start position, trans component is off to the right
+		transform: translate( -100% ); // start position, trans component is off to the right
 		position: relative;
 
 		.transitioning-component {

@@ -598,6 +598,20 @@ export class MySitesSidebarX extends Component {
 
 		return (
 			<div>
+				{ configuration ? (
+					<SidebarMenu>
+						<SidebarHeading>{ this.props.translate( 'Configure' ) }</SidebarHeading>
+						<ul>
+							{ this.ads() }
+							{ this.sharing() }
+							{ this.users() }
+							{ this.plugins() }
+							{ this.upgrades() }
+							{ this.siteSettings() }
+							{ this.wpAdmin() }
+						</ul>
+					</SidebarMenu>
+				) : null }
 				<SidebarMenu>
 					<ul>
 						{ this.preview() }
@@ -618,21 +632,6 @@ export class MySitesSidebarX extends Component {
 					<SidebarMenu>
 						<SidebarHeading>{ this.props.translate( 'Personalize' ) }</SidebarHeading>
 						<ul>{ this.themes() }</ul>
-					</SidebarMenu>
-				) : null }
-
-				{ configuration ? (
-					<SidebarMenu>
-						<SidebarHeading>{ this.props.translate( 'Configure' ) }</SidebarHeading>
-						<ul>
-							{ this.ads() }
-							{ this.sharing() }
-							{ this.users() }
-							{ this.plugins() }
-							{ this.upgrades() }
-							{ this.siteSettings() }
-							{ this.wpAdmin() }
-						</ul>
 					</SidebarMenu>
 				) : null }
 			</div>

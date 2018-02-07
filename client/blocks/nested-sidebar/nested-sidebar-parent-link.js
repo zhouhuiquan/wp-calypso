@@ -18,12 +18,12 @@ export class NestedSidebarParentLink extends Component {
 		const routeData = getRouteData( route );
 		const parentRoute = routeData.parent;
 
-		if ( ! parentRoute ) {
-			return null;
-		}
+		// if ( ! parentRoute ) {
+		// 	return null;
+		// }
 
 		return (
-			<NestedSidebarLink route={ parentRoute } direction="left">
+			<NestedSidebarLink route={ parentRoute || null } direction="left">
 				{ this.props.children }
 			</NestedSidebarLink>
 		);

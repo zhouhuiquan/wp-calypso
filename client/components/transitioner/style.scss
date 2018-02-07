@@ -8,8 +8,8 @@
 	}
 
 	&.transitioner__transition-right {
-		transition: all 2s ease-in-out;
-		transform: translate( -50% ); // start position, trans component is off to the right
+		transition: all 0.2s ease-in-out;
+		transform: translate( -100% ); // start position, trans component is off to the right
 		position: relative;
 
 		.transitioner__incoming {
@@ -18,7 +18,7 @@
 	}
 
 	&.transitioner__transition-left {
-		transition: all 2s ease-in-out;
+		transition: all 0.22s ease-in-out;
 		transform: translate( 100% ); // start position, trans component is off to the left
 
 		.transitioner__incoming {
