@@ -17,6 +17,8 @@ import ProductFormDetailsCard from './product-form-details-card';
 import ProductFormSimpleCard from './product-form-simple-card';
 import ProductFormVariationsCard from './product-form-variations-card';
 
+import ProductFormExtensionPOC from './product-form-extension-poc';
+
 export default class ProductForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
@@ -104,6 +106,12 @@ export default class ProductForm extends Component {
 						/>
 					</div>
 				) }
+
+				<ProductFormExtensionPOC
+					siteId={ siteId }
+					product={ product }
+					editProduct={ editProduct }
+				/>
 			</div>
 		);
 	}
