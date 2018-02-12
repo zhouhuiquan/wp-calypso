@@ -27,7 +27,6 @@ export class MySitesSidebar extends Component {
 		// I feel like a higher order component might be a better way... unsure.
 		setRouteData( 'root', {
 			parent: null,
-			something: 'else',
 			component: MySitesSidebarContent,
 		} );
 	}

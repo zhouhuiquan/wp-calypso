@@ -55,6 +55,8 @@ import { transferStates } from 'state/automated-transfer/constants';
 
 import NestedSidebarLink from 'blocks/nested-sidebar/nested-sidebar-link';
 
+import SettingsExample from 'blocks/nested-sidebar/docs/example-components/settings';
+
 /**
  * Module variables
  */
@@ -475,19 +477,57 @@ export class MySitesSidebarX extends Component {
 			return null;
 		}
 
+		// setRouteData(
+		// 	'settings', {
+		// 		parent: 'root',
+		// 		component: SettingsExample,
+		// 	}
+		// );
+
+		//<SidebarItem
+		//	label={ this.props.translate( 'Settings' ) }
+		//	className={ this.itemLinkClass( '/settings', 'settings' ) }
+		//	link={ null && siteSettingsLink /* nestedSidebar link will handle this */ }
+		//	onNavigate={ this.onNavigate }
+		//	icon="cog"
+		//	preloadSectionName="settings"
+		//	tipTarget="settings"
+		///>
+
 		return (
-			<NestedSidebarLink route="settings">
-				<SidebarItem
-					label={ this.props.translate( 'Settings' ) }
-					className={ this.itemLinkClass( '/settings', 'settings' ) }
-					link={ null && siteSettingsLink /* nestedSidebar link will handle this */ }
-					onNavigate={ this.onNavigate }
-					icon="cog"
-					preloadSectionName="settings"
-					tipTarget="settings"
-				/>
+			<NestedSidebarLink
+				route="settings"
+				parent="root"
+				component={ SettingsExample }
+			>
+				SETTINGS
 			</NestedSidebarLink>
 		);
+
+		// Perhaps something like this could be a good:
+
+		/*
+
+		return (
+			<NestedSidebarItem
+				label={ this.props.translate( 'Settings' ) }
+				className={ this.itemLinkClass( '/settings', 'settings' ) }
+				icon="cog"
+				preloadSectionName="settings"
+				tipTarget="settings"
+						// NestedSidebarItem just produces a regular SidebarItem,
+						// only it allows us to pass `route` and `parent`
+						// and then does the job of creating that sidebar route entry
+						// in componentWillMount...
+						// It then gives this.props.children as the component in `setRouteData`
+				route="settings"
+				parent="root"
+			>
+				<SettingsExample />
+			</NestedSidebarItem>
+		);
+
+		*/
 	}
 
 	wpAdmin() {
@@ -690,7 +730,7 @@ function mapStateToProps( state ) {
 		siteId,
 		site,
 		path: 'something/something', // note this is hardcoded - it's given as an actual prop originally,
-		// but the component assigned to teh sidebar route can't be given props...
+		// but the component assigned to the sidebar route can't be given props...
 		// so this hardcoding is just until we figure out a better work around...
 		siteSuffix: site ? '/' + site.slug : '',
 		siteHasBackgroundTransfer: hasSitePendingAT && transferStatus !== transferStates.ERROR,

@@ -41,12 +41,12 @@ export const setRouteData = ( route, data ) =>
 // 	}
 // );
 
-setRouteData(
-	'settings', {
-		parent: 'root',
-		component: SettingsExample,
-	}
-);
+// setRouteData(
+// 	'settings', {
+// 		parent: 'root',
+// 		component: SettingsExample,
+// 	}
+// );
 
 setRouteData(
 	'settings/domains', {

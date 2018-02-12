@@ -16,6 +16,8 @@ import {
 	endSidebarTransition,
 } from 'state/sidebar/actions';
 
+import { setRouteData } from './docs/access';
+
 // NestedSidebarLink's main responsibility is to act like an anchor tag
 // but for navigating through sidebar routes, it should be able to render any child
 // as an anchor tag would (It may be that an a tag makes sense in place of the p tag).
@@ -23,6 +25,20 @@ export class NestedSidebarLink extends Component {
 	static defaultProps = {
 		direction: 'right',
 	};
+
+	componentWillMount() {
+		const {
+			route,
+			parent,
+			component,
+		} = this.props;
+
+		if ( ! route || ! component ) {
+			return;
+		}
+
+		setRouteData( route, { parent, component } );
+	}
 
 	changeRoute = () => {
 		if ( get( this.props, 'transition.route' ) ) {
@@ -41,8 +57,7 @@ export class NestedSidebarLink extends Component {
 	};
 
 	render() {
-		// This can be anything of course, p was just used for the example.jsx demo.
-		return <p onClick={ this.changeRoute }>{ this.props.children }</p>;
+		return <div onClick={ this.changeRoute }>{ this.props.children }</div>;
 	}
 }
 
