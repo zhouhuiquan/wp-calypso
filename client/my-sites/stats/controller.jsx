@@ -23,6 +23,7 @@ import { getSelectedSiteId } from 'state/ui/selectors';
 import AsyncLoad from 'components/async-load';
 import StatsPagePlaceholder from 'my-sites/stats/stats-page-placeholder';
 import FollowList from 'lib/follow-list';
+import StatsSite from './site';
 
 const analyticsPageTitle = 'Stats';
 
@@ -276,13 +277,7 @@ export default {
 				period,
 			};
 
-			context.primary = (
-				<AsyncLoad
-					placeholder={ <StatsPagePlaceholder /> }
-					require="my-sites/stats/site"
-					{ ...siteComponentChildren }
-				/>
-			);
+			context.primary = <StatsSite { ...siteComponentChildren } />;
 			next();
 		}
 	},
