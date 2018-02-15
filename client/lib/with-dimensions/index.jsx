@@ -6,6 +6,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 
+/**
+ * Internal Dependencies
+ */
+import afterLayoutFlush from 'lib/after-layout-flush/index';
+
 const OVERFLOW_BUFFER = 4; // fairly arbitrary. feel free to tweak
 
 /**
@@ -58,13 +63,15 @@ export default EnhancedComponent =>
 		componentDidMount() {
 			this.resizeEventListener = window.addEventListener(
 				'resize',
-				debounce( this.handleResize, 50 )
+				debounce( afterLayoutFlush( this.handleResize ), 50 )
 			);
 			this.handleResize();
 		}
+
 		componentWillReceiveProps( nextProps ) {
 			this.handleResize( nextProps );
 		}
+
 		componentWillUnmount() {
 			window.removeEventListener( 'resize', this.resizeEventListener );
 		}
