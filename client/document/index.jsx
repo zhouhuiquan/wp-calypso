@@ -7,7 +7,6 @@
 import React, { Fragment } from 'react';
 import classNames from 'classnames';
 import { get } from 'lodash';
-import Gridicon from 'gridicons';
 
 /**
  * Internal dependencies
@@ -15,6 +14,7 @@ import Gridicon from 'gridicons';
 import { default as appConfig } from 'config';
 import { jsonStringifyForHtml } from '../../server/sanitize';
 import Head from '../components/head';
+import EnvironmentBadge from '../components/environment-badge';
 import getStylesheet from './utils/stylesheet';
 import WordPressLogo from 'components/wordpress-logo';
 
@@ -125,32 +125,16 @@ class Document extends React.Component {
 						</div>
 					) }
 					{ badge && (
-						<div className="environment-badge">
-							{ preferencesHelper && <div className="environment is-prefs" /> }
-							{ abTestHelper && <div className="environment is-tests" /> }
-							{ branchName &&
-								branchName !== 'master' && (
-									<span className="environment branch-name" title={ 'Commit ' + commitChecksum }>
-										{ branchName }
-									</span>
-								) }
-							{ devDocs && (
-								<span className="environment is-docs">
-									<a href={ devDocsURL } title="DevDocs">
-										docs
-									</a>
-								</span>
-							) }
-							<span className={ `environment is-${ badge } is-env` }>{ badge }</span>
-							<a
-								className="bug-report"
-								href={ feedbackURL }
-								title="Report an issue"
-								target="_blank"
-							>
-								<Gridicon icon="bug" size={ 18 } />
-							</a>
-						</div>
+						<EnvironmentBadge
+							abTestHelper={ abTestHelper }
+							branchName={ branchName }
+							commitChecksum={ commitChecksum }
+							devDocs={ devDocs }
+							devDocsURL={ devDocsURL }
+							badge={ badge }
+							feedbackURL={ feedbackURL }
+							preferencesHelper={ preferencesHelper }
+						/>
 					) }
 
 					<script
