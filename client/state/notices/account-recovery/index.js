@@ -16,8 +16,6 @@ import {
 	getAccountRecoveryEmail,
 } from 'state/account-recovery/settings/selectors';
 
-import { dispatchError } from '../utils';
-
 const getUpdateSuccessMessage = ( target, getState ) => {
 	switch ( target ) {
 		case 'phone':
@@ -122,9 +120,10 @@ const getResentFailedMessage = target => {
 	}
 };
 
-export const onAccountRecoverySettingsFetchFailed = dispatchError(
-	translate( 'An error occurred while fetching your account recovery settings.' )
-);
+export const onAccountRecoverySettingsFetchFailed = dispatch =>
+	dispatch(
+		errorNotice( translate( 'An error occurred while fetching your account recovery settings.' ) )
+	);
 
 export const onAccountRecoverySettingsUpdateSuccess = ( dispatch, { target }, getState ) =>
 	dispatch( successNotice( getUpdateSuccessMessage( target, getState ) ) );

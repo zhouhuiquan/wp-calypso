@@ -27,26 +27,16 @@ export const onJetpackModuleActivationActionMessage = (
 	}
 
 	const noticeSettings = { duration: 10000 };
-	let message = MODULE_NOTICES[ moduleSlug ] && MODULE_NOTICES[ moduleSlug ][ type ];
+	const message = ( MODULE_NOTICES[ moduleSlug ] || MODULE_NOTICES[ '*' ] )[ type ];
 	let messageType;
 
 	switch ( type ) {
 		case JETPACK_MODULE_ACTIVATE_SUCCESS:
-			message = message || translate( 'Settings saved successfully!' );
-			messageType = 'success';
-			break;
 		case JETPACK_MODULE_DEACTIVATE_SUCCESS:
-			message = message || translate( 'Settings saved successfully!' );
 			messageType = 'success';
 			break;
 		case JETPACK_MODULE_ACTIVATE_FAILURE:
-			message =
-				message || translate( 'There was a problem saving your changes. Please try again.' );
-			messageType = 'error';
-			break;
 		case JETPACK_MODULE_DEACTIVATE_FAILURE:
-			message =
-				message || translate( 'There was a problem saving your changes. Please try again.' );
 			messageType = 'error';
 			break;
 	}
@@ -56,8 +46,8 @@ export const onJetpackModuleActivationActionMessage = (
 	}
 
 	if ( messageType === 'success' ) {
-		dispatch( successNotice( message, noticeSettings ) );
+		dispatch( successNotice( message( translate ), noticeSettings ) );
 	} else if ( messageType === 'error' ) {
-		dispatch( errorNotice( message, noticeSettings ) );
+		dispatch( errorNotice( message( translate ), noticeSettings ) );
 	}
 };

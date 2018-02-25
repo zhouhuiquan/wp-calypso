@@ -58,7 +58,6 @@ import {
 	THEME_ACTIVATE_FAILURE,
 } from 'state/action-types';
 import { purchasesRoot } from 'me/purchases/paths';
-import { dispatchSuccess, dispatchError } from './utils';
 
 import {
 	onAccountRecoverySettingsFetchFailed,
@@ -113,6 +112,10 @@ export function onPostDeleteFailure( dispatch, action, getState ) {
 	dispatch( errorNotice( message ) );
 }
 
+export function onPostDeleteSuccess( dispatch ) {
+	dispatch( successNotice( translate( 'Post successfully deleted' ) ) );
+}
+
 export function onPostRestoreFailure( dispatch, action, getState ) {
 	const post = getSitePost( getState(), action.siteId, action.postId );
 
@@ -126,6 +129,10 @@ export function onPostRestoreFailure( dispatch, action, getState ) {
 	}
 
 	dispatch( errorNotice( message ) );
+}
+
+export function onPostRestoreSuccess( dispatch ) {
+	dispatch( successNotice( translate( 'Post successfully restored' ) ) );
 }
 
 export function onPostSaveSuccess( dispatch, action ) {
@@ -303,26 +310,33 @@ export const handlers = {
 	[ ACCOUNT_RECOVERY_SETTINGS_RESEND_VALIDATION_FAILED ]: onResentAccountRecoveryEmailValidationFailed,
 	[ ACCOUNT_RECOVERY_SETTINGS_VALIDATE_PHONE_SUCCESS ]: onAccountRecoveryPhoneValidationSuccess,
 	[ ACCOUNT_RECOVERY_SETTINGS_VALIDATE_PHONE_FAILED ]: onAccountRecoveryPhoneValidationFailed,
-	[ BILLING_RECEIPT_EMAIL_SEND_FAILURE ]: dispatchError(
-		translate(
-			'There was a problem sending your receipt. Please try again later or contact support.'
-		)
-	),
-	[ BILLING_RECEIPT_EMAIL_SEND_SUCCESS ]: dispatchSuccess(
-		translate( 'Your receipt was sent by email successfully.' )
-	),
+	[ BILLING_RECEIPT_EMAIL_SEND_FAILURE ]: dispatch =>
+		dispatch(
+			errorNotice(
+				translate(
+					'There was a problem sending your receipt. Please try again later or contact support.'
+				)
+			)
+		),
+	[ BILLING_RECEIPT_EMAIL_SEND_SUCCESS ]: dispatch =>
+		dispatch( successNotice( translate( 'Your receipt was sent by email successfully.' ) ) ),
 	[ GRAVATAR_RECEIVE_IMAGE_FAILURE ]: ( dispatch, action ) => {
 		dispatch( errorNotice( action.errorMessage ) );
 	},
-	[ GRAVATAR_UPLOAD_REQUEST_FAILURE ]: dispatchError(
-		translate( 'Hmm, your new Gravatar was not saved. Please try uploading again.' )
-	),
-	[ GRAVATAR_UPLOAD_REQUEST_SUCCESS ]: dispatchSuccess(
-		translate( 'You successfully uploaded a new Gravatar — looking sharp!' )
-	),
+	[ GRAVATAR_UPLOAD_REQUEST_FAILURE ]: dispatch =>
+		dispatch(
+			errorNotice(
+				translate( 'Hmm, your new Gravatar was not saved. Please try uploading again.' )
+			)
+		),
+	[ GRAVATAR_UPLOAD_REQUEST_SUCCESS ]: dispatch =>
+		dispatch(
+			successNotice( translate( 'You successfully uploaded a new Gravatar — looking sharp!' ) )
+		),
 	[ INVITES_DELETE_REQUEST_SUCCESS ]: onDeleteInvitesSuccess,
 	[ INVITES_DELETE_REQUEST_FAILURE ]: onDeleteInvitesFailure,
-	[ INVITE_RESEND_REQUEST_FAILURE ]: dispatchError( translate( 'Invitation failed to resend.' ) ),
+	[ INVITE_RESEND_REQUEST_FAILURE ]: dispatch =>
+		dispatch( errorNotice( translate( 'Invitation failed to resend.' ) ) ),
 	[ JETPACK_MODULE_ACTIVATE_SUCCESS ]: onJetpackModuleActivationActionMessage,
 	[ JETPACK_MODULE_DEACTIVATE_SUCCESS ]: onJetpackModuleActivationActionMessage,
 	[ JETPACK_MODULE_ACTIVATE_FAILURE ]: onJetpackModuleActivationActionMessage,
@@ -330,9 +344,9 @@ export const handlers = {
 	[ KEYRING_CONNECTION_DELETE ]: onPublicizeConnectionDelete,
 	[ KEYRING_CONNECTION_DELETE_FAILURE ]: onPublicizeConnectionDeleteFailure,
 	[ POST_DELETE_FAILURE ]: onPostDeleteFailure,
-	[ POST_DELETE_SUCCESS ]: dispatchSuccess( translate( 'Post successfully deleted' ) ),
+	[ POST_DELETE_SUCCESS ]: onPostDeleteSuccess,
 	[ POST_RESTORE_FAILURE ]: onPostRestoreFailure,
-	[ POST_RESTORE_SUCCESS ]: dispatchSuccess( translate( 'Post successfully restored' ) ),
+	[ POST_RESTORE_SUCCESS ]: onPostRestoreSuccess,
 	[ POST_SAVE_SUCCESS ]: onPostSaveSuccess,
 	[ PUBLICIZE_CONNECTION_CREATE ]: onPublicizeConnectionCreate,
 	[ PUBLICIZE_CONNECTION_CREATE_FAILURE ]: onPublicizeConnectionCreateFailure,
@@ -340,9 +354,8 @@ export const handlers = {
 	[ PUBLICIZE_CONNECTION_DELETE_FAILURE ]: onPublicizeConnectionDeleteFailure,
 	[ PUBLICIZE_CONNECTION_UPDATE ]: onPublicizeConnectionUpdate,
 	[ PUBLICIZE_CONNECTION_UPDATE_FAILURE ]: onPublicizeConnectionUpdateFailure,
-	[ GUIDED_TRANSFER_HOST_DETAILS_SAVE_SUCCESS ]: dispatchSuccess(
-		translate( 'Thanks for confirming those details!' )
-	),
+	[ GUIDED_TRANSFER_HOST_DETAILS_SAVE_SUCCESS ]: dispatch =>
+		dispatch( successNotice( translate( 'Thanks for confirming those details!' ) ) ),
 	[ SITE_DELETE ]: onSiteDelete,
 	[ SITE_DELETE_FAILURE ]: onSiteDeleteFailure,
 	[ SITE_DELETE_RECEIVE ]: onSiteDeleteReceive,
