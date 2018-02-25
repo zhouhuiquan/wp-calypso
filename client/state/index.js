@@ -11,7 +11,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 // TODO: change this back to `from 'redux-form'` after upgrade to Webpack 4.0 and a version
 //       of Redux Form that uses the `sideEffects: false` flag
 import form from 'redux-form/es/reducer';
-import { mapValues } from 'lodash';
+// import { mapValues } from 'lodash';
 
 /**
  * Internal dependencies
@@ -22,7 +22,7 @@ import activityLog from './activity-log/reducer';
 import analyticsTracking from './analytics/reducer';
 import navigationMiddleware from './navigation/middleware';
 import noticesMiddleware from './notices/middleware';
-import extensionsModule from 'extensions';
+// import extensionsModule from 'extensions';
 import application from './application/reducer';
 import accountRecovery from './account-recovery/reducer';
 import automatedTransfer from './automated-transfer/reducer';
@@ -99,12 +99,12 @@ import config from 'config';
  */
 
 // Consolidate the extension reducers under 'extensions' for namespacing.
-const extensions = combineReducers(
-	mapValues(
-		extensionsModule.reducers(),
-		reducer => ( reducer.default ? reducer.default : reducer )
-	)
-);
+// const extensions = combineReducers(
+// 	mapValues(
+// 		extensionsModule.reducers(),
+// 		reducer => ( reducer.default ? reducer.default : reducer )
+// 	)
+// );
 
 const reducers = {
 	analyticsTracking,
@@ -123,7 +123,7 @@ const reducers = {
 	dataRequests,
 	documentHead,
 	domains,
-	extensions,
+	// extensions,
 	form,
 	geo,
 	googleAppsUsers,
