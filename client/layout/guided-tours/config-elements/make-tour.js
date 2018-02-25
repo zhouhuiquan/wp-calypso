@@ -18,7 +18,8 @@ import contextTypes from '../context-types';
 const debug = debugFactory( 'calypso:guided-tours' );
 
 const makeTour = tree => {
-	return class extends Component {
+	console.time( 'makeTour' );
+	const tour = class extends Component {
 		static propTypes = {
 			isValid: PropTypes.func.isRequired,
 			lastAction: PropTypes.object,
@@ -75,6 +76,8 @@ const makeTour = tree => {
 			return tree;
 		}
 	};
+	console.timeEnd( 'makeTour' );
+	return tour;
 };
 
 export default makeTour;

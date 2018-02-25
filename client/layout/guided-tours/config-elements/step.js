@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { defer, get, isFunction } from 'lodash';
 import debugFactory from 'debug';
+import { translate } from 'i18n-calypso';
 
 /**
  * Internal dependencies
@@ -321,7 +322,7 @@ export default class Step extends Component {
 
 		return (
 			<Card className={ classNames( ...classes ) } style={ style }>
-				{ children }
+				{ children( { translate } ) }
 			</Card>
 		);
 	}
