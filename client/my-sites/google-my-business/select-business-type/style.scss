@@ -1,14 +1,10 @@
-.select-business-type__cta-card {
-	display: flex;
-	@include breakpoint( "<960px" ) {
-		display: block;
+.select-business-type__explanation-main {
+	p {
+		max-width: 540px;
 	}
 }
 
 .select-business-type__cta-card-main {
-	flex: 2 1;
-	padding: 0 15px;
-
 	h2 {
 		font-size: 21px;
 		color: $gray-dark;
@@ -17,18 +13,7 @@
 	}
 
 	p {
-		font-size: 16px;
-		color: $gray-dark;
-	}
-}
-
-.select-business-type__cta-card-button-container {
-	align-self: center;
-	flex: 1;
-	text-align: right;
-	margin: 0 20px;
-	@include breakpoint( "<960px" ) {
-		text-align: left;
+		max-width: 540px;
 	}
 }
 
@@ -47,7 +32,7 @@
 
 	h1 {
 		color: $gray-dark;
-		font-size: 24px;
+		font-size: 21px;
 		font-weight: 400;
 		margin: 16px 0;
 	}
@@ -59,14 +44,8 @@
 	}
 
 	img {
-		max-width: 300px;
-		width: 100%;
-		align-self: center;
-
-		@include breakpoint( ">1040px" ) {
-			max-width: 400px;
-			width: 150%;
-		}
+		max-width: 400px;
+		width: 150%;
 	}
 }
 
