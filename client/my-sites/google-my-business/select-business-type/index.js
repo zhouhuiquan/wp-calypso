@@ -95,6 +95,7 @@ class SelectBusinessType extends Component {
 							responseHandler={ this.handleGoogleResponse }
 							uxMode={ 'popup' }
 							redirectUri={ '' }
+							isPrimary={ true }
 						/>
 					</div>
 				</Card>
