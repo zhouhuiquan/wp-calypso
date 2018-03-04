@@ -40,6 +40,7 @@ class PopoverMenu extends React.Component {
 		const PopoverComponent = this.props.popoverComponent;
 		return (
 			<PopoverComponent
+				id={ this.props.id }
 				isVisible={ this.props.isVisible }
 				context={ this.props.context }
 				autoPosition={ this.props.autoPosition }
