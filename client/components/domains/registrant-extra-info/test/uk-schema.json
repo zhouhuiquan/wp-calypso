@@ -9,6 +9,7 @@
 			"allOf": [
 				{
 					"errorCode": "dotukRegistrantTypeRequiresRegistrationNumber",
+					"errorMessage": "A registration number is required for this registrant type.",
 					"errorField": "extra.registrationNumber",
 					"anyOf": [
 						{
@@ -41,6 +42,7 @@
 				},
 				{
 					"errorCode": "dotukRegistrantTypeRequiresTradingName",
+					"errorMessage": "A trading name is required for this registrant type.",
 					"errorField": "extra.tradingName",
 					"anyOf": [
 						{
@@ -78,6 +80,7 @@
 					"properties": {
 						"registrationNumber": {
 							"errorCode": "dotukRegistrationNumberFormat",
+							"errorMessage": "A Company Registration Number is 8 numerals, or 2 letters followed by 6 numerals (e.g. AB123456 or 12345678).",
 							"pattern": "^[a-zA-Z0-9]{2}[0-9]{6}$"
 						}
 					}
