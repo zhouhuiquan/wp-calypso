@@ -1,9 +1,7 @@
 /** @format */
-
 /**
  * External dependencies
  */
-
 import React, { PureComponent } from 'react';
 
 /**
@@ -17,12 +15,6 @@ class PopoverExample extends PureComponent {
 	constructor( props ) {
 		super( props );
 
-		this.changePopoverPosition = this.changePopoverPosition.bind( this );
-		this.swapPopoverVisibility = this.swapPopoverVisibility.bind( this );
-		this.closePopover = this.closePopover.bind( this );
-		this.showPopoverMenu = this.showPopoverMenu.bind( this );
-		this.closePopoverMenu = this.closePopoverMenu.bind( this );
-
 		this.state = {
 			popoverPosition: 'bottom left',
 			showPopover: false,
@@ -31,27 +23,27 @@ class PopoverExample extends PureComponent {
 	}
 
 	// set position for all popovers
-	changePopoverPosition( event ) {
+	changePopoverPosition = event => {
 		this.setState( { popoverPosition: event.target.value } );
-	}
+	};
 
-	swapPopoverVisibility() {
+	swapPopoverVisibility = () => {
 		this.setState( { showPopover: ! this.state.showPopover } );
-	}
+	};
 
-	closePopover() {
+	closePopover = () => {
 		this.setState( { showPopover: false } );
-	}
+	};
 
-	showPopoverMenu() {
+	showPopoverMenu = () => {
 		this.setState( {
 			showPopoverMenu: ! this.state.showPopoverMenu,
 		} );
-	}
+	};
 
-	closePopoverMenu() {
+	closePopoverMenu = () => {
 		this.setState( { showPopoverMenu: false } );
-	}
+	};
 
 	renderPopover() {
 		return (
