@@ -10,7 +10,7 @@ import ReactDom from 'react-dom';
 import { connect } from 'react-redux';
 import debugFactory from 'debug';
 import classNames from 'classnames';
-import clickOutside from 'click-outside';
+import Modal from 'react-modal';
 import { uniqueId } from 'lodash';
 
 /**
@@ -38,7 +38,6 @@ class Popover extends Component {
 		autoPosition: PropTypes.bool,
 		autoRtl: PropTypes.bool,
 		className: PropTypes.string,
-		closeOnEsc: PropTypes.bool,
 		id: PropTypes.string,
 		ignoreContext: PropTypes.shape( { getDOMNode: PropTypes.function } ),
 		isRtl: PropTypes.bool,
@@ -83,13 +82,6 @@ class Popover extends Component {
 
 		this.setPopoverId( props.id );
 
-		// bound methods
-		this.setDOMBehavior = this.setDOMBehavior.bind( this );
-		this.setPosition = this.setPosition.bind( this );
-		this.onClickout = this.onClickout.bind( this );
-		this.onKeydown = this.onKeydown.bind( this );
-		this.onWindowChange = this.onWindowChange.bind( this );
-
 		this.state = {
 			show: props.isVisible,
 			left: -99999,
@@ -100,7 +92,6 @@ class Popover extends Component {
 
 	componentDidMount() {
 		if ( this.state.show ) {
-			this.bindEscKeyListener();
 			this.bindDebouncedReposition();
 			bindWindowListeners();
 		}
@@ -114,14 +105,13 @@ class Popover extends Component {
 			return null;
 		}
 
-		this.setPosition();
+		this.setPosition( nextProps );
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
 		const { isVisible } = this.props;
 
 		if ( ! prevState.show && this.state.show ) {
-			this.bindEscKeyListener();
 			this.bindDebouncedReposition();
 			bindWindowListeners();
 		}
@@ -167,89 +157,20 @@ class Popover extends Component {
 	componentWillUnmount() {
 		this.debug( 'unmounting .... ' );
 
-		this.unbindClickoutHandler();
 		this.unbindDebouncedReposition();
-		this.unbindEscKeyListener();
 		unbindWindowListeners();
 
 		__popovers.delete( this.id );
 		debug( 'current popover instances: ', __popovers.size );
 	}
 
-	// --- ESC key ---
-	bindEscKeyListener() {
-		if ( ! this.props.closeOnEsc ) {
-			return null;
-		}
-
-		this.debug( 'adding escKey listener ...' );
-		document.addEventListener( 'keydown', this.onKeydown, true );
-	}
-
-	unbindEscKeyListener() {
-		if ( ! this.props.closeOnEsc ) {
-			return null;
-		}
-
-		this.debug( 'unbinding `escKey` listener ...' );
-		document.removeEventListener( 'keydown', this.onKeydown, true );
-	}
-
-	onKeydown( event ) {
-		if ( event.keyCode !== 27 ) {
-			return null;
-		}
-
-		this.close( true );
-	}
-
-	// --- cliclout side ---
-	bindClickoutHandler( el = this.domContainer ) {
-		if ( ! el ) {
-			this.debug( 'no element to bind clickout side ' );
-			return null;
-		}
-
-		if ( this._clickoutHandlerReference ) {
-			this.debug( 'clickout event already bound' );
-			return null;
-		}
-
-		this.debug( 'binding `clickout` event' );
-		this._clickoutHandlerReference = clickOutside( el, this.onClickout );
-	}
-
-	unbindClickoutHandler() {
-		if ( this._clickoutHandlerReference ) {
-			this.debug( 'unbinding `clickout` listener ...' );
-			this._clickoutHandlerReference();
-			this._clickoutHandlerReference = null;
-		}
-	}
-
-	onClickout( event ) {
-		let shouldClose =
-			this.domContext && this.domContext.contains && ! this.domContext.contains( event.target );
-
-		if ( this.props.ignoreContext && shouldClose ) {
-			const ignoreContext = ReactDom.findDOMNode( this.props.ignoreContext );
-			shouldClose =
-				shouldClose &&
-				( ignoreContext && ignoreContext.contains && ! ignoreContext.contains( event.target ) );
-		}
-
-		if ( shouldClose ) {
-			this.close();
-		}
-	}
-
 	// --- window `scroll` and `resize` ---
-	bindDebouncedReposition() {
+	bindDebouncedReposition = () => {
 		window.addEventListener( 'scroll', this.onWindowChange, true );
 		window.addEventListener( 'resize', this.onWindowChange, true );
-	}
+	};
 
-	unbindDebouncedReposition() {
+	unbindDebouncedReposition = () => {
 		if ( this.willReposition ) {
 			window.cancelAnimationFrame( this.willReposition );
 			this.willReposition = null;
@@ -258,21 +179,18 @@ class Popover extends Component {
 		window.removeEventListener( 'scroll', this.onWindowChange, true );
 		window.removeEventListener( 'resize', this.onWindowChange, true );
 		this.debug( 'unbinding `debounce reposition` ...' );
-	}
+	};
 
-	onWindowChange() {
+	onWindowChange = () => {
 		this.willReposition = window.requestAnimationFrame( this.setPosition );
-	}
+	};
 
-	setDOMBehavior( domContainer ) {
+	setDOMBehavior = domContainer => {
 		if ( ! domContainer ) {
-			this.unbindClickoutHandler();
 			return null;
 		}
 
 		this.debug( 'setting DOM behavior' );
-
-		this.bindClickoutHandler( domContainer );
 
 		// store DOM element referencies
 		this.domContainer = domContainer;
@@ -281,7 +199,7 @@ class Popover extends Component {
 		this.domContext = ReactDom.findDOMNode( this.props.context );
 
 		this.setPosition();
-	}
+	};
 
 	getPositionClass( position = this.props.position ) {
 		return `is-${ position.replace( /\s+/g, '-' ) }`;
@@ -294,7 +212,7 @@ class Popover extends Component {
 	 * @param  {String} position Original position
 	 * @return {String}          Adjusted position
 	 */
-	adjustRtlPosition( position ) {
+	adjustRtlPosition = position => {
 		if ( this.props.isRtl ) {
 			switch ( position ) {
 				case 'top right':
@@ -321,21 +239,23 @@ class Popover extends Component {
 			}
 		}
 		return position;
-	}
+	};
 
 	/**
 	 * Computes the position of the Popover in function
 	 * of its main container and the target.
 	 *
+	 * @param  {Object} props the props to be used, might be nextProps
 	 * @return {Object} reposition parameters
 	 */
-	computePosition() {
-		if ( ! this.props.isVisible ) {
+	computePosition = props => {
+		if ( ! props.isVisible ) {
+			this.debug( '[WARN] Not visible, not computing…' );
 			return null;
 		}
 
 		const { domContainer, domContext } = this;
-		const { position } = this.props;
+		const { position } = props;
 
 		if ( ! domContainer || ! domContext ) {
 			this.debug( '[WARN] no DOM elements to work' );
@@ -346,12 +266,12 @@ class Popover extends Component {
 
 		this.debug( 'position: %o', suggestedPosition );
 
-		if ( this.props.autoRtl ) {
+		if ( props.autoRtl ) {
 			suggestedPosition = this.adjustRtlPosition( suggestedPosition );
 			this.debug( 'RTL adjusted position: %o', suggestedPosition );
 		}
 
-		if ( this.props.autoPosition ) {
+		if ( props.autoPosition ) {
 			suggestedPosition = suggestPosition( suggestedPosition, domContainer, domContext );
 			this.debug( 'suggested position: %o', suggestedPosition );
 		}
@@ -365,39 +285,44 @@ class Popover extends Component {
 		this.debug( 'updating reposition: ', reposition );
 
 		return reposition;
-	}
+	};
 
-	debug( string, ...args ) {
+	debug = ( string, ...args ) => {
 		debug( `[%s] ${ string }`, this.id, ...args );
-	}
+	};
 
-	setPopoverId( id ) {
+	setPopoverId = id => {
 		this.id = id || `pop__${ uniqueId() }`;
 		__popovers.add( this.id );
 
 		this.debug( 'creating ...' );
 		debug( 'current popover instances: ', __popovers.size );
-	}
+	};
 
-	setPosition() {
+	setPosition = ( props = false ) => {
+		if ( ! props ) {
+			props = this.props;
+		}
 		this.debug( 'updating position' );
-		const position = this.computePosition();
+		const position = this.computePosition( props );
 		if ( ! position ) {
 			return null;
 		}
 
 		this.willReposition = null;
 		this.setState( position );
-	}
+	};
 
-	getStylePosition() {
+	getStylePosition = () => {
 		const { left, top } = this.state;
 		return { left, top };
-	}
+	};
 
-	show() {
+	show = () => {
 		if ( ! this.props.showDelay ) {
+			this.debug( 'show popover' );
 			this.setState( { show: true } );
+			this.props.onShow();
 			return null;
 		}
 
@@ -406,37 +331,35 @@ class Popover extends Component {
 
 		this._openDelayTimer = setTimeout( () => {
 			this.setState( { show: true } );
+			this.props.onShow();
 		}, this.props.showDelay );
-	}
+	};
 
-	hide() {
-		// unbind clickout-side event every time the component is hidden.
-		this.unbindClickoutHandler();
+	hide = () => {
 		this.unbindDebouncedReposition();
-		this.unbindEscKeyListener();
 		unbindWindowListeners();
 
 		this.setState( { show: false } );
 		this.clearShowTimer();
-	}
+	};
 
-	clearShowTimer() {
+	clearShowTimer = () => {
 		if ( ! this._openDelayTimer ) {
 			return null;
 		}
 
 		clearTimeout( this._openDelayTimer );
 		this._openDelayTimer = null;
-	}
+	};
 
-	close( wasCanceled = false ) {
+	close = () => {
 		if ( ! this.props.isVisible ) {
 			this.debug( 'popover should be already closed' );
 			return null;
 		}
 
-		this.props.onClose( wasCanceled );
-	}
+		this.props.onClose( false );
+	};
 
 	render() {
 		if ( ! this.state.show ) {
@@ -453,15 +376,34 @@ class Popover extends Component {
 
 		this.debug( 'rendering ...' );
 
+		const styles = this.getStylePosition();
+		const positionStyle = {
+			content: {
+				top: styles.top,
+				left: styles.left,
+				right: 'auto',
+				bottom: 'auto',
+			},
+		};
+
 		return (
 			<RootChild className={ this.props.rootClassName }>
-				<div style={ this.getStylePosition() } className={ classes }>
-					<div className="popover__arrow" />
-
-					<div ref={ this.setDOMBehavior } className="popover__inner">
+				<Modal
+					isOpen={ this.state.show }
+					onRequestClose={ this.close }
+					contentLabel={ this.props.label }
+					appElement={ document.getElementById( 'wpcom' ) }
+					overlayClassName="popover__backdrop"
+					className={ classes }
+					role="dialog"
+					shouldCloseOnEsc={ true }
+					shouldCloseOnOverlayClick={ true }
+					style={ positionStyle }
+				>
+					<div ref={ this.setDOMBehavior }>
 						{ this.props.children }
 					</div>
-				</div>
+				</Modal>
 			</RootChild>
 		);
 	}
