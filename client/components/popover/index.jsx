@@ -400,7 +400,8 @@ class Popover extends Component {
 					shouldCloseOnOverlayClick={ true }
 					style={ positionStyle }
 				>
-					<div ref={ this.setDOMBehavior }>
+					<div className="popover__arrow" />
+					<div className="popover__inner" ref={ this.setDOMBehavior }>
 						{ this.props.children }
 					</div>
 				</Modal>
