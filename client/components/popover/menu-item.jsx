@@ -37,7 +37,6 @@ export default class PopoverMenuItem extends Component {
 		const itemProps = omit(
 			this.props,
 			'icon',
-			'focusOnHover',
 			'isSelected',
 			'isExternalLink',
 			'className',
