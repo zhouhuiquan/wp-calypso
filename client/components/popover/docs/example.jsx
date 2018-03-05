@@ -3,10 +3,11 @@
  * External dependencies
  */
 import React, { PureComponent } from 'react';
-
+import { noop } from 'lodash';
 /**
  * Internal dependencies
  */
+import Button from 'components/button';
 import Popover from 'components/popover';
 import PopoverMenu from 'components/popover/menu';
 import PopoverMenuItem from 'components/popover/menu-item';
@@ -18,6 +19,7 @@ class PopoverExample extends PureComponent {
 		this.state = {
 			popoverPosition: 'bottom left',
 			showPopover: false,
+			showComplexPopover: false,
 			showPopoverMenu: false,
 		};
 	}
@@ -27,12 +29,20 @@ class PopoverExample extends PureComponent {
 		this.setState( { popoverPosition: event.target.value } );
 	};
 
-	swapPopoverVisibility = () => {
+	togglePopover = () => {
 		this.setState( { showPopover: ! this.state.showPopover } );
 	};
 
 	closePopover = () => {
 		this.setState( { showPopover: false } );
+	};
+
+	toggleComplexPopover = () => {
+		this.setState( { showComplexPopover: ! this.state.showComplexPopover } );
+	};
+
+	closeComplexPopover = () => {
+		this.setState( { showComplexPopover: false } );
 	};
 
 	showPopoverMenu = () => {
@@ -48,7 +58,7 @@ class PopoverExample extends PureComponent {
 	renderPopover() {
 		return (
 			<div>
-				<button className="button" ref="popoverButton" onClick={ this.swapPopoverVisibility }>
+				<button className="button" ref="popoverButton" onClick={ this.togglePopover }>
 					Show Popover
 				</button>
 
@@ -60,6 +70,34 @@ class PopoverExample extends PureComponent {
 					context={ this.refs && this.refs.popoverButton }
 				>
 					<div style={ { padding: '10px' } }>Simple Popover Instance</div>
+				</Popover>
+			</div>
+		);
+	}
+
+	renderComplexPopover() {
+		return (
+			<div>
+				<button className="button" ref="popoverComplexButton" onClick={ this.toggleComplexPopover }>
+					Show Popover with actions
+				</button>
+
+				<Popover
+					id="popover__actions-example"
+					isVisible={ this.state.showComplexPopover }
+					onClose={ this.closeComplexPopover }
+					position={ this.state.popoverPosition }
+					context={ this.refs && this.refs.popoverComplexButton }
+				>
+					<div style={ { padding: '10px' } }>
+						<p>This is a more complex popover, which has actions inside.</p>
+						<Button onClick={ noop } compact style={ { marginRight: '8px' } }>
+							Cancel
+						</Button>
+						<Button onClick={ noop } primary compact>
+							Save
+						</Button>
+					</div>
 				</Popover>
 			</div>
 		);
@@ -81,9 +119,9 @@ class PopoverExample extends PureComponent {
 					position={ this.state.popoverPosition }
 					context={ this.refs && this.refs.popoverMenuButton }
 				>
-					<PopoverMenuItem action="A">Item A</PopoverMenuItem>
-					<PopoverMenuItem action="B">Item B</PopoverMenuItem>
-					<PopoverMenuItem action="C">Item C</PopoverMenuItem>
+					<PopoverMenuItem onClick={ noop }>Item A</PopoverMenuItem>
+					<PopoverMenuItem onClick={ noop }>Item B</PopoverMenuItem>
+					<PopoverMenuItem onClick={ noop }>Item C</PopoverMenuItem>
 				</PopoverMenu>
 			</div>
 		);
@@ -109,6 +147,10 @@ class PopoverExample extends PureComponent {
 				<hr />
 
 				{ this.renderPopover() }
+
+				<hr />
+
+				{ this.renderComplexPopover() }
 
 				<hr />
 
