@@ -226,3 +226,11 @@
 	margin: 8px 0;
 	background: lighten( $gray, 30 );
 }
+
+.popover__backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: transparent;
+	z-index: z-index( 'root', '.popover__backdrop' ); // try to ensure that dialogs are on top of everything else
+}

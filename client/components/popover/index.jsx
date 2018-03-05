@@ -377,7 +377,14 @@ class Popover extends Component {
 		this.debug( 'rendering ...' );
 
 		const styles = this.getStylePosition();
+		const { height } = document.getElementById( 'content' ).getBoundingClientRect();
 		const positionStyle = {
+			overlay: {
+				right: 'auto',
+				bottom: 'auto',
+				height: `${ height }px`,
+				width: '100%',
+			},
 			content: {
 				top: styles.top,
 				left: styles.left,
