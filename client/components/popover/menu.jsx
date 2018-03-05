@@ -35,6 +35,10 @@ class PopoverMenu extends React.Component {
 		this._previouslyFocusedElement = null;
 	}
 
+	setMenu = menu => {
+		this.menu = menu;
+	};
+
 	render() {
 		const children = React.Children.map( this.props.children, this._setPropsOnChild, this );
 		const PopoverComponent = this.props.popoverComponent;
@@ -51,13 +55,7 @@ class PopoverMenu extends React.Component {
 				rootClassName={ this.props.rootClassName }
 				popoverTitle={ this.props.popoverTitle }
 			>
-				<div
-					ref="menu"
-					role="menu"
-					className="popover__menu"
-					onKeyDown={ this._onKeyDown }
-					tabIndex="-1"
-				>
+				<div ref={ this.setMenu } className="popover__menu" onKeyDown={ this._onKeyDown }>
 					{ children }
 				</div>
 			</PopoverComponent>
@@ -82,7 +80,7 @@ class PopoverMenu extends React.Component {
 	};
 
 	_onShow = () => {
-		const elementToFocus = ReactDom.findDOMNode( this.refs.menu );
+		const elementToFocus = ReactDom.findDOMNode( this.menu );
 
 		this._previouslyFocusedElement = document.activeElement;
 
@@ -102,7 +100,7 @@ class PopoverMenu extends React.Component {
 	 * bottom.
 	 */
 	_getClosestSibling = ( target, isDownwardMotion = true ) => {
-		const menu = ReactDom.findDOMNode( this.refs.menu );
+		const menu = ReactDom.findDOMNode( this.menu );
 
 		let first = menu.firstChild,
 			last = menu.lastChild;
@@ -131,10 +129,6 @@ class PopoverMenu extends React.Component {
 		let elementToFocus;
 
 		switch ( event.keyCode ) {
-			case 9: // tab
-				this.props.onClose();
-				handled = true;
-				break;
 			case 38: // up arrow
 				elementToFocus = this._getClosestSibling( target, false );
 				handled = true;
