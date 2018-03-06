@@ -42,6 +42,7 @@ class PopoverMenu extends React.Component {
 	render() {
 		const children = React.Children.map( this.props.children, this._setPropsOnChild, this );
 		const PopoverComponent = this.props.popoverComponent;
+		/* eslint-disable jsx-a11y/no-static-element-interactions */
 		return (
 			<PopoverComponent
 				id={ this.props.id }
@@ -60,6 +61,7 @@ class PopoverMenu extends React.Component {
 				</div>
 			</PopoverComponent>
 		);
+		/* eslint-enable jsx-a11y/no-static-element-interactions */
 	}
 
 	_setPropsOnChild = child => {
