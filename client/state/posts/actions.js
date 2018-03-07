@@ -179,6 +179,7 @@ export function requestSitePost( siteId, postId ) {
  * @return {Object}        Action object
  */
 export function editPost( siteId, postId = null, post ) {
+	// "post" is actually post attributes
 	return {
 		type: POST_EDIT,
 		post,

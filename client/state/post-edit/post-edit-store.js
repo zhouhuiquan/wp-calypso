@@ -167,7 +167,7 @@ function normalize( post ) {
 }
 
 function setRawContent( content ) {
-	var isDirty, hasContent;
+	var isDirty, hasContent;Ω
 
 	if ( null === _initialRawContent ) {
 		debug( 'Set initial raw content to: %s', content );

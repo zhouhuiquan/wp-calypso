@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { filter, find, has, get, includes, isEqual, omit, some } from 'lodash';
+import { filter, find, has, get, map, mapValues, includes, isEqual, omit, some } from 'lodash';
 import createSelector from 'lib/create-selector';
 import { moment } from 'i18n-calypso';
 
@@ -408,6 +408,32 @@ export const isEditedPostDirty = createSelector(
 				return false;
 			}
 
+			if ( post ) {
+				switch ( key ) {
+					case 'date': {
+						return ! moment( value ).isSame( post.date );
+					}
+					case 'parent': {
+						return get( post, 'parent.ID', 0 ) !== value;
+					}
+				}
+				return post[ key ] !== value;
+			}
+
+			return (
+				! DEFAULT_NEW_POST_VALUES.hasOwnProperty( key ) || value !== DEFAULT_NEW_POST_VALUES[ key ]
+			);
+		} );
+	},
+	state => [ state.posts.items, state.posts.edits ]
+);
+
+export const getDirtyPostFields = createSelector(
+	( state, siteId, postId ) => {
+		const post = getSitePost( state, siteId, postId );
+		const edits = getPostEdits( state, siteId, postId );
+
+		return mapValues( edits, ( value, key ) => {
 			if ( post ) {
 				switch ( key ) {
 					case 'date': {

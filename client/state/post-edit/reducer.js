@@ -11,15 +11,29 @@ import emitter from 'lib/mixins/emitter';
 /**
  * Internal dependencies
  */
-import Dispatcher from 'dispatcher';
-import { decodeEntities } from 'lib/formatting';
-import * as utils from './utils';
+// import Dispatcher from 'dispatcher';
+// import { decodeEntities } from 'lib/formatting';
+// import * as utils from './utils';
+
+import { createReducer } from 'state/utils';
 
 /**
  * Module variables
  */
-var REGEXP_EMPTY_CONTENT = /^<p>(<br[^>]*>|&nbsp;|\s)*<\/p>$/,
-	CONTENT_LENGTH_ASSUME_SET = 50;
+const REGEXP_EMPTY_CONTENT = /^<p>(<br[^>]*>|&nbsp;|\s)*<\/p>$/;
+const CONTENT_LENGTH_ASSUME_SET = 50;
+
+
+export default createReducer(
+	{},
+	{
+		[ WOOCOMMERCE_COUPON_DELETED ]: couponDeleted,
+	}
+);
+
+// state, siteId, postId,
+
+// site, post
 
 var _initialRawContent = null,
 	_isAutosaving = false,
@@ -167,7 +181,7 @@ function normalize( post ) {
 }
 
 function setRawContent( content ) {
-	var isDirty, hasContent;
+	var isDirty, hasContent;Ω
 
 	if ( null === _initialRawContent ) {
 		debug( 'Set initial raw content to: %s', content );

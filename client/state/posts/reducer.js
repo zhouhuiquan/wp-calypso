@@ -427,13 +427,14 @@ export function edits( state = {}, action ) {
 				state
 			);
 
-		case POST_EDIT:
+		case POST_EDIT: {
+			console.log('redux POST_EDIT'); // seems to be triggered on title change, slug change but not content change
 			return mergeIgnoringArrays( {}, state, {
 				[ action.siteId ]: {
 					[ action.postId || '' ]: action.post,
 				},
 			} );
-
+		}
 		case EDITOR_START:
 			return Object.assign( {}, state, {
 				[ action.siteId ]: {

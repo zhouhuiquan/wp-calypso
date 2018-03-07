@@ -7,12 +7,13 @@ import createReactClass from 'create-react-class';
 import ReactDom from 'react-dom';
 import page from 'page';
 import PropTypes from 'prop-types';
-import { debounce, flow, get, partial, throttle } from 'lodash';
+import { debounce, flow, get, isEmpty, partial, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
 import tinyMce from 'tinymce/tinymce';
 import { v4 as uuid } from 'uuid';
+import debugFactory from 'debug';
 
 /**
  * Internal dependencies
@@ -28,7 +29,7 @@ import TinyMCE from 'components/tinymce';
 import SegmentedControl from 'components/segmented-control';
 import SegmentedControlItem from 'components/segmented-control/item';
 import InvalidURLDialog from 'post-editor/invalid-url-dialog';
-import RestorePostDialog from 'post-editor/restore-post-dialog';
+import RestorePostDialog from 'post-editor/restore-post-dialog'; // x
 import VerifyEmailDialog from 'components/email-verification/email-verification-dialog';
 import * as utils from 'lib/posts/utils';
 import EditorPreview from './editor-preview';
@@ -45,7 +46,7 @@ import {
 } from 'state/ui/editor/selectors';
 import { recordTracksEvent } from 'state/analytics/actions';
 import { editPost, receivePost, savePostSuccess } from 'state/posts/actions';
-import { getEditedPostValue, getPostEdits, isEditedPostDirty } from 'state/posts/selectors';
+import { getEditedPostValue, getPostEdits, isEditedPostDirty, getDirtyPostFields } from 'state/posts/selectors';
 import { getCurrentUserId } from 'state/current-user/selectors';
 import { hasBrokenSiteUserConnection, editedPostHasContent } from 'state/selectors';
 import EditorConfirmationSidebar from 'post-editor/editor-confirmation-sidebar';
@@ -70,6 +71,8 @@ import { removep } from 'lib/formatting';
 import QuickSaveButtons from 'post-editor/editor-ground-control/quick-save-buttons';
 import EditorRevisionsDialog from 'post-editor/editor-revisions/dialog';
 
+const dirtyDebug = debugFactory( 'calypso:editor:dirty-state' );
+
 export const PostEditor = createReactClass( {
 	displayName: 'PostEditor',
 
@@ -93,6 +96,10 @@ export const PostEditor = createReactClass( {
 	_previewWindow: null,
 
 	getInitialState() {
+		// const postEditState = this.getPostEditState();
+
+		// console.log( { postEditState } );
+
 		return {
 			...this.getPostEditState(),
 			confirmationSidebar: 'closed',
@@ -119,7 +126,7 @@ export const PostEditor = createReactClass( {
 			isSaveBlocked: PostEditStore.isSaveBlocked(),
 			hasContent: PostEditStore.hasContent(),
 			previewUrl: PostEditStore.getPreviewUrl(),
-			post: PostEditStore.get(),
+			post: PostEditStore.get(), // ?
 			isNew: PostEditStore.isNew(),
 			isAutosaving: PostEditStore.isAutosaving(),
 			isLoading: PostEditStore.isLoading(),
@@ -157,9 +164,28 @@ export const PostEditor = createReactClass( {
 			this.throttledAutosave.cancel();
 		}
 
+		const { dirtyPostFields, edits } = this.props;
+
+		! isEmpty( dirtyPostFields ) && console.log( 'dirtyPostFields:', dirtyPostFields );
+		! isEmpty( edits ) && console.log( 'edits:', edits );
+
+		// console.log( {
+		// 	nState: nextState.isDirty,
+		// 	nProps: nextProps.dirty,
+		// } )
+
 		if ( nextState.isDirty || nextProps.dirty ) {
+			console.log( 'marking dirty' );
+			console.log( {
+				...(
+					nextState.isDirty
+						? { nstate: nextState, cstate: this.state }
+						: { nprops: nextProps, cprops: this.props }
+				)
+			})
 			this.props.markChanged();
 		} else {
+			console.log( 'marking not dirty' );
 			this.props.markSaved();
 		}
 	},
@@ -269,6 +295,24 @@ export const PostEditor = createReactClass( {
 		}
 	},
 
+	compareAutosave: function () {
+		const serverAutosave = get( this.state.post.meta, [ 'data', 'autosave' ] );
+		const { post } = this.props;
+
+		const { content, excerpt, title } = post;
+
+		// console.log( post );
+
+		// ID: 627
+		// author_ID: "47178662"
+		// content: "some contentfjbjbjvh"
+			// excerpt: "bjbjbhhjbhjb"
+		// modified: "2018-03-07T03:09:04+00:00"
+		// post_ID: 625
+		// preview_URL: "https://somethingneweeffee.wordpress.com/2018/03/06/editor-prompt-wecweceve/?preview=true&preview_nonce=bc18d48296"
+		// title: "editor prompt"
+	},
+
 	render: function() {
 		const site = this.props.selectedSite || undefined;
 		const mode = this.getEditorMode();
@@ -282,7 +326,9 @@ export const PostEditor = createReactClass( {
 		if ( this.state.post ) {
 			isPage = utils.isPage( this.state.post );
 			isTrashed = this.state.post.status === 'trash';
-			hasAutosave = get( this.state.post.meta, [ 'data', 'autosave' ] );
+			// Comes from the postEditStore...
+			hasAutosave = get( this.state.post.meta, [ 'data', 'autosave' ] ); // x
+			console.log( { autosave: hasAutosave } )
 		}
 		const classes = classNames( 'post-editor', {
 			'is-loading': ! this.state.isEditorInitialized,
@@ -475,11 +521,14 @@ export const PostEditor = createReactClass( {
 	restoreRevision: function( revision ) {
 		this.setState( { isLoadingRevision: true } );
 		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
+
+		// interestingly, we only use thes 3 attributes to load the revision.
 		actions.edit( {
 			content: revision.content,
 			excerpt: revision.excerpt,
 			title: revision.title,
 		} );
+		// also, why are we only interested in the title in redux, yet we track the 3 changes above?
 		this.props.editPost( this.props.siteId, this.props.postId, {
 			title: revision.title,
 		} );
@@ -505,7 +554,7 @@ export const PostEditor = createReactClass( {
 		} else if ( ( PostEditStore.isNew() && ! this.state.isNew ) || PostEditStore.isLoading() ) {
 			// is new or loading
 			this.setState(
-				this.getInitialState(),
+				this.getInitialState(), // ?
 				() => this.editor && this.editor.setEditorContent( '' )
 			);
 		} else if ( this.state.isNew && this.state.hasContent && ! this.state.isDirty ) {
@@ -624,6 +673,8 @@ export const PostEditor = createReactClass( {
 
 		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.autosave( this.props.selectedSite, callback );
+
+		// NO REDUX here... is this a problem right now?
 
 		// If debounced / throttled autosave was pending, consider it flushed
 		this.throttledAutosave.cancel();
@@ -836,11 +887,15 @@ export const PostEditor = createReactClass( {
 	},
 
 	onSaveDraftFailure: function( error ) {
+		console.log( 'onSaveDraftFailure', error );
+
 		this.onSaveFailure( error, 'saveFailure' );
 	},
 
 	onSaveDraftSuccess: function() {
 		const { post } = this.state;
+
+		console.log( 'onSaveDraftSuccess' );
 
 		if ( utils.isPublished( post ) ) {
 			this.onSaveSuccess( 'updated' );
@@ -1352,6 +1407,7 @@ const enhance = flow(
 				hasBrokenPublicizeConnection: hasBrokenSiteUserConnection( state, siteId, userId ),
 				isSitePreviewable: isSitePreviewable( state, siteId ),
 				isConfirmationSidebarEnabled: isConfirmationSidebarEnabled( state, siteId ),
+				dirtyPostFields: getDirtyPostFields( state, siteId, postId ),
 			};
 		},
 		{
