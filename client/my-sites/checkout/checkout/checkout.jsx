@@ -517,6 +517,8 @@ const Checkout = createReactClass( {
 	render() {
 		return (
 			<div className="main main-column" role="main">
+				<QueryProducts />
+
 				<div className="checkout">
 					<QueryProducts />
 					<QueryContactDetailsCache />
