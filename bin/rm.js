@@ -55,7 +55,7 @@ var timeout = 0
 
 var isWindows = (process.platform === "win32")
 
-rimraf( target, {glob: false}, (er) => er === null || console.log(er) );
+rimraf( target, {glob: false}, (er) => {} );
 
 function defaults (options) {
     var methods = [
@@ -184,7 +184,7 @@ function rimraf_ (p, options, cb) {
             return rmdir(p, options, er, cb)
 
         const should_delete = extensions.length ? extensions.reduce( (accumulator, current, idx) => {
-            return current || p.endsWith( extensions[idx] );
+            return accumulator || p.endsWith( current );
         }, false ) : true
 
         if ( should_delete ) {
