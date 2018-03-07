@@ -14,7 +14,6 @@ import { localize, getLocaleSlug } from 'i18n-calypso';
  */
 import MapDomainStep from 'components/domains/map-domain-step';
 import TransferDomainStep from 'components/domains/transfer-domain-step';
-import productsListFactory from 'lib/products-list';
 import RegisterDomainStep from 'components/domains/register-domain-step';
 import SignupActions from 'lib/signup/actions';
 import { getStepUrl } from 'signup/utils';
@@ -35,8 +34,8 @@ import { getDesignType } from 'state/signup/steps/design-type/selectors';
 import { getDomainSearchPrefill } from 'state/signup/steps/domains/selectors';
 import { setDomainSearchPrefill } from 'state/signup/steps/domains/actions';
 import { abtest } from 'lib/abtest';
-
-const productsList = productsListFactory();
+import { getProductsList } from 'state/products-list/selectors';
+import QueryProducts from 'components/data/query-products-list';
 
 class DomainsStep extends React.Component {
 	static propTypes = {
@@ -59,8 +58,6 @@ class DomainsStep extends React.Component {
 		store: PropTypes.object,
 	};
 
-	state = { products: productsList.get() };
-
 	showDomainSearch = () => {
 		page( getStepUrl( this.props.flowName, this.props.stepName, this.props.locale ) );
 	};
@@ -71,18 +68,6 @@ class DomainsStep extends React.Component {
 
 	getTransferDomainUrl = () => {
 		return getStepUrl( this.props.flowName, this.props.stepName, 'transfer', this.props.locale );
-	};
-
-	componentDidMount() {
-		productsList.on( 'change', this.refreshState );
-	}
-
-	componentWillUnmount() {
-		productsList.off( 'change', this.refreshState );
-	}
-
-	refreshState = () => {
-		this.setState( { products: productsList.get() } );
 	};
 
 	handleAddDomain = suggestion => {
@@ -229,20 +214,21 @@ class DomainsStep extends React.Component {
 	};
 
 	domainForm = () => {
-		const initialState = this.props.step ? this.props.step.domainForm : this.state.domainForm;
+		const initialState = this.props.step && this.props.step.domainForm;
 		const includeDotBlogSubdomain = this.props.flowName === 'subdomain';
 
 		const suggestion =
 			'withSiteTitle' === abtest( 'domainSearchPrefill' ) && !! this.props.domainSearchPrefill
 				? this.props.domainSearchPrefill
 				: get( this.props, 'queryObject.new', '' );
+		const { productsList } = this.props;
 
 		return (
 			<RegisterDomainStep
 				path={ this.props.path }
 				initialState={ initialState }
 				onAddDomain={ this.handleAddDomain }
-				products={ this.state.products }
+				products={ productsList }
 				basePath={ this.props.path }
 				mapDomainUrl={ this.getMapDomainUrl() }
 				transferDomainUrl={ this.getTransferDomainUrl() }
@@ -271,6 +257,8 @@ class DomainsStep extends React.Component {
 			initialQuery =
 				this.props.step && this.props.step.domainForm && this.props.step.domainForm.lastQuery;
 
+		const { productsList } = this.props;
+
 		return (
 			<div className="domains__step-section-wrapper">
 				<MapDomainStep
@@ -279,7 +267,7 @@ class DomainsStep extends React.Component {
 					onRegisterDomain={ this.handleAddDomain }
 					onMapDomain={ this.handleAddMapping.bind( this, 'mappingForm' ) }
 					onSave={ this.handleSave.bind( this, 'mappingForm' ) }
-					products={ productsList.get() }
+					products={ productsList }
 					domainsWithPlansOnly={ this.props.domainsWithPlansOnly }
 					initialQuery={ initialQuery }
 					analyticsSection="signup"
@@ -296,6 +284,8 @@ class DomainsStep extends React.Component {
 		const initialQuery =
 			this.props.step && this.props.step.domainForm && this.props.step.domainForm.lastQuery;
 
+		const { productsList } = this.props;
+
 		return (
 			<div className="domains__step-section-wrapper">
 				<TransferDomainStep
@@ -307,7 +297,7 @@ class DomainsStep extends React.Component {
 					onRegisterDomain={ this.handleAddDomain }
 					onTransferDomain={ this.handleAddTransfer }
 					onSave={ this.onTransferSave }
-					products={ productsList.get() }
+					products={ productsList }
 				/>
 			</div>
 		);
@@ -350,8 +340,10 @@ class DomainsStep extends React.Component {
 			);
 		}
 
-		return (
+		return [
+			<QueryProducts key="query-products" />,
 			<StepWrapper
+				key="step-wrapper"
 				flowName={ this.props.flowName }
 				stepName={ this.props.stepName }
 				backUrl={ backUrl }
@@ -361,8 +353,8 @@ class DomainsStep extends React.Component {
 				fallbackHeaderText={ translate( "Let's give your site an address." ) }
 				fallbackSubHeaderText={ fallbackSubHeaderText }
 				stepContent={ content }
-			/>
-		);
+			/>,
+		];
 	}
 }
 
@@ -407,6 +399,7 @@ export default connect(
 		surveyVertical: getSurveyVertical( state ),
 		designType: getDesignType( state ),
 		domainSearchPrefill: getDomainSearchPrefill( state ),
+		productsList: getProductsList( state ),
 	} ),
 	{
 		recordAddDomainButtonClick,
