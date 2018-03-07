@@ -176,7 +176,7 @@ export function requestSitePost( siteId, postId ) {
  * @param  {Number} siteId Site ID
  * @param  {Number} postId Post ID
  * @param  {Object} post   Post attribute updates
- * @return {Object}        Action object
+ * @return {Object}        Action objects
  */
 export function editPost( siteId, postId = null, post ) {
 	// "post" is actually post attributes

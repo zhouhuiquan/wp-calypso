@@ -137,7 +137,7 @@ export const PostEditor = createReactClass( {
 		PostEditStore.on( 'change', this.onEditedPostChange );
 		this.debouncedSaveRawContent = debounce( this.saveRawContent, 200 );
 		this.throttledAutosave = throttle( this.autosave, 20000 );
-		this.debouncedAutosave = debounce( this.throttledAutosave, 3000 );
+		this.debouncedAutosave = debounce( this.throttledAutosave, 3000 ); // ??
 		this.switchEditorVisualMode = this.switchEditorMode.bind( this, 'tinymce' );
 		this.switchEditorHtmlMode = this.switchEditorMode.bind( this, 'html' );
 		this.debouncedCopySelectedText = debounce( this.copySelectedText, 200 );
@@ -301,7 +301,11 @@ export const PostEditor = createReactClass( {
 
 		const { content, excerpt, title } = post;
 
-		// console.log( post );
+		console.log( {
+			content: [ content, serverAutosave.content, content === serverAutosave.content ],
+			excerpt: [ excerpt, serverAutosave.excerpt, excerpt === serverAutosave.excerpt ],
+			title: [ title, serverAutosave.title, title === serverAutosave.title ],
+		} );
 
 		// ID: 627
 		// author_ID: "47178662"
@@ -329,6 +333,7 @@ export const PostEditor = createReactClass( {
 			// Comes from the postEditStore...
 			hasAutosave = get( this.state.post.meta, [ 'data', 'autosave' ] ); // x
 			console.log( { autosave: hasAutosave } )
+			this.compareAutosave();
 		}
 		const classes = classNames( 'post-editor', {
 			'is-loading': ! this.state.isEditorInitialized,
@@ -598,10 +603,10 @@ export const PostEditor = createReactClass( {
 			this.setConfirmationSidebar( { status: 'closed', context: 'content_edit' } );
 		}
 
-		this.debouncedAutosave();
+		this.debouncedAutosave(); // ??
 	},
 
-	onEditorContentChange: function() {
+	onEditorContentChange: function() { // ??
 		this.debouncedSaveRawContent();
 		this.debouncedAutosave();
 	},
@@ -638,7 +643,7 @@ export const PostEditor = createReactClass( {
 		this.debouncedSaveRawContent.cancel();
 	},
 
-	autosave: function() {
+	autosave: function() { // ?? autosave
 		var callback;
 
 		if ( this.state.isSaving === true || this.isSaveBlocked() ) {

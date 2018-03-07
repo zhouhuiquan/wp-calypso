@@ -11,9 +11,23 @@ import emitter from 'lib/mixins/emitter';
 /**
  * Internal dependencies
  */
+import {
+	// POST_EDIT_START_EDITING, // needed?
+	// POST_EDIT_STOP_EDITING,
+	POST_EDIT_LOADING_ERROR_SET,
+	POST_EDIT_AUTOSAVE_SUCCESS,
+	POST_EDIT_AUTOSAVE_ERROR,
+	POST_EDIT_ACTIVE_POST_SET,
+	POST_EDIT_AUTOSAVE_REQUEST,
+	POST_EDIT_POST_CREATE,
+	POST_EDIT_ATTRIBUTES_UPDATE,
+	POST_EDIT_RAW_CONTENT_EMPTY,
+	POST_EDIT_RAW_CONTENT_SET,
+} from 'state/action-types';
 import Dispatcher from 'dispatcher';
 import { decodeEntities } from 'lib/formatting';
 import * as utils from './utils';
+import { reduxDispatch } from 'lib/redux-bridge';
 
 /**
  * Module variables
@@ -37,7 +51,7 @@ var _initialRawContent = null,
 
 function resetState() {
 	debug( 'Reset state' );
-	_initialRawContent = null;
+	_initialRawContent = nulls;
 	_isAutosaving = false;
 	_isLoading = false;
 	_saveBlockers = [];
@@ -80,6 +94,7 @@ function startEditing( site, post ) {
 	_savedPost = Object.freeze( post );
 	_post = _savedPost;
 	_isLoading = false;
+	reduxDispatch( 'START_EDITING_POST')
 }
 
 function updatePost( site, post ) {
@@ -119,8 +134,16 @@ function setLoadingError( error ) {
 	resetState();
 	_loadingError = error;
 	_isLoading = false;
+
+	// mirror change in redux
+	reduxDispatch( {
+		type: POST_EDIT_LOADING_ERROR_SET,
+		payload: action.error,
+	} );
 }
 
+// set alone is pretty ambiguous...
+//
 function set( attributes ) {
 	var updatedPost;
 
@@ -195,6 +218,9 @@ function isContentEmpty( content ) {
 	);
 }
 
+// is it a good idea to limit explicitly here or nahh?
+const POST_EDITABLE_ATTRIBUTE_KEYS = [ 'content', 'slug', 'title' ];
+
 function dispatcherCallback( payload ) {
 	var action = payload.action,
 		changed;
@@ -207,38 +233,79 @@ function dispatcherCallback( payload ) {
 			if ( changed ) {
 				PostEditStore.emit( 'change' );
 			}
+
+			reduxDispatch( {
+				type: POST_EDIT_ATTRIBUTES_UPDATE,
+				paylod: {
+					attributes: pick( post, POST_EDITABLE_ATTRIBUTE_KEYS ),
+				}
+			} );
+
 			break;
 
 		case 'RESET_POST_RAW_CONTENT':
 			_initialRawContent = null;
 			setRawContent( null );
+
+			reduxDispatch( {
+				type: POST_EDIT_RAW_CONTENT_EMPTY,
+			} );
+
 			break;
 
 		case 'EDIT_POST_RAW_CONTENT':
 			setRawContent( action.content );
+
+			reduxDispatch( {
+				type: POST_EDIT_RAW_CONTENT_SET,
+				payload: {
+					rawContent: action.content,
+				}
+			} );
+
 			break;
 
-		case 'DRAFT_NEW_POST':
+		case 'DRAFT_NEW_POST': {
+			const { content, postType, site, title } = action;
+
 			initializeNewPost( action.site, {
 				postType: action.postType,
 				title: action.title,
 				content: action.content,
 			} );
+
+			reduxDispatch( {
+				type: POST_EDIT_POST_CREATE,
+				payload: {
+					siteId: site.ID,
+					content,
+					postType,
+					title,
+					draft: true, // ???
+				},
+			} );
+
 			PostEditStore.emit( 'change' );
 			break;
-
+		}
 		case 'START_EDITING_POST':
 			resetState();
+			// redux's version of isLoading will just be handled by reducing on POST_EDIT_AUTOSAVE_REQUEST
 			_isLoading = true;
 			PostEditStore.emit( 'change' );
 			break;
 
 		case 'STOP_EDITING_POST':
+			// This may not need to be translated across.
+			// if we have state slices keyed by postIds then we should be getting the
+			// right slice naturally via the selector.
 			resetState();
 			PostEditStore.emit( 'change' );
 			break;
 
 		case 'RECEIVE_POST_TO_EDIT':
+			// how is this different to 'RECEIVE_POST_BEING_EDITED'.
+			// the logic is different but the action types are confusingly similar
 			_isLoading = false;
 			if ( action.error ) {
 				setLoadingError( action.error );
@@ -253,11 +320,23 @@ function dispatcherCallback( payload ) {
 				_saveBlockers.push( action.key );
 				PostEditStore.emit( 'change' );
 			}
+
+			reduxDispatch( {
+				type: POST_EDIT_SOMETHING_SOMETHING_TRANSIENTS_SET,
+				payload: '???',
+			} );
+
 			break;
 
 		case 'UNBLOCK_EDIT_POST_SAVE':
 			_saveBlockers = without( _saveBlockers, action.key );
 			PostEditStore.emit( 'change' );
+
+			reduxDispatch( {
+				type: POST_EDIT_SOMETHING_SOMETHING_TRANSIENTS_REMOVE,
+				payload: '???',
+			} );
+
 			break;
 
 		case 'EDIT_POST_SAVE':
@@ -276,7 +355,7 @@ function dispatcherCallback( payload ) {
 			_queue = [];
 			break;
 
-		case 'RECEIVE_POST_BEING_EDITED':
+		case 'RECEIVE_POST_BEING_EDITED': {
 			if ( ! action.error ) {
 				updatePost( action.site, action.post );
 				if ( typeof action.rawContent === 'string' ) {
@@ -284,29 +363,61 @@ function dispatcherCallback( payload ) {
 				}
 				PostEditStore.emit( 'change' );
 			}
+
+			const postId = get( action, 'post.ID' );
+			// this might not be neccessary??
+			// do we need to consider action.post here or can we already rely on it?
+			reduxDispatch( {
+				type: POST_EDIT_ACTIVE_POST_SET,
+				payload: { postId },
+			} );
+
+			// At a guess, _queue related props are per post.
+			// we reset the queue here so that it's ready for the new post.
 			_queueChanges = false;
 			_queue = [];
 			break;
-
+		}
 		case 'POST_AUTOSAVE':
 			_isAutosaving = true;
+
+			// this should handle fecthes eventually...
+			// but for now it looks like it'll just handle the 'isAutosaving' state node.
+			reduxDispatch( {
+				type: POST_EDIT_AUTOSAVE_REQUEST,
+			} );
+
 			PostEditStore.emit( 'change' );
 			break;
 
 		case 'RECEIVE_POST_AUTOSAVE':
 			_isAutosaving = false;
 			if ( ! action.error ) {
+				// why is on the previewUrl changed here?
+				// is the rest of it handled elsewhere???
 				_previewUrl = utils.getPreviewURL(
 					action.site,
 					assign( { preview_URL: action.autosave.preview_URL }, _savedPost )
 				);
+
+				reduxDispatch( {
+					type: POST_EDIT_AUTOSAVE_SUCCESS,
+					payload: action.autosave,
+				} );
 			}
+
+			reduxDispatch( {
+				type: POST_EDIT_AUTOSAVE_ERROR,
+				payload: action.error,
+			} );
+
 			PostEditStore.emit( 'change' );
 			break;
 
 		case 'SET_POST_LOADING_ERROR':
 			_isLoading = false;
 			if ( action.error ) {
+				// redux dispatch happens in the function
 				setLoadingError( action.error );
 			}
 			PostEditStore.emit( 'change' );

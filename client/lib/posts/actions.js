@@ -221,6 +221,16 @@ PostActions = {
 	 * @param {String} key Unique identifier to sandbox block condition
 	 */
 	blockSave: function( key ) {
+		// Each of the following files calls the same key.
+		// components/tinymce/plugins/media/drop-zone.jsx:
+		// post-editor/editor-html-toolbar/index.jsx:
+		// post-editor/editor-media-modal/index.jsx:
+		//
+		// .blockSave( 'MEDIA_MODAL_TRANSIENT_INSERT' );
+		//
+		// Can we be more explicit here and just have a state node of
+		// isBlocked?
+		// or hasTransientUploads and then add other blockers in the future if they arise.
 		Dispatcher.handleViewAction( {
 			type: 'BLOCK_EDIT_POST_SAVE',
 			key: key,
