@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+/** @format */
 /*
 This file modified for use in wp-calypso, from: https://github.com/isaacs/rimraf
 The ISC License
@@ -35,7 +35,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 const target = process.argv[ 2 ];
 const extensions = process.argv.slice( 3 );
 
-console.log(target, extensions);
+const noopExt = [ ':!!NOOP;/' ];
 
 module.exports = rimraf
 rimraf.sync = rimrafSync
@@ -55,7 +55,7 @@ var timeout = 0
 
 var isWindows = (process.platform === "win32")
 
-rimraf( target, {glob: false}, (er) => {} );
+rimraf( target, {glob: false, extensions: extensions}, (er) => {} );
 
 function defaults (options) {
     var methods = [
@@ -79,6 +79,7 @@ function defaults (options) {
     }
     options.disableGlob = options.disableGlob || false
     options.glob = options.glob || defaultGlobOpts
+    options.extensions = options.extensions || []
 }
 
 function rimraf (p, options, cb) {
@@ -180,12 +181,15 @@ function rimraf_ (p, options, cb) {
         if (er && er.code === "EPERM" && isWindows)
             fixWinEPERM(p, options, er, cb)
 
-        if (st && st.isDirectory())
-            return rmdir(p, options, er, cb)
-
-        const should_delete = extensions.length ? extensions.reduce( (accumulator, current, idx) => {
+        const should_delete = options.extensions.length ? options.extensions.reduce( (accumulator, current, idx) => {
             return accumulator || p.endsWith( current );
         }, false ) : true
+
+        const baby_options = Object.assign( {}, options );
+        baby_options.extensions = options.extensions.length ? noopExt : options.extensions;
+
+        if (st && st.isDirectory())
+            return rmdir(p, baby_options, er, cb)
 
         if ( should_delete ) {
             options.unlink(p, function (er) {
@@ -194,16 +198,16 @@ function rimraf_ (p, options, cb) {
                         return cb(null)
                     if (er.code === "EPERM")
                         return (isWindows)
-                            ? fixWinEPERM(p, options, er, cb)
-                            : rmdir(p, options, er, cb)
+                            ? fixWinEPERM(p, baby_options, er, cb)
+                            : rmdir(p, baby_options, er, cb)
                     if (er.code === "EISDIR")
-                        return rmdir(p, options, er, cb)
+                        return rmdir(p, baby_options, er, cb)
                 }
                 return cb(er)
             })
         } else {
             // try and delete it as a directory -- if it's a file, it won't delete
-            return rmdir(p, options, er, cb)
+            return rmdir(p, baby_options, er, cb)
         }
     })
 }
