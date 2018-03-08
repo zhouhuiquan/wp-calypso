@@ -1,8 +1,11 @@
 /**
  * "popover" theme for `component/tip`.
  */
-
 .popover {
+	position: relative;
+}
+
+.popover__wrapper {
 	font-size: 11px;
 	z-index: z-index( 'root', '.popover' );
 	position: absolute;

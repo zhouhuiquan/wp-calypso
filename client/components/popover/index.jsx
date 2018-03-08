@@ -16,7 +16,6 @@ import { uniqueId } from 'lodash';
 /**
  * Internal dependencies
  */
-import RootChild from 'components/root-child';
 import {
 	bindWindowListeners,
 	unbindWindowListeners,
@@ -53,7 +52,6 @@ class Popover extends Component {
 			'left',
 			'top left',
 		] ),
-		rootClassName: PropTypes.string,
 		showDelay: PropTypes.number,
 		onClose: PropTypes.func,
 		onShow: PropTypes.func,
@@ -449,12 +447,12 @@ class Popover extends Component {
 			return null;
 		}
 
-		const classes = classNames( 'popover', this.props.className, this.state.positionClass );
+		const classes = classNames( 'popover__wrapper', this.props.className, this.state.positionClass );
 
 		this.debug( 'rendering ...' );
 
 		return (
-			<RootChild className={ this.props.rootClassName }>
+			<div className="popover">
 				<div style={ this.getStylePosition() } className={ classes }>
 					<div className="popover__arrow" />
 
@@ -462,7 +460,7 @@ class Popover extends Component {
 						{ this.props.children }
 					</div>
 				</div>
-			</RootChild>
+			</div>
 		);
 	}
 }
