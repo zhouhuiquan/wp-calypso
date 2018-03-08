@@ -299,30 +299,6 @@ function offset( pos, el, target ) {
 	return _pos;
 }
 
-/**
- * Extracted from `timoxley/offset`, but directly using a
- * TextRectangle instead of getting another version.
- *
- * @param {TextRectangle} box - result from a `getBoundingClientRect()` call
- * @param {Document} doc - Document instance to use
- * @return {Object} an object with `top` and `left` Number properties
- * @api private
- */
-
-function _offset( box, doc ) {
-	const body = doc.body || doc.getElementsByTagName( 'body' )[ 0 ];
-	const docEl = doc.documentElement || body.parentNode;
-	const clientTop = docEl.clientTop || body.clientTop || 0;
-	const clientLeft = docEl.clientLeft || body.clientLeft || 0;
-	const scrollTop = window.pageYOffset || docEl.scrollTop;
-	const scrollLeft = window.pageXOffset || docEl.scrollLeft;
-
-	return {
-		top: box.top + scrollTop - clientTop,
-		left: box.left + scrollLeft - clientLeft,
-	};
-}
-
 /*
  * Constrain a left to keep the element in the window
  * @param  {Object} off offset object with left property
