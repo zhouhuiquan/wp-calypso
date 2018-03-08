@@ -155,19 +155,22 @@ function chooseSecondary( primary, prefered, el, target, w, h ) {
 	let bestPos;
 	let best = 0;
 	const max = w * h;
+	const targetRect = getBoundingClientRect( target );
 
 	for ( let i = 0, len = order.length; i < len; i++ ) {
 		const pos = order[ i ];
 		const off = offset( pos, el, target );
-		const offRight = off.left + w;
-		const offBottom = off.top + h;
+		const offTop = targetRect.top + off.top;
+		const offLeft = targetRect.left + off.left;
+		const offRight = offLeft + w;
+		const offBottom = offTop + h;
 		const yVisible = Math.min(
-			off.top < viewport.top ? offBottom - viewport.top : viewport.bottom - off.top,
+			offTop < viewport.top ? offBottom - viewport.top : viewport.bottom - offTop,
 			h
 		);
 
 		const xVisible = Math.min(
-			off.left < viewport.left ? offRight - viewport.left : viewport.right - off.left,
+			offLeft < viewport.left ? offRight - viewport.left : viewport.right - offLeft,
 			w
 		);
 
