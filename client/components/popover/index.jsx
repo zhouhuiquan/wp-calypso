@@ -447,7 +447,11 @@ class Popover extends Component {
 			return null;
 		}
 
-		const classes = classNames( 'popover__wrapper', this.props.className, this.state.positionClass );
+		const classes = classNames(
+			'popover__wrapper',
+			this.props.className,
+			this.state.positionClass
+		);
 
 		this.debug( 'rendering ...' );
 

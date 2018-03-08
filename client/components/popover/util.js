@@ -136,21 +136,21 @@ function chooseSecondary( primary, prefered, el, target, w, h ) {
 
 	const order = prefered
 		? [
-				isVertical ? `${ primary } ${ prefered }` : `${ prefered } ${ primary }`,
-				primary,
-				isVertical
-					? `${ primary } ${ opposite[ prefered ] }`
-					: `${ opposite[ prefered ] } ${ primary }`,
-			]
+			isVertical ? `${ primary } ${ prefered }` : `${ prefered } ${ primary }`,
+			primary,
+			isVertical
+				? `${ primary } ${ opposite[ prefered ] }`
+				: `${ opposite[ prefered ] } ${ primary }`,
+		]
 		: [
-				primary,
-				isVertical
-					? `${ primary } ${ adjacent[ primary ] }`
-					: `${ adjacent[ primary ] } ${ primary }`,
-				isVertical
-					? `${ primary } ${ opposite[ adjacent[ primary ] ] }`
-					: `${ opposite[ adjacent[ primary ] ] } ${ primary }`,
-			];
+			primary,
+			isVertical
+				? `${ primary } ${ adjacent[ primary ] }`
+				: `${ adjacent[ primary ] } ${ primary }`,
+			isVertical
+				? `${ primary } ${ opposite[ adjacent[ primary ] ] }`
+				: `${ opposite[ adjacent[ primary ] ] } ${ primary }`,
+		];
 
 	let bestPos;
 	let best = 0;
@@ -190,111 +190,105 @@ function chooseSecondary( primary, prefered, el, target, w, h ) {
 function offset( pos, el, target ) {
 	const pad = 15;
 	const tipRect = getBoundingClientRect( el );
-
 	if ( ! tipRect ) {
 		throw new Error( 'could not get bounding client rect of Tip element' );
 	}
 
 	const ew = tipRect.width;
 	const eh = tipRect.height;
-	const targetRect = getBoundingClientRect( target );
 
+	const targetRect = getBoundingClientRect( target );
 	if ( ! targetRect ) {
 		throw new Error( 'could not get bounding client rect of `target`' );
 	}
 
 	const tw = targetRect.width;
 	const th = targetRect.height;
-	const to = _offset( targetRect, document );
-
-	if ( ! to ) {
-		throw new Error( 'could not determine page offset of `target`' );
-	}
 
 	let _pos = {};
 
 	switch ( pos ) {
 		case 'top':
 			_pos = {
-				top: to.top - eh,
-				left: to.left + tw / 2 - ew / 2,
+				top: 0 - th - eh,
+				left: tw / 2 - ew / 2,
 			};
 			break;
 
 		case 'bottom':
 			_pos = {
-				top: to.top + th,
-				left: to.left + tw / 2 - ew / 2,
+				top: 0,
+				left: tw / 2 - ew / 2,
 			};
 			break;
 
 		case 'right':
 			_pos = {
-				top: to.top + th / 2 - eh / 2,
-				left: to.left + tw,
+				top: 0 - th / 2 - eh / 2,
+				left: tw,
 			};
 			break;
 
 		case 'left':
 			_pos = {
-				top: to.top + th / 2 - eh / 2,
-				left: to.left - ew,
+				top: 0 - th / 2 - eh / 2,
+				left: 0 - ew,
 			};
 			break;
 
 		case 'top left':
 			_pos = {
-				top: to.top - eh,
-				left: to.left + tw / 2 - ew + pad,
+				top: 0 - th - eh,
+				left: tw / 2 - ew + pad,
 			};
 			break;
 
 		case 'top right':
 			_pos = {
-				top: to.top - eh,
-				left: to.left + tw / 2 - pad,
+				top: 0 - th - eh,
+				left: tw / 2 - pad,
 			};
 			break;
 
 		case 'bottom left':
 			_pos = {
-				top: to.top + th,
-				left: to.left + tw / 2 - ew + pad,
+				top: 0,
+				left: tw / 2 - ew + pad,
 			};
 			break;
 
 		case 'bottom right':
 			_pos = {
-				top: to.top + th,
-				left: to.left + tw / 2 - pad,
+				top: 0,
+				left: tw / 2 - pad,
 			};
 			break;
 
 		case 'left top':
 			_pos = {
-				top: to.top + th / 2 - eh,
-				left: to.left - ew,
+				top: 0 - th - eh,
+				left: 0 - ew,
 			};
 			break;
 
 		case 'left bottom':
 			_pos = {
-				top: to.top + th / 2,
-				left: to.left - ew,
+				top: 0,
+				left: 0 - ew,
 			};
 			break;
 
 		case 'right top':
 			_pos = {
-				top: to.top + th / 2 - eh,
-				left: to.left + tw,
+				top: 0 - th - eh,
+				left: tw,
 			};
 			break;
 
 		case 'right bottom':
 			_pos = {
-				top: to.top + th / 2,
-				left: to.left + tw,
+				top: 0,
+				left: tw,
 			};
 			break;
 
@@ -331,13 +325,13 @@ function _offset( box, doc ) {
 
 /*
  * Constrain a left to keep the element in the window
- * @param  {Object} pl proposed left
- * @param  {Number} ew tip element width
- * @return {Number}    the best width
+ * @param  {Object} off offset object with left property
+ * @param  {Object} el  popover element
+ * @return {Number}     a new offset value constrained to not fall offscreen
  */
 const constrainLeft = function( off, el ) {
-	const ew = getBoundingClientRect( el ).width;
-	off.left = Math.max( 0, Math.min( off.left, viewport.width - ew ) );
+	const bounds = getBoundingClientRect( el );
+	off.left = Math.max( -1 * bounds.left, off.left );
 
 	return off;
 };
