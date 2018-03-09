@@ -4,7 +4,7 @@
  * External dependencies
  */
 
-import { camelCase, clone, isPlainObject, omit, pick, reject, snakeCase } from 'lodash';
+import { isBoolean, camelCase, clone, isPlainObject, omit, pick, reject, snakeCase } from 'lodash';
 import debugFactory from 'debug';
 const debug = debugFactory( 'calypso:wpcom-undocumented:undocumented' );
 import url from 'url';
@@ -2500,6 +2500,12 @@ Undocumented.prototype.updateSiteName = function( siteId, blogname, discard, non
 		{},
 		{ blogname, discard, nonce }
 	);
+};
+
+Undocumented.prototype.checkSiteAddressAvailability = function( siteId, siteAddress, returnValue ) {
+	return new Promise( resolve => {
+		setTimeout( resolve, 1000, isBoolean( returnValue ) ? returnValue : true );
+	} );
 };
 
 export default Undocumented;
