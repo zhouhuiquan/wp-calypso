@@ -10,6 +10,9 @@ import { get } from 'lodash';
  */
 import wpcom from 'lib/wp';
 import {
+	SITE_ADDRESS_AVAILABILITY_REQUEST,
+	SITE_ADDRESS_AVAILABILITY_SUCCESS,
+	SITE_ADDRESS_AVAILABILITY_ERROR,
 	SITE_RENAME_REQUEST,
 	SITE_RENAME_REQUEST_FAILURE,
 	SITE_RENAME_REQUEST_SUCCESS,
@@ -39,6 +42,33 @@ const dispatchErrorNotice = ( dispatch, error ) =>
 			error.message || 'Sorry, we were unable to complete your domain change. Please try again.'
 		)
 	);
+
+export const requestSiteAddressAvailability = ( siteId, siteAddress, testBool ) => dispatch => {
+	dispatch( {
+		type: SITE_ADDRESS_AVAILABILITY_REQUEST,
+		siteId,
+		siteAddress,
+	} );
+
+	return wpcom
+		.undocumented()
+		.checkSiteAddressAvailability( siteId, siteAddress, testBool )
+		.then( isAddressAvailable => {
+			dispatch( {
+				type: SITE_ADDRESS_AVAILABILITY_SUCCESS,
+				siteId,
+				siteAddress,
+				isAddressAvailable,
+			} );
+		} )
+		.catch( error => {
+			dispatch( {
+				type: SITE_ADDRESS_AVAILABILITY_ERROR,
+				siteId,
+				error,
+			} );
+		} );
+};
 
 export const requestSiteRename = ( siteId, newBlogName, discard ) => dispatch => {
 	dispatch( {

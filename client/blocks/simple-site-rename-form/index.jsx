@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
-import { get, flow, inRange, isEmpty } from 'lodash';
+import { get, flow, includes, inRange, isEmpty } from 'lodash';
 import Gridicon from 'gridicons';
 import { connect } from 'react-redux';
 
@@ -19,8 +19,13 @@ import FormInputValidation from 'components/forms/form-input-validation';
 import ConfirmationDialog from './dialog';
 import FormSectionHeading from 'components/forms/form-section-heading';
 import TrackComponentView from 'lib/analytics/track-component-view';
-import { requestSiteRename } from 'state/site-rename/actions';
-import { isRequestingSiteRename } from 'state/selectors';
+import { requestSiteRename, requestSiteAddressAvailability } from 'state/site-rename/actions';
+import {
+	isRequestingSiteRename,
+	getSiteAddressAvailabilityPending,
+	getValidatedSiteAddress,
+	getValidatedSiteAddressAvailability,
+} from 'state/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
 
 const SUBDOMAIN_LENGTH_MINIMUM = 4;
@@ -88,12 +93,23 @@ export class SimpleSiteRenameForm extends Component {
 	}
 
 	onSubmit = event => {
-		const domainFieldError = this.getDomainValidationMessage( this.state.domainFieldValue );
-
-		this.setState( { domainFieldError } );
-		! domainFieldError && this.showConfirmationDialog();
+		const { siteId } = this.props;
+		const { domainFieldValue } = this.state;
+		const domainFieldError = this.getDomainValidationMessage( domainFieldValue );
 
 		event.preventDefault();
+
+		if ( domainFieldError ) {
+			this.setState( { domainFieldError } );
+			return;
+		}
+
+		this.props.requestSiteAddressAvailability(
+			siteId,
+			domainFieldValue,
+			// This line is just for demo, chop it eventually!
+			! includes( domainFieldValue, 'unavailable' )
+		);
 	};
 
 	onDialogClose = () => {
@@ -102,9 +118,36 @@ export class SimpleSiteRenameForm extends Component {
 		} );
 	};
 
+	componentWillUpdate( nextProps, nextState ) {
+		const {
+			isAvailabilityPending,
+			validatedAddress,
+			isValidatedAddressAvailable,
+			translate,
+		} = nextProps;
+		const { domainFieldValue } = nextState;
+		const availabilityRequestChanged = isAvailabilityPending !== this.props.isAvailabilityPending;
+		const isAddressAvailable = validatedAddress === domainFieldValue && isValidatedAddressAvailable;
+
+		if ( availabilityRequestChanged && ! isAvailabilityPending ) {
+			isAddressAvailable
+				? this.setState( {
+						showDialog: true,
+					} )
+				: this.setState( {
+						domainFieldError: translate( 'Site address is unavailable :(' ),
+					} );
+		}
+	}
+
 	onFieldChange = event => {
+		const { isAvailabilityPending } = this.props;
 		const domainFieldValue = get( event, 'target.value', '' ).toLowerCase();
 		const shouldUpdateError = ! isEmpty( this.state.domainFieldError );
+
+		if ( isAvailabilityPending ) {
+			return; // lock the input up while fetching
+		}
 
 		this.setState( {
 			domainFieldValue,
@@ -115,12 +158,19 @@ export class SimpleSiteRenameForm extends Component {
 	};
 
 	render() {
-		const { currentDomain, currentDomainSuffix, isSiteRenameRequesting, translate } = this.props;
+		const {
+			currentDomain,
+			currentDomainSuffix,
+			isAvailabilityPending,
+			isSiteRenameRequesting,
+			translate,
+		} = this.props;
 		const currentDomainName = get( currentDomain, 'name', '' );
 		const currentDomainPrefix = currentDomainName.replace( currentDomainSuffix, '' );
 		const { domainFieldError, domainFieldValue } = this.state;
 		const isDisabled =
 			! domainFieldValue || !! domainFieldError || domainFieldValue === currentDomainPrefix;
+		const isBusy = isSiteRenameRequesting || isAvailabilityPending;
 
 		return (
 			<div className="simple-site-rename-form">
@@ -156,7 +206,7 @@ export class SimpleSiteRenameForm extends Component {
 									) }
 								</p>
 							</div>
-							<FormButton disabled={ isDisabled } busy={ isSiteRenameRequesting } type="submit">
+							<FormButton disabled={ isDisabled } busy={ isBusy } type="submit">
 								{ translate( 'Change Site Address' ) }
 							</FormButton>
 						</div>
@@ -174,12 +224,17 @@ export default flow(
 			const siteId = getSelectedSiteId( state );
 
 			return {
+				siteId,
 				selectedSiteId: siteId,
 				isSiteRenameRequesting: isRequestingSiteRename( state, siteId ),
+				isAvailabilityPending: getSiteAddressAvailabilityPending( state, siteId ),
+				isValidatedAddressAvailable: getValidatedSiteAddressAvailability( state, siteId ),
+				validatedAddress: getValidatedSiteAddress( state, siteId ),
 			};
 		},
 		{
 			requestSiteRename,
+			requestSiteAddressAvailability,
 		}
 	)
 )( SimpleSiteRenameForm );

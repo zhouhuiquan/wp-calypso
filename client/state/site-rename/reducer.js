@@ -1,9 +1,17 @@
 /** @format */
 /**
+ * External dependencies
+ */
+import { get } from 'lodash';
+
+/**
  * Internal dependencies
  */
 import { combineReducers, createReducer } from 'state/utils';
 import {
+	SITE_ADDRESS_AVAILABILITY_REQUEST,
+	SITE_ADDRESS_AVAILABILITY_SUCCESS,
+	SITE_ADDRESS_AVAILABILITY_ERROR,
 	SITE_RENAME_REQUEST,
 	SITE_RENAME_REQUEST_FAILURE,
 	SITE_RENAME_REQUEST_SUCCESS,
@@ -68,7 +76,47 @@ export const status = createReducer(
 	}
 );
 
+export const availability = createReducer(
+	{},
+	{
+		[ SITE_ADDRESS_AVAILABILITY_REQUEST ]: ( state, { siteId } ) => ( {
+			...state,
+			[ siteId ]: {
+				...get( state, siteId, {} ),
+				pending: true,
+				error: null,
+				validatedAddress: null,
+				isValidatedAddressAvailable: null,
+			},
+		} ),
+		[ SITE_ADDRESS_AVAILABILITY_SUCCESS ]: (
+			state,
+			{ siteId, siteAddress, isAddressAvailable }
+		) => ( {
+			...state,
+			[ siteId ]: {
+				...get( state, siteId, {} ),
+				pending: false,
+				error: null,
+				validatedAddress: siteAddress,
+				isValidatedAddressAvailable: isAddressAvailable,
+			},
+		} ),
+		[ SITE_ADDRESS_AVAILABILITY_ERROR ]: ( state, { siteId, error } ) => ( {
+			...state,
+			[ siteId ]: {
+				...get( state, siteId, {} ),
+				pending: false,
+				error,
+				validatedAddress: null,
+				isValidatedAddressAvailable: null,
+			},
+		} ),
+	}
+);
+
 export default combineReducers( {
+	availability,
 	status,
 	requesting,
 } );
