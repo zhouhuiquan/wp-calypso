@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { string, node } from 'prop-types';
 import Gridicon from 'gridicons';
 
 /**
@@ -58,5 +59,11 @@ function EnvironmentBadge( { badge, feedbackURL, children } ) {
 		</div>
 	);
 }
+
+EnvironmentBadge.propTypes = {
+	badge: string.isRequired,
+	feedbackURL: string.isRequired,
+	children: node,
+};
 
 export default EnvironmentBadge;
