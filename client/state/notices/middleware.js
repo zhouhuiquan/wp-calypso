@@ -76,25 +76,25 @@ import { onJetpackModuleActivationActionMessage } from './jetpack-modules';
  * Handlers
  */
 
-export const onBillingReceiptEmailSendFailure = () =>
+const onBillingReceiptEmailSendFailure = () =>
 	errorNotice(
 		translate(
 			'There was a problem sending your receipt. Please try again later or contact support.'
 		)
 	);
 
-export const onBillingReceiptEmailSendSuccess = () =>
+const onBillingReceiptEmailSendSuccess = () =>
 	successNotice( translate( 'Your receipt was sent by email successfully.' ) );
 
-export const onGravatarReceiveImageFailure = action => errorNotice( action.errorMessage );
+const onGravatarReceiveImageFailure = action => errorNotice( action.errorMessage );
 
-export const onGravatarUploadRequestFailure = () =>
+const onGravatarUploadRequestFailure = () =>
 	errorNotice( translate( 'Hmm, your new Gravatar was not saved. Please try uploading again.' ) );
 
-export const onGravatarUploadRequestSuccess = () =>
+const onGravatarUploadRequestSuccess = () =>
 	successNotice( translate( 'You successfully uploaded a new Gravatar — looking sharp!' ) );
 
-export const onDeleteInvitesFailure = action => ( dispatch, getState ) => {
+const onDeleteInvitesFailure = action => ( dispatch, getState ) => {
 	for ( const inviteId of action.inviteIds ) {
 		const invite = getInviteForSite( getState(), action.siteId, inviteId );
 		dispatch(
@@ -107,15 +107,15 @@ export const onDeleteInvitesFailure = action => ( dispatch, getState ) => {
 	}
 };
 
-export const onDeleteInvitesSuccess = ( { inviteIds } ) =>
+const onDeleteInvitesSuccess = ( { inviteIds } ) =>
 	successNotice( translate( 'Invite deleted.', 'Invites deleted.', { count: inviteIds.length } ), {
 		displayOnNextPage: true,
 	} );
 
-export const onInviteResendRequestFailure = () =>
+const onInviteResendRequestFailure = () =>
 	errorNotice( translate( 'Invitation failed to resend.' ) );
 
-export const onPostDeleteFailure = action => ( dispatch, getState ) => {
+const onPostDeleteFailure = action => ( dispatch, getState ) => {
 	const post = getSitePost( getState(), action.siteId, action.postId );
 
 	let message;
@@ -132,7 +132,7 @@ export const onPostDeleteFailure = action => ( dispatch, getState ) => {
 
 const onPostDeleteSuccess = () => successNotice( translate( 'Post successfully deleted' ) );
 
-export const onPostRestoreFailure = action => ( dispatch, getState ) => {
+const onPostRestoreFailure = action => ( dispatch, getState ) => {
 	const post = getSitePost( getState(), action.siteId, action.postId );
 
 	let message;
@@ -149,7 +149,7 @@ export const onPostRestoreFailure = action => ( dispatch, getState ) => {
 
 const onPostRestoreSuccess = () => successNotice( translate( 'Post successfully restored' ) );
 
-export function onPostSaveSuccess( action ) {
+function onPostSaveSuccess( action ) {
 	let text;
 	switch ( action.post.status ) {
 		case 'trash':
@@ -164,7 +164,7 @@ export function onPostSaveSuccess( action ) {
 	return text ? successNotice( text ) : null;
 }
 
-export const onPublicizeConnectionCreate = ( { connection } ) =>
+const onPublicizeConnectionCreate = ( { connection } ) =>
 	successNotice(
 		translate( 'The %(service)s account was successfully connected.', {
 			args: { service: connection.label },
@@ -173,7 +173,7 @@ export const onPublicizeConnectionCreate = ( { connection } ) =>
 		{ id: 'publicize' }
 	);
 
-export const onPublicizeConnectionCreateFailure = ( { error } ) =>
+const onPublicizeConnectionCreateFailure = ( { error } ) =>
 	errorNotice(
 		error.message ||
 			translate( 'An error occurred while connecting the account.', {
@@ -182,7 +182,7 @@ export const onPublicizeConnectionCreateFailure = ( { error } ) =>
 		{ id: 'publicize' }
 	);
 
-export const onPublicizeConnectionDelete = ( { connection } ) =>
+const onPublicizeConnectionDelete = ( { connection } ) =>
 	successNotice(
 		translate( 'The %(service)s account was successfully disconnected.', {
 			args: { service: connection.label },
@@ -191,7 +191,7 @@ export const onPublicizeConnectionDelete = ( { connection } ) =>
 		{ id: 'publicize' }
 	);
 
-export const onPublicizeConnectionDeleteFailure = ( { error } ) =>
+const onPublicizeConnectionDeleteFailure = ( { error } ) =>
 	errorNotice(
 		translate( 'The %(service)s account was unable to be disconnected.', {
 			args: { service: error.label },
@@ -200,7 +200,7 @@ export const onPublicizeConnectionDeleteFailure = ( { error } ) =>
 		{ id: 'publicize' }
 	);
 
-export const onPublicizeConnectionUpdate = ( { connection } ) =>
+const onPublicizeConnectionUpdate = ( { connection } ) =>
 	successNotice(
 		translate( 'The %(service)s account was successfully updated.', {
 			args: { service: connection.label },
@@ -209,7 +209,7 @@ export const onPublicizeConnectionUpdate = ( { connection } ) =>
 		{ id: 'publicize' }
 	);
 
-export const onPublicizeConnectionUpdateFailure = ( { error } ) =>
+const onPublicizeConnectionUpdateFailure = ( { error } ) =>
 	errorNotice(
 		translate( 'The %(service)s account was unable to be updated.', {
 			args: { service: error.label },
@@ -296,7 +296,7 @@ const onSiteDeleteFailure = ( { error } ) => {
  * Handler action type mapping
  */
 
-export const handlers = {
+const handlers = {
 	[ ACCOUNT_RECOVERY_SETTINGS_FETCH_FAILED ]: onAccountRecoverySettingsFetchFailed,
 	[ ACCOUNT_RECOVERY_SETTINGS_UPDATE_SUCCESS ]: onAccountRecoverySettingsUpdateSuccess,
 	[ ACCOUNT_RECOVERY_SETTINGS_UPDATE_FAILED ]: onAccountRecoverySettingsUpdateFailed,
