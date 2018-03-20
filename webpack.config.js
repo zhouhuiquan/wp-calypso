@@ -17,6 +17,7 @@ const NameAllModulesPlugin = require( 'name-all-modules-plugin' );
 const AssetsPlugin = require( 'assets-webpack-plugin' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
 const prism = require( 'prismjs' );
+const ClosureCompiler = require( 'webpack-closure-compiler' );
 
 /**
  * Internal dependencies
@@ -282,11 +283,13 @@ if ( ! config.isEnabled( 'desktop' ) ) {
 
 if ( shouldMinify ) {
 	webpackConfig.plugins.push(
-		new UglifyJsPlugin( {
-			cache: 'docker' !== process.env.CONTAINER,
-			parallel: true,
-			uglifyOptions: { ecma: 5 },
-			sourceMap: Boolean( process.env.SOURCEMAP ),
+		new ClosureCompiler( {
+			compiler: {
+				language_in: 'ECMASCRIPT6',
+				language_out: 'ECMASCRIPT5',
+				compilation_level: 'ADVANCED',
+			},
+			concurrency: 7,
 		} )
 	);
 }
