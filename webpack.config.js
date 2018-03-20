@@ -288,6 +288,7 @@ if ( shouldMinify ) {
 				language_in: 'ECMASCRIPT6',
 				language_out: 'ECMASCRIPT5',
 				compilation_level: 'ADVANCED',
+				externs: './client/externs',
 			},
 			concurrency: 7,
 		} )
