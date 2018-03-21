@@ -157,7 +157,11 @@ class GoogleLoginButton extends Component {
 
 		if ( accessType === 'offline' ) {
 			// response handler format: function( { code } ) {}
-			return authUser.grantOfflineAccess().then( responseHandler );
+			return authUser
+				.grantOfflineAccess( {
+					scope: this.props.scope,
+				} )
+				.then( responseHandler );
 		}
 
 		// Options are documented here:
