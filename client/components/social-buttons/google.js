@@ -93,12 +93,12 @@ class GoogleLoginButton extends Component {
 						fetch_basic_profile: this.props.fetchBasicProfile,
 						ux_mode: this.props.uxMode,
 						redirect_uri: this.props.redirectUri,
+						scope: this.props.scope,
 					} )
 					.then( () =>
 						gapi.auth2
 							.init( {
 								client_id: this.props.clientId,
-								scope: this.props.scope,
 							} )
 							.then( () => {
 								this.setState( { isDisabled: false } );
