@@ -34,11 +34,13 @@ class GoogleLoginButton extends Component {
 		onClick: PropTypes.func,
 		hideGoogleIcon: PropTypes.bool,
 		accessType: PropTypes.string,
+		prompt: PropTypes.string,
 	};
 
 	static defaultProps = {
 		scope: 'https://www.googleapis.com/auth/userinfo.profile',
 		accessType: 'online',
+		prompt: 'select_account',
 		fetchBasicProfile: true,
 		onClick: noop,
 	};
@@ -151,7 +153,7 @@ class GoogleLoginButton extends Component {
 			return;
 		}
 
-		const { accessType, responseHandler } = this.props;
+		const { accessType, prompt, responseHandler, scope } = this.props;
 
 		const authUser = window.gapi.auth2.getAuthInstance();
 
@@ -159,7 +161,8 @@ class GoogleLoginButton extends Component {
 			// response handler format: function( { code } ) {}
 			return authUser
 				.grantOfflineAccess( {
-					scope: this.props.scope,
+					prompt,
+					scope,
 				} )
 				.then( responseHandler );
 		}
@@ -168,7 +171,10 @@ class GoogleLoginButton extends Component {
 		// https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2signinoptions
 		return (
 			authUser
-				.signIn( { prompt: 'select_account' } )
+				.signIn( {
+					prompt,
+					scope,
+				} )
 				// response handler format: function( currentUser ) {}
 				.then( responseHandler, error => {
 					this.props.recordTracksEvent( 'calypso_login_social_button_failure', {
