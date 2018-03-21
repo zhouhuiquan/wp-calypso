@@ -117,6 +117,7 @@ class SelectBusinessType extends Component {
 						<GoogleLoginButton
 							clientId={ config( 'google_oauth_client_id' ) }
 							scope={ googleMyBusinessAPIScope }
+							fetchBasicProfile={ false }
 							responseHandler={ this.handleGoogleResponse }
 							uxMode={ 'popup' }
 							redirectUri={ 'https://calypso.live' }
