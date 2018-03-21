@@ -22,6 +22,11 @@ import GoogleLoginButton from 'components/social-buttons/google';
 import { preventWidows as preventWidowFormatting } from 'lib/formatting';
 import { connectSocialUser } from 'state/login/actions';
 
+const googleMyBusinessAPIScope = [
+	'https://www.googleapis.com/auth/userinfo.profile',
+	'https://www.googleapis.com/auth/plus.business.manage',
+].join( ' ' );
+
 class SelectBusinessType extends Component {
 	static propTypes = {
 		recordTracksEvent: PropTypes.func.isRequired,
@@ -49,6 +54,7 @@ class SelectBusinessType extends Component {
 		const socialInfo = {
 			service: 'google',
 			authorization_code: code,
+			scope: googleMyBusinessAPIScope,
 		};
 
 		this.props.connectSocialUser( socialInfo ).then( ( { access_token } ) => {
@@ -111,10 +117,7 @@ class SelectBusinessType extends Component {
 					<div className="select-business-type__cta-card-button-container">
 						<GoogleLoginButton
 							clientId={ config( 'google_oauth_client_id' ) }
-							scope={ [
-								'https://www.googleapis.com/auth/userinfo.profile',
-								'https://www.googleapis.com/auth/plus.business.manage',
-							].join( ' ' ) }
+							scope={ googleMyBusinessAPIScope }
 							responseHandler={ this.handleGoogleResponse }
 							uxMode={ 'popup' }
 							redirectUri={ 'https://calypso.live' }
