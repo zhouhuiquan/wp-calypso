@@ -22,10 +22,9 @@ import GoogleLoginButton from 'components/social-buttons/google';
 import { preventWidows as preventWidowFormatting } from 'lib/formatting';
 import { connectSocialUser } from 'state/login/actions';
 
-const googleMyBusinessAPIScope = [
-	'https://www.googleapis.com/auth/userinfo.profile',
-	'https://www.googleapis.com/auth/plus.business.manage',
-].join( ' ' );
+const googleMyBusinessAPIScope = [ 'https://www.googleapis.com/auth/plus.business.manage' ].join(
+	' '
+);
 
 class SelectBusinessType extends Component {
 	static propTypes = {
