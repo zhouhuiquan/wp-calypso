@@ -30,7 +30,7 @@ const ReprintDialog = ( props ) => {
 			action: 'confirm',
 			onClick: onConfirm,
 			isPrimary: true,
-			disabled: reprintDialog && reprintDialog.isFetching,
+			disabled: reprintDialog && ! reprintDialog.fileData,
 			additionalClassNames: reprintDialog && reprintDialog.isFetching ? 'is-busy' : '',
 			label: translate( 'Print' ),
 		},
