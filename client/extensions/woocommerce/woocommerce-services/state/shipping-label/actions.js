@@ -733,7 +733,10 @@ export const fetchLabelsStatus = ( orderId, siteId ) => ( dispatch, getState ) =
 			if ( ! saving ) {
 				dispatch( { type: WOOCOMMERCE_SERVICES_SHIPPING_LABEL_STATUS_RESPONSE, orderId, siteId, labelId, response, error } );
 				if ( error ) {
-					dispatch( NoticeActions.errorNotice( error.toString() ) );
+					dispatch( NoticeActions.errorNotice(
+						`Failed to retrieve shipping label refund status. ${ error }`,
+						{ id: 'wcs-fetch-label-status' }
+					) );
 				}
 			}
 		};
