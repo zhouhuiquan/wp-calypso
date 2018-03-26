@@ -9,7 +9,6 @@ import { defer, noop } from 'lodash';
 /**
  * Internal dependencies
  */
-import RootChild from 'components/root-child';
 import DialogBase from './dialog-base';
 
 class Dialog extends Component {
@@ -36,14 +35,12 @@ class Dialog extends Component {
 
 	render() {
 		return (
-			<RootChild>
-				<DialogBase
-					{ ...this.props }
-					ref={ this.checkOnClosed }
-					key="dialog"
-					onDialogClose={ this.onDialogClose }
-				/>
-			</RootChild>
+			<DialogBase
+				{ ...this.props }
+				ref={ this.checkOnClosed }
+				key="dialog"
+				onDialogClose={ this.onDialogClose }
+			/>
 		);
 	}
 

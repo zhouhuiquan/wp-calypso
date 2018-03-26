@@ -21,8 +21,6 @@ import observe from 'lib/mixins/data-observe';
 /* eslint-enable no-restricted-imports */
 import GlobalNotices from 'components/global-notices';
 import notices from 'notices';
-import translator from 'lib/translator-jumpstart';
-import TranslatorLauncher from './community-translator/launcher';
 import GuidedTours from 'layout/guided-tours';
 import config from 'config';
 import PulsingDot from 'components/pulsing-dot';
@@ -41,11 +39,9 @@ import isHappychatOpen from 'state/happychat/selectors/is-happychat-open';
 import SitePreview from 'blocks/site-preview';
 import { getCurrentLayoutFocus } from 'state/ui/layout-focus/selectors';
 import DocumentHead from 'components/data/document-head';
-import NpsSurveyNotice from 'layout/nps-survey-notice';
 import AppBanner from 'blocks/app-banner';
 import { getPreference } from 'state/preferences/selectors';
 import JITM from 'blocks/jitm';
-import KeyboardShortcutsMenu from 'lib/keyboard-shortcuts/menu';
 import SupportUser from 'support/support-user';
 
 /* eslint-disable react/no-deprecated */
@@ -119,8 +115,6 @@ const Layout = createReactClass( {
 				<QuerySites allSites />
 				<QueryPreferences />
 				{ <GuidedTours /> }
-				{ config.isEnabled( 'nps-survey/notice' ) && <NpsSurveyNotice /> }
-				{ config.isEnabled( 'keyboard-shortcuts' ) ? <KeyboardShortcutsMenu /> : null }
 				{ this.renderMasterbar() }
 				{ config.isEnabled( 'support-user' ) && <SupportUser /> }
 				<div className={ loadingClass }>
@@ -142,10 +136,6 @@ const Layout = createReactClass( {
 						{ this.props.primary }
 					</div>
 				</div>
-				<TranslatorLauncher
-					isEnabled={ translator.isEnabled() }
-					isActive={ translator.isActivated() }
-				/>
 				{ this.renderPreview() }
 				{ config.isEnabled( 'happychat' ) &&
 					this.props.chatIsOpen && <AsyncLoad require="components/happychat" /> }
