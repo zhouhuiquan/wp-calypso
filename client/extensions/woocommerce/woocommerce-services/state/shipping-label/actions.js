@@ -158,11 +158,17 @@ const tryGetLabelRates = ( orderId, siteId, dispatch, getState ) => {
 		packages,
 	} = formState;
 
+	dispatch( NoticeActions.removeNotice( 'wcs-label-rates' ) );
+
 	return getRates( orderId, siteId, dispatch, origin.values, destination.values, map( packages.selected, convertToApiPackage ) )
 		.then( () => expandFirstErroneousStep( orderId, siteId, dispatch, getState ) )
 		.catch( ( error ) => {
 			console.error( error );
-			dispatch( NoticeActions.errorNotice( error.toString() ) );
+			dispatch( NoticeActions.errorNotice( error.toString(), {
+				id: 'wcs-label-rates',
+				button: translate( 'Retry' ),
+				onClick: () => tryGetLabelRates( orderId, siteId, dispatch, getState ),
+			} ) );
 		} );
 };
 
