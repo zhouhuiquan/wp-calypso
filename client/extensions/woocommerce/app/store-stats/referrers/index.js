@@ -94,6 +94,7 @@ class Referrers extends Component {
 					query={ query }
 					statType={ STAT_TYPE }
 					title={ title }
+					queryParams={ queryParams }
 				/>
 				{ showSearch && (
 					<SearchCard
@@ -123,8 +124,9 @@ class Referrers extends Component {
 							filter={ filter }
 							slug={ slug }
 							afterSelect={ this.afterSelect }
-							limit={ 50 }
+							limit={ 10 }
 							pageType="referrers"
+							paginate
 						/>
 					</Module>
 				) }
