@@ -29,6 +29,7 @@ const calypsoEnv = config( 'env_id' );
 const bundleEnv = config( 'env' );
 const isDevelopment = bundleEnv !== 'production';
 const shouldMinify = process.env.MINIFY_JS === 'true' || bundleEnv === 'production';
+const shouldEmitStats = process.env.EMIT_STATS === 'true';
 
 // load in the babel config from babelrc and disable commonjs transform
 // this enables static analysis from webpack including treeshaking
@@ -94,6 +95,7 @@ const babelLoader = {
 const webpackConfig = {
 	bail: ! isDevelopment,
 	entry: {},
+	profile: shouldEmitStats,
 	mode: isDevelopment ? 'development' : 'production',
 	devtool: isDevelopment ? '#eval' : process.env.SOURCEMAP || false, // in production builds you can specify a source-map via env var
 	output: {
@@ -119,22 +121,24 @@ const webpackConfig = {
 		namedModules: true,
 		namedChunks: isDevelopment,
 		minimize: shouldMinify,
-		minimizer: [ new UglifyJsPlugin( {
-			cache: 'docker' !== process.env.CONTAINER,
-			parallel: true,
-			sourceMap: Boolean( process.env.SOURCEMAP ),
-			uglifyOptions: {
-				compress: {
-					/**
-					 * Produces inconsistent results
-					 * Enable when the following is resolved:
-					 * https://github.com/mishoo/UglifyJS2/issues/3010
-					 */
-					collapse_vars: false,
+		minimizer: [
+			new UglifyJsPlugin( {
+				cache: 'docker' !== process.env.CONTAINER,
+				parallel: true,
+				sourceMap: Boolean( process.env.SOURCEMAP ),
+				uglifyOptions: {
+					compress: {
+						/**
+						 * Produces inconsistent results
+						 * Enable when the following is resolved:
+						 * https://github.com/mishoo/UglifyJS2/issues/3010
+						 */
+						collapse_vars: false,
+					},
+					ecma: 5,
 				},
-				ecma: 5,
-			},
-		} ) ] ,
+			} ),
+		],
 	},
 	module: {
 		// avoids this warning:
@@ -229,6 +233,12 @@ const webpackConfig = {
 			filename: 'assets.json',
 			path: path.join( __dirname, 'server', 'bundler' ),
 		} ),
+		shouldEmitStats &&
+			new AssetsPlugin( {
+				filename: 'stats.json',
+				path: __dirname,
+				stats: { source: false, reasons: false, issuer: false, timings: true },
+			} ),
 		//new webpack.HashedModuleIdsPlugin(),
 	] ),
 	externals: [ 'electron' ],
