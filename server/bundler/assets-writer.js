@@ -10,21 +10,7 @@ function AssetsWriter( options ) {
 		{
 			path: './build',
 			filename: 'assets.json',
-		},
-		options
-	);
-	this.createOutputStream();
-}
-
-Object.assign( AssetsWriter.prototype, {
-	createOutputStream: function() {
-		this.outputPath = path.join( this.options.path, this.options.filename );
-		this.outputStream = fs.createWriteStream( this.outputPath );
-	},
-	apply: function( compiler ) {
-		const self = this;
-		compiler.plugin( 'after-emit', function( compilation, callback ) {
-			const stats = compilation.getStats().toJson( {
+			stats: {
 				hash: true,
 				publicPath: true,
 				assets: true,
@@ -38,7 +24,23 @@ Object.assign( AssetsWriter.prototype, {
 				errorDetails: true,
 				timings: false,
 				reasons: false,
-			} );
+			},
+		},
+		options
+	);
+	this.createOutputStream();
+}
+
+Object.assign( AssetsWriter.prototype, {
+	createOutputStream: function() {
+		this.outputPath = path.join( this.options.path, this.options.filename );
+		this.outputStream = fs.createWriteStream( this.outputPath );
+	},
+	apply: function( compiler ) {
+		const self = this;
+
+		compiler.hooks.afterEmit.tap( 'AssetsWriter', compilation => {
+			const stats = compilation.getStats().toJson( this.options.stats );
 
 			const statsToOutput = {};
 			statsToOutput.publicPath = stats.publicPath;
@@ -91,8 +93,7 @@ Object.assign( AssetsWriter.prototype, {
 				} );
 			} );
 
-			self.outputStream.write( JSON.stringify( statsToOutput, null, 2 ) );
-			callback();
+			self.outputStream.write( JSON.stringify( statsToOutput, null, '\t' ) );
 		} );
 	},
 } );
