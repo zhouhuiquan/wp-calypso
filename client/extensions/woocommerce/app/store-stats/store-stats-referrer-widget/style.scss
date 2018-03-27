@@ -1,9 +1,16 @@
-.store-stats-referrer-widget  {
-	&.table.is-compact-table th.table-heading.is-title-cell,
-	&.table.is-compact-table td.table-item.is-title-cell {
+.store-stats-referrer-widget.card  {
+		padding: 0;
+
+		.table {
+			box-shadow: none;
+			margin-bottom: 0;
+		}
+
+	.table.is-compact-table th.table-heading.is-title-cell,
+	.table.is-compact-table td.table-item.is-title-cell {
 		width: 30%;
 	}
-	&.table.is-compact-table th.table-heading {
+	.table.is-compact-table th.table-heading {
 		text-align: left;
 	}
 }

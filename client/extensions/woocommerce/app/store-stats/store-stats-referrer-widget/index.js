@@ -23,6 +23,7 @@ import Card from 'components/card';
 import ErrorPanel from 'my-sites/stats/stats-error';
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
 import { getWidgetPath } from 'woocommerce/app/store-stats/utils';
+import Pagination from 'components/pagination';
 
 class StoreStatsReferrerWidget extends Component {
 	static propTypes = {
@@ -35,6 +36,11 @@ class StoreStatsReferrerWidget extends Component {
 		queryParams: PropTypes.object.isRequired,
 		slug: PropTypes.string.isRequired,
 		pageType: PropTypes.string.isRequired,
+		paginate: PropTypes.bool,
+	};
+
+	state = {
+		page: 1,
 	};
 
 	isPreCollection( selectedData ) {
@@ -77,8 +83,35 @@ class StoreStatsReferrerWidget extends Component {
 		}
 	};
 
+	paginate = data => {
+		const { paginate, limit } = this.props;
+		if ( ! paginate ) {
+			return data.slice( 0, limit || data.length );
+		}
+		const { page } = this.state;
+		const start = ( page - 1 ) * limit;
+		const end = start + limit;
+		return data.slice( start, end );
+	};
+
+	onPageClick = a => {
+		this.setState( {
+			page: a,
+		} );
+	};
+
 	render() {
-		const { data, selectedDate, translate, unit, slug, queryParams, filter, limit } = this.props;
+		const {
+			data,
+			selectedDate,
+			translate,
+			unit,
+			slug,
+			queryParams,
+			filter,
+			limit,
+			paginate,
+		} = this.props;
 		const basePath = '/store/stats/referrers';
 		const selectedData = find( data, d => d.date === selectedDate ) || { data: [] };
 		if ( selectedData.data.length === 0 ) {
@@ -89,11 +122,12 @@ class StoreStatsReferrerWidget extends Component {
 				</Card>
 			);
 		}
-		const filteredData = filter && selectedData.data.filter( d => d.referrer.match( filter ) );
-		const sortedAndTrimmedData = filteredData
-			? sortBySales( filteredData )
-			: sortBySales( selectedData.data, limit );
-		const extent = [ 0, d3Max( sortedAndTrimmedData.map( d => d.sales ) ) ];
+		const filteredData = filter
+			? selectedData.data.filter( d => d.referrer.match( filter ) )
+			: selectedData.data;
+		const sortedData = sortBySales( filteredData );
+		const paginatedData = this.paginate( sortedData );
+		const extent = [ 0, d3Max( paginatedData.map( d => d.sales ) ) ];
 		const header = (
 			<TableRow isHeader>
 				<TableItem isHeader isTitle>
@@ -103,29 +137,40 @@ class StoreStatsReferrerWidget extends Component {
 			</TableRow>
 		);
 		return (
-			<Table className="store-stats-referrer-widget" header={ header } compact>
-				{ sortedAndTrimmedData.map( d => {
-					const widgetPath = getWidgetPath(
-						unit,
-						slug,
-						Object.assign( {}, queryParams, { referrer: d.referrer } )
-					);
-					const href = `${ basePath }${ widgetPath }`;
-					return (
-						<TableRow key={ d.referrer } href={ href } afterHref={ this.afterSelect }>
-							<TableItem isTitle>{ d.referrer }</TableItem>
-							<TableItem>
-								<HorizontalBar
-									extent={ extent }
-									data={ d.sales }
-									currency={ d.currency }
-									height={ 20 }
-								/>
-							</TableItem>
-						</TableRow>
-					);
-				} ) }
-			</Table>
+			<Card className="store-stats-referrer-widget">
+				<Table header={ header } compact>
+					{ paginatedData.map( d => {
+						const widgetPath = getWidgetPath(
+							unit,
+							slug,
+							Object.assign( {}, queryParams, { referrer: d.referrer } )
+						);
+						const href = `${ basePath }${ widgetPath }`;
+						return (
+							<TableRow key={ d.referrer } href={ href } afterHref={ this.afterSelect }>
+								<TableItem isTitle>{ d.referrer }</TableItem>
+								<TableItem>
+									<HorizontalBar
+										extent={ extent }
+										data={ d.sales }
+										currency={ d.currency }
+										height={ 20 }
+									/>
+								</TableItem>
+							</TableRow>
+						);
+					} ) }
+				</Table>
+				{ paginate && (
+					<Pagination
+						compact
+						page={ this.state.page }
+						perPage={ limit }
+						total={ sortedData.length }
+						pageClick={ this.onPageClick }
+					/>
+				) }
+			</Card>
 		);
 	}
 }
