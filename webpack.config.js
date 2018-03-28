@@ -12,7 +12,8 @@ const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const AssetsPlugin = require( './server/bundler/assets-writer' );
+const AssetsWriter = require( './server/bundler/assets-writer' );
+const StatsWriter = require( './server/bundler/stats-writer' );
 const prism = require( 'prismjs' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
 
@@ -109,13 +110,16 @@ const webpackConfig = {
 		splitChunks: {
 			chunks: 'all',
 			name: isDevelopment,
-			cacheGroups: {
+
+			maxAsyncRequests: 20,
+			maxInitialRequests: 5,
+			/*cacheGroups: {
 				tinymce: {
 					test: /[\\/]node_modules[\\/]tinymce[\\/]/,
 					priority: 10,
 					name: 'tinymce',
 				},
-			},
+			},*/
 		},
 		runtimeChunk: { name: 'manifest' },
 		namedModules: true,
@@ -229,15 +233,23 @@ const webpackConfig = {
 			{ from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' },
 		] ),
 		//new NameAllModulesPlugin(),
-		new AssetsPlugin( {
+		new AssetsWriter( {
 			filename: 'assets.json',
 			path: path.join( __dirname, 'server', 'bundler' ),
 		} ),
 		shouldEmitStats &&
-			new AssetsPlugin( {
+			new StatsWriter( {
 				filename: 'stats.json',
 				path: __dirname,
-				stats: { source: false, reasons: false, issuer: false, timings: true },
+				stats: {
+					assets: true,
+					children: true,
+					modules: true,
+					source: false,
+					reasons: false,
+					issuer: false,
+					timings: true,
+				},
 			} ),
 		//new webpack.HashedModuleIdsPlugin(),
 	] ),

@@ -10,21 +10,6 @@ function AssetsWriter( options ) {
 		{
 			path: './build',
 			filename: 'assets.json',
-			stats: {
-				hash: true,
-				publicPath: true,
-				assets: true,
-				children: false,
-				chunks: true,
-				chunkModules: false,
-				chunkOrigins: false,
-				entrypoints: true,
-				modules: false,
-				source: false,
-				errorDetails: true,
-				timings: false,
-				reasons: false,
-			},
 		},
 		options
 	);
@@ -40,7 +25,21 @@ Object.assign( AssetsWriter.prototype, {
 		const self = this;
 
 		compiler.hooks.afterEmit.tap( 'AssetsWriter', compilation => {
-			const stats = compilation.getStats().toJson( this.options.stats );
+			const stats = compilation.getStats().toJson( {
+				hash: true,
+				publicPath: true,
+				assets: true,
+				children: false,
+				chunks: true,
+				chunkModules: false,
+				chunkOrigins: false,
+				entrypoints: true,
+				modules: false,
+				source: false,
+				errorDetails: true,
+				timings: false,
+				reasons: false,
+			} );
 
 			const statsToOutput = {};
 			statsToOutput.publicPath = stats.publicPath;
