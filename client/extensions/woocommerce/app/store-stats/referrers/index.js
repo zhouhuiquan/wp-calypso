@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
 import { localize } from 'i18n-calypso';
-import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -40,7 +39,6 @@ class Referrers extends Component {
 
 	state = {
 		filter: '',
-		searchOpen: false,
 	};
 
 	onSearch = str => {
@@ -55,27 +53,12 @@ class Referrers extends Component {
 		} );
 	};
 
-	onSearchOpen = () => {
-		this.setState( {
-			searchOpen: true,
-		} );
-	};
-
-	onSearchBlur = () => {
-		setTimeout( () => {
-			this.setState( {
-				searchOpen: false,
-			} );
-		} );
-	};
-
 	render() {
 		const { siteId, query, data, selectedDate, unit, slug, translate, queryParams } = this.props;
-		const { filter, searchOpen } = this.state;
+		const { filter } = this.state;
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
 		const showSearch = selectedData.data.length > 5;
-		const showWidget = searchOpen || filter || ! showSearch;
 		const selectedReferrer = find(
 			selectedData.data,
 			d => queryParams.referrer && queryParams.referrer === d.referrer
@@ -96,40 +79,36 @@ class Referrers extends Component {
 					title={ title }
 					queryParams={ queryParams }
 				/>
-				{ showSearch && (
-					<SearchCard
-						className={ classnames( 'referrers__search-box', { 'is-open': showWidget } ) }
-						onSearch={ this.onSearch }
-						placeholder="Search Referrers"
-						value={ filter }
-						onSearchOpen={ this.onSearchOpen }
-						onBlur={ this.onSearchBlur }
-					/>
-				) }
-				{ showWidget && (
-					<Module
-						className="referrers__search-dropdown"
+				<Module
+					className="referrers__search"
+					siteId={ siteId }
+					emptyMessage={ translate( 'No data found' ) }
+					query={ query }
+					statType={ STAT_TYPE }
+				>
+					<StoreStatsReferrerWidget
+						unit={ unit }
 						siteId={ siteId }
-						emptyMessage={ translate( 'No data found' ) }
 						query={ query }
 						statType={ STAT_TYPE }
-					>
-						<StoreStatsReferrerWidget
-							unit={ unit }
-							siteId={ siteId }
-							query={ query }
-							statType={ STAT_TYPE }
-							selectedDate={ unitSelectedDate }
-							queryParams={ queryParams }
-							filter={ filter }
-							slug={ slug }
-							afterSelect={ this.afterSelect }
-							limit={ 10 }
-							pageType="referrers"
-							paginate
+						selectedDate={ unitSelectedDate }
+						queryParams={ queryParams }
+						filter={ filter }
+						slug={ slug }
+						afterSelect={ this.afterSelect }
+						limit={ 5 }
+						pageType="referrers"
+						paginate
+					/>
+					{ showSearch && (
+						<SearchCard
+							className={ 'referrers__search-filter' }
+							onSearch={ this.onSearch }
+							placeholder="Filter Referrers"
+							value={ filter }
 						/>
-					</Module>
-				) }
+					) }
+				</Module>
 				{ selectedReferrer && (
 					<table>
 						<tbody>
@@ -158,3 +137,5 @@ export default connect( ( state, { query } ) => {
 		data: getSiteStatsNormalizedData( state, siteId, STAT_TYPE, query ),
 	};
 } )( localize( Referrers ) );
+
+// className={ classnames( 'referrers__search-box', { 'is-open': showWidget } ) }

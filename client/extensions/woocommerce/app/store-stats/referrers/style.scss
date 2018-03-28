@@ -1,6 +1,11 @@
 &.referrers {
-	.referrers__search-box.is-open {
-		margin-bottom: 1px;
+	.pagination {
+		padding: 0.5em 0;
+	}
+
+	.referrers__search {
+		max-width: 550px;
+		margin: 0 auto;
 	}
 }
 
