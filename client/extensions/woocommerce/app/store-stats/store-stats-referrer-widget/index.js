@@ -160,7 +160,7 @@ class StoreStatsReferrerWidget extends Component {
 	}
 }
 
-// Selector
+// @TODO: Do something better with this selector
 function getData( state, props ) {
 	const { siteId, statType, query, fetchedData, selectedDate, unit, limit, paginate } = props;
 	if ( fetchedData ) {
