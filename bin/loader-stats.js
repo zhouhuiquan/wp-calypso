@@ -22,39 +22,59 @@ function getChunkAndSiblings( which ) {
 	];
 }
 
-const whichSection = process.argv[2];
-const sectionChunk = getChunkByName( whichSection );
+const sectionsToCheck = process.argv.slice(2);
+const sectionChunks = _.compact( sectionsToCheck.map( getChunkByName ) );
 
-if ( ! sectionChunk ) {
-	console.log( `no section chunk found for ${whichSection}` );
+if ( sectionChunks.length !== sectionsToCheck.length ) {
+	console.log( `bad section chunk name` );
 }
 
-const chunksToLoad = [
-	...getChunkAndSiblings( 'build' ),
-	...getChunkAndSiblings( whichSection )
-];
+const sectionsToLoad = [];
+sectionsToLoad.push({
+	name: 'boot',
+	chunks: getChunkAndSiblings('build')
+});
+sectionChunks.forEach(section => {
+	sectionsToLoad.push({
+		name: section.names.join(','),
+		chunks: _.difference(getChunkAndSiblings(section.names[0]), _.flatMap(sectionsToLoad, section => section.chunks))
+	});
+});
 
-const filesToLoad = _.flatMap( chunksToLoad, chunk => {
-	return chunk.files.map( file => path.join( __dirname, '..', 'public', file.replace( '/calypso/', '' ) ) );
-} );
 
-async function calculateSizes() {
-	const fileSizePromises = filesToLoad.map( f => gzipSize.file( f ) );
+filesToLoadPerSection = sectionsToLoad.map(section => {
+	return {
+		name: section.name,
+		filesToLoad: _.flatMap(section.chunks, chunk => {
+			return chunk.files.map(file => path.join(__dirname, '..', 'public', file.replace('/calypso/', '')));
+		})
+	}
+});
+
+async function calculateSizes( section ) {
+	const fileSizePromises = section.filesToLoad.map( f => gzipSize.file( f ) );
 
 	const fileSizes = await Promise.all( fileSizePromises );
 
-	const filesWithSizes = _.zipObject( filesToLoad, fileSizes );
+	const filesWithSizes = _.zipObject( section.filesToLoad, fileSizes );
 
-	console.log( `to load ${whichSection}:` );
+	console.log( `${section.name}:` );
 
-	filesToLoad.forEach( f => {
+	section.filesToLoad.forEach( f => {
 		console.log( `   ${f}: (${ filesWithSizes[ f ] / 1000 }kb)`);
 	})
 
-	console.log( "Total: " + ( filesToLoad.reduce( ( totalSize, f ) => totalSize + filesWithSizes[ f ], 0 ) / 1000 ) + "kb" );
+	console.log("Total: " + (section.filesToLoad.reduce((totalSize, f) => totalSize + filesWithSizes[f], 0) / 1000) + "kb");
+	console.log('');
 }
 
-calculateSizes();
+async function go() {
+	for (section in filesToLoadPerSection) {
+		await calculateSizes(filesToLoadPerSection[ section ]);
+	}
+}
+
+go();
 
 
 
