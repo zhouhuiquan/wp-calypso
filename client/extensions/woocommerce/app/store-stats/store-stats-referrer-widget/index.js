@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { find } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { localize } from 'i18n-calypso';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -37,11 +38,13 @@ class StoreStatsReferrerWidget extends Component {
 		slug: PropTypes.string.isRequired,
 		pageType: PropTypes.string.isRequired,
 		paginate: PropTypes.bool,
-		highlightIndex: PropTypes.number,
+		selectedIndex: PropTypes.number,
+		selectedReferrer: PropTypes.string,
 	};
 
 	state = {
 		page: 1,
+		highlight: null,
 	};
 
 	isPreCollection( date ) {
@@ -87,22 +90,51 @@ class StoreStatsReferrerWidget extends Component {
 	paginate = data => {
 		const { paginate, limit } = this.props;
 		if ( ! paginate ) {
-			return data.slice( 0, limit || data.length );
+			const indexedLimit = limit ? limit - 1 : data.length;
+			return data.slice( 0, indexedLimit );
 		}
 		const { page } = this.state;
-		const start = ( page - 1 ) * limit;
+		const start = ( page - 1 ) * ( limit - 1 );
 		const end = start + limit;
 		return data.slice( start, end );
 	};
 
-	onPageClick = a => {
+	onPageClick = pageNumber => {
 		this.setState( {
-			page: a,
+			page: pageNumber,
 		} );
 	};
 
+	setPage( { selectedIndex, limit } ) {
+		if ( this.props.paginate ) {
+			this.setState( {
+				page: Math.floor( selectedIndex / limit ) + 1,
+				highlight: selectedIndex % limit,
+			} );
+		}
+	}
+
+	componentWillMount() {
+		this.setPage( this.props );
+	}
+
+	componentWillReceiveProps( nextProps ) {
+		this.setPage( nextProps );
+	}
+
 	render() {
-		const { data, selectedDate, translate, unit, slug, queryParams, limit, paginate } = this.props;
+		const {
+			data,
+			selectedDate,
+			translate,
+			unit,
+			slug,
+			queryParams,
+			limit,
+			paginate,
+			selectedReferrer,
+		} = this.props;
+		const { page } = this.state;
 		const basePath = '/store/stats/referrers';
 		if ( data.length === 0 ) {
 			const messages = this.getEmptyDataMessage( selectedDate );
@@ -133,7 +165,12 @@ class StoreStatsReferrerWidget extends Component {
 						);
 						const href = `${ basePath }${ widgetPath }`;
 						return (
-							<TableRow key={ d.referrer } href={ href } afterHref={ this.afterSelect }>
+							<TableRow
+								key={ d.referrer }
+								href={ href }
+								afterHref={ this.afterSelect }
+								className={ classnames( { 'is-selected': selectedReferrer === d.referrer } ) }
+							>
 								<TableItem isTitle>{ d.referrer }</TableItem>
 								<TableItem>
 									<HorizontalBar
@@ -150,7 +187,7 @@ class StoreStatsReferrerWidget extends Component {
 				{ paginate && (
 					<Pagination
 						compact
-						page={ this.state.page }
+						page={ page }
 						perPage={ limit }
 						total={ data.length }
 						pageClick={ this.onPageClick }

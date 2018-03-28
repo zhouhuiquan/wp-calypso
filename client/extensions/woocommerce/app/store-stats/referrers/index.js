@@ -141,7 +141,8 @@ class Referrers extends Component {
 						limit={ 5 }
 						pageType="referrers"
 						paginate
-						highlightIndex={ selectedReferrerIndex }
+						selectedIndex={ selectedReferrerIndex }
+						selectedReferrer={ selectedReferrer.referrer }
 					/>
 					{ showSearch && (
 						<SearchCard
