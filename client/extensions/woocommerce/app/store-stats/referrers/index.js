@@ -23,6 +23,7 @@ import Main from 'components/main';
 import Module from 'woocommerce/app/store-stats/store-stats-module';
 import SearchCard from 'components/search-card';
 import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-referrer-widget';
+import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
 
 const STAT_TYPE = 'statsStoreReferrers';
 
@@ -53,16 +54,40 @@ class Referrers extends Component {
 		} );
 	};
 
+	// componentWillReceiveProps( nextProps ) {
+	// 	const { queryParams, data, selectedDate, unit } = nextProps;
+	// 	if ( queryParams.referrer ) {
+	// 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
+	// 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
+	// 		let selectedReferrerIndex = null;
+	// 		const selectedReferrer = find(
+	// 			selectedData.data,
+	// 			( d, idx ) => {
+	// 				if ( queryParams.referrer && queryParams.referrer === d.referrer ) {
+	// 					selectedReferrerIndex = idx;
+	// 					return true;
+	// 				}
+	// 				return false;
+	// 			}
+	// 		);
+	// 		console.log( selectedReferrerIndex );
+	// 	}
+	// }
+
 	render() {
 		const { siteId, query, data, selectedDate, unit, slug, translate, queryParams } = this.props;
 		const { filter } = this.state;
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
-		const showSearch = selectedData.data.length > 5;
 		const selectedReferrer = find(
 			selectedData.data,
 			d => queryParams.referrer && queryParams.referrer === d.referrer
 		);
+		const filteredData = filter
+			? selectedData.data.filter( d => d.referrer.match( filter ) )
+			: selectedData.data;
+		const sortedAndFilteredData = sortBySales( filteredData );
+		const showSearch = selectedData.data.length > 5;
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;
@@ -87,13 +112,13 @@ class Referrers extends Component {
 					statType={ STAT_TYPE }
 				>
 					<StoreStatsReferrerWidget
+						fetchedData={ sortedAndFilteredData }
 						unit={ unit }
 						siteId={ siteId }
 						query={ query }
 						statType={ STAT_TYPE }
 						selectedDate={ unitSelectedDate }
 						queryParams={ queryParams }
-						filter={ filter }
 						slug={ slug }
 						afterSelect={ this.afterSelect }
 						limit={ 5 }
@@ -137,5 +162,3 @@ export default connect( ( state, { query } ) => {
 		data: getSiteStatsNormalizedData( state, siteId, STAT_TYPE, query ),
 	};
 } )( localize( Referrers ) );
-
-// className={ classnames( 'referrers__search-box', { 'is-open': showWidget } ) }

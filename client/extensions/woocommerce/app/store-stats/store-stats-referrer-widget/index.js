@@ -22,7 +22,7 @@ import HorizontalBar from 'woocommerce/components/d3/horizontal-bar';
 import Card from 'components/card';
 import ErrorPanel from 'my-sites/stats/stats-error';
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
-import { getWidgetPath } from 'woocommerce/app/store-stats/utils';
+import { getWidgetPath, getUnitPeriod } from 'woocommerce/app/store-stats/utils';
 import Pagination from 'components/pagination';
 
 class StoreStatsReferrerWidget extends Component {
@@ -43,22 +43,22 @@ class StoreStatsReferrerWidget extends Component {
 		page: 1,
 	};
 
-	isPreCollection( selectedData ) {
+	isPreCollection( date ) {
 		const { moment } = this.props;
-		return moment( selectedData.date ).isBefore( moment( '2018-02-01' ) );
+		return moment( date ).isBefore( moment( '2018-02-01' ) );
 	}
 
-	hasNosaraJobRun( selectedData ) {
+	hasNosaraJobRun( date ) {
 		const { moment } = this.props;
 		const nowUtc = moment().utc();
 		const daysOffsetFromUtc = nowUtc.hour() >= 10 ? 1 : 2;
 		const lastValidDay = nowUtc.subtract( daysOffsetFromUtc, 'days' );
-		return lastValidDay.isAfter( moment( selectedData.date ) );
+		return lastValidDay.isAfter( moment( date ) );
 	}
 
-	getEmptyDataMessage( selectedData ) {
+	getEmptyDataMessage( date ) {
 		const { translate, slug, queryParams, pageType } = this.props;
-		if ( ! this.hasNosaraJobRun( selectedData ) ) {
+		if ( ! this.hasNosaraJobRun( date ) ) {
 			const href = `/store/stats/${ pageType }${ getWidgetPath( 'week', slug, queryParams ) }`;
 			const primary = translate( 'Data is being processed – check back soon' );
 			const secondary = translate(
@@ -71,7 +71,7 @@ class StoreStatsReferrerWidget extends Component {
 			);
 			return [ primary, <p key="link">{ secondary }</p> ];
 		}
-		return this.isPreCollection( selectedData )
+		return this.isPreCollection( date )
 			? [ translate( 'Referral data isn’t available before Jetpack v5.9 (March 2018)' ) ]
 			: [ translate( 'No referral activity on this date' ) ];
 	}
@@ -101,32 +101,17 @@ class StoreStatsReferrerWidget extends Component {
 	};
 
 	render() {
-		const {
-			data,
-			selectedDate,
-			translate,
-			unit,
-			slug,
-			queryParams,
-			filter,
-			limit,
-			paginate,
-		} = this.props;
+		const { data, selectedDate, translate, unit, slug, queryParams, limit, paginate } = this.props;
 		const basePath = '/store/stats/referrers';
-		const selectedData = find( data, d => d.date === selectedDate ) || { data: [] };
-		if ( selectedData.data.length === 0 ) {
-			const messages = this.getEmptyDataMessage( selectedData );
+		if ( data.length === 0 ) {
+			const messages = this.getEmptyDataMessage( selectedDate );
 			return (
 				<Card className="store-stats-referrer-widget stats-module is-showing-error has-no-data">
 					<ErrorPanel message={ messages.shift() }>{ messages }</ErrorPanel>
 				</Card>
 			);
 		}
-		const filteredData = filter
-			? selectedData.data.filter( d => d.referrer.match( filter ) )
-			: selectedData.data;
-		const sortedData = sortBySales( filteredData );
-		const paginatedData = this.paginate( sortedData );
+		const paginatedData = this.paginate( data );
 		const extent = [ 0, d3Max( paginatedData.map( d => d.sales ) ) ];
 		const header = (
 			<TableRow isHeader>
@@ -166,7 +151,7 @@ class StoreStatsReferrerWidget extends Component {
 						compact
 						page={ this.state.page }
 						perPage={ limit }
-						total={ sortedData.length }
+						total={ data.length }
 						pageClick={ this.onPageClick }
 					/>
 				) }
@@ -175,8 +160,20 @@ class StoreStatsReferrerWidget extends Component {
 	}
 }
 
-export default connect( ( state, { siteId, statType, query } ) => {
+// Selector
+function getData( state, props ) {
+	const { siteId, statType, query, fetchedData, selectedDate, unit, limit, paginate } = props;
+	if ( fetchedData ) {
+		return fetchedData;
+	}
+	const rawData = getSiteStatsNormalizedData( state, siteId, statType, query );
+	const unitSelectedDate = getUnitPeriod( selectedDate, unit );
+	const selectedData = find( rawData, d => d.date === unitSelectedDate ) || { data: [] };
+	return sortBySales( selectedData.data, limit && ! paginate ? limit : null );
+}
+
+export default connect( ( state, ownProps ) => {
 	return {
-		data: getSiteStatsNormalizedData( state, siteId, statType, query ),
+		data: getData( state, ownProps ),
 	};
 } )( localize( StoreStatsReferrerWidget ) );
