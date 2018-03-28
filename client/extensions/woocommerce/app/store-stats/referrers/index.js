@@ -46,12 +46,6 @@ class Referrers extends Component {
 		this.setData( this.props, str );
 	};
 
-	afterSelect = () => {
-		this.setState( {
-			filter: '',
-		} );
-	};
-
 	getFilteredSortedData = ( filter, { data, selectedDate, unit } ) => {
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };

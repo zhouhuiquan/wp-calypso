@@ -79,13 +79,6 @@ class StoreStatsReferrerWidget extends Component {
 			: [ translate( 'No referral activity on this date' ) ];
 	}
 
-	afterSelect = () => {
-		const { afterSelect } = this.props;
-		if ( afterSelect ) {
-			afterSelect();
-		}
-	};
-
 	paginate = data => {
 		const { paginate, limit } = this.props;
 		if ( ! paginate ) {
@@ -166,7 +159,6 @@ class StoreStatsReferrerWidget extends Component {
 							<TableRow
 								key={ d.referrer }
 								href={ href }
-								afterHref={ this.afterSelect }
 								className={ classnames( { 'is-selected': selectedReferrer === d.referrer } ) }
 							>
 								<TableItem isTitle>{ d.referrer }</TableItem>
