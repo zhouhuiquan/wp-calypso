@@ -43,9 +43,7 @@ class Referrers extends Component {
 	};
 
 	onSearch = str => {
-		this.setState( {
-			filter: str,
-		} );
+		this.setData( this.props, str );
 	};
 
 	afterSelect = () => {
@@ -60,7 +58,10 @@ class Referrers extends Component {
 		const filteredData = filter
 			? selectedData.data.filter( d => d.referrer.match( filter ) )
 			: selectedData.data;
-		return sortBySales( filteredData );
+		return {
+			filteredSortedData: sortBySales( filteredData ),
+			length: selectedData.data.length,
+		};
 	};
 
 	getSelectedReferrer = ( filteredSortedData, { queryParams } ) => {
@@ -78,15 +79,18 @@ class Referrers extends Component {
 		};
 	};
 
-	setData( props ) {
-		const { filter } = this.state;
-		const filteredSortedData = this.getFilteredSortedData( filter, props );
+	setData( props, _filter ) {
+		const isEmpty = _filter === '';
+		const filter = isEmpty ? '' : _filter || this.state.filter;
+		const { filteredSortedData, length } = this.getFilteredSortedData( filter, props );
 		const { selectedReferrer, selectedReferrerIndex } = this.getSelectedReferrer(
 			filteredSortedData,
 			props
 		);
 		this.setState( {
+			filter,
 			filteredSortedData,
+			length,
 			selectedReferrer,
 			selectedReferrerIndex,
 		} );
@@ -102,9 +106,15 @@ class Referrers extends Component {
 
 	render() {
 		const { siteId, query, selectedDate, unit, slug, translate, queryParams } = this.props;
-		const { filter, filteredSortedData, selectedReferrer, selectedReferrerIndex } = this.state;
+		const {
+			filter,
+			filteredSortedData,
+			length,
+			selectedReferrer,
+			selectedReferrerIndex,
+		} = this.state;
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-		const showSearch = filteredSortedData.length > 5;
+		const showSearch = length > 5;
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;
@@ -137,12 +147,11 @@ class Referrers extends Component {
 						selectedDate={ unitSelectedDate }
 						queryParams={ queryParams }
 						slug={ slug }
-						afterSelect={ this.afterSelect }
 						limit={ 5 }
 						pageType="referrers"
 						paginate
 						selectedIndex={ selectedReferrerIndex }
-						selectedReferrer={ selectedReferrer.referrer }
+						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
 					/>
 					{ showSearch && (
 						<SearchCard

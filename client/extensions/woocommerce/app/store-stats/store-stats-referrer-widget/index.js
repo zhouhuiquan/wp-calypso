@@ -44,7 +44,6 @@ class StoreStatsReferrerWidget extends Component {
 
 	state = {
 		page: 1,
-		highlight: null,
 	};
 
 	isPreCollection( date ) {
@@ -90,11 +89,11 @@ class StoreStatsReferrerWidget extends Component {
 	paginate = data => {
 		const { paginate, limit } = this.props;
 		if ( ! paginate ) {
-			const indexedLimit = limit ? limit - 1 : data.length;
-			return data.slice( 0, indexedLimit );
+			// const indexedLimit = limit ? limit - 1 : data.length;
+			return data.slice( 0, limit || data.length );
 		}
 		const { page } = this.state;
-		const start = ( page - 1 ) * ( limit - 1 );
+		const start = ( page - 1 ) * limit;
 		const end = start + limit;
 		return data.slice( start, end );
 	};
@@ -109,7 +108,6 @@ class StoreStatsReferrerWidget extends Component {
 		if ( this.props.paginate ) {
 			this.setState( {
 				page: Math.floor( selectedIndex / limit ) + 1,
-				highlight: selectedIndex % limit,
 			} );
 		}
 	}
