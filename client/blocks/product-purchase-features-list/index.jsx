@@ -77,8 +77,8 @@ export class ProductPurchaseFeaturesList extends Component {
 		return [
 			<HappinessSupportCard
 				isPlaceholder={ isPlaceholder }
-				showLiveChatButton={ true }
-				liveChatButtonEventName={ 'my_plan_business' }
+				showLiveChatButton
+				liveChatButtonEventName={ 'calypso_livechat_my_plan_business' }
 			/>,
 			<CustomDomain
 				selectedSite={ selectedSite }
@@ -154,7 +154,7 @@ export class ProductPurchaseFeaturesList extends Component {
 		return [
 			<HappinessSupportCard
 				isJetpack={ !! selectedSite.jetpack && ! isAutomatedTransfer }
-				isJetpackFreePlan={ true }
+				isJetpackFreePlan
 				isPlaceholder={ isPlaceholder }
 			/>,
 			<JetpackWordPressCom selectedSite={ selectedSite } key="jetpackWordPressCom" />,
@@ -205,8 +205,8 @@ export class ProductPurchaseFeaturesList extends Component {
 			<HappinessSupportCard
 				isJetpack={ !! selectedSite.jetpack && ! isAutomatedTransfer }
 				isPlaceholder={ isPlaceholder }
-				showLiveChatButton={ true }
-				liveChatButtonEventName={ 'my_plan_jetpack_professsional' }
+				showLiveChatButton
+				liveChatButtonEventName={ 'calypso_livechat_my_plan_jetpack_professsional' }
 			/>,
 			<BusinessOnboarding
 				key="businessOnboarding"
