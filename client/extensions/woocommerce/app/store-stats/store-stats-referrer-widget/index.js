@@ -37,6 +37,7 @@ class StoreStatsReferrerWidget extends Component {
 		slug: PropTypes.string.isRequired,
 		pageType: PropTypes.string.isRequired,
 		paginate: PropTypes.bool,
+		highlightIndex: PropTypes.number,
 	};
 
 	state = {

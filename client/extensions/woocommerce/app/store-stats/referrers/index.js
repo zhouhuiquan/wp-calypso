@@ -54,40 +54,57 @@ class Referrers extends Component {
 		} );
 	};
 
-	// componentWillReceiveProps( nextProps ) {
-	// 	const { queryParams, data, selectedDate, unit } = nextProps;
-	// 	if ( queryParams.referrer ) {
-	// 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-	// 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
-	// 		let selectedReferrerIndex = null;
-	// 		const selectedReferrer = find(
-	// 			selectedData.data,
-	// 			( d, idx ) => {
-	// 				if ( queryParams.referrer && queryParams.referrer === d.referrer ) {
-	// 					selectedReferrerIndex = idx;
-	// 					return true;
-	// 				}
-	// 				return false;
-	// 			}
-	// 		);
-	// 		console.log( selectedReferrerIndex );
-	// 	}
-	// }
-
-	render() {
-		const { siteId, query, data, selectedDate, unit, slug, translate, queryParams } = this.props;
-		const { filter } = this.state;
+	getFilteredSortedData = ( filter, { data, selectedDate, unit } ) => {
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
 		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
-		const selectedReferrer = find(
-			selectedData.data,
-			d => queryParams.referrer && queryParams.referrer === d.referrer
-		);
 		const filteredData = filter
 			? selectedData.data.filter( d => d.referrer.match( filter ) )
 			: selectedData.data;
-		const sortedAndFilteredData = sortBySales( filteredData );
-		const showSearch = selectedData.data.length > 5;
+		return sortBySales( filteredData );
+	};
+
+	getSelectedReferrer = ( filteredSortedData, { queryParams } ) => {
+		let selectedReferrerIndex = null;
+		const selectedReferrer = find( filteredSortedData, ( d, idx ) => {
+			if ( queryParams.referrer && queryParams.referrer === d.referrer ) {
+				selectedReferrerIndex = idx;
+				return true;
+			}
+			return false;
+		} );
+		return {
+			selectedReferrer,
+			selectedReferrerIndex,
+		};
+	};
+
+	setData( props ) {
+		const { filter } = this.state;
+		const filteredSortedData = this.getFilteredSortedData( filter, props );
+		const { selectedReferrer, selectedReferrerIndex } = this.getSelectedReferrer(
+			filteredSortedData,
+			props
+		);
+		this.setState( {
+			filteredSortedData,
+			selectedReferrer,
+			selectedReferrerIndex,
+		} );
+	}
+
+	componentWillReceiveProps( nextProps ) {
+		this.setData( nextProps );
+	}
+
+	componentWillMount() {
+		this.setData( this.props );
+	}
+
+	render() {
+		const { siteId, query, selectedDate, unit, slug, translate, queryParams } = this.props;
+		const { filter, filteredSortedData, selectedReferrer, selectedReferrerIndex } = this.state;
+		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
+		const showSearch = filteredSortedData.length > 5;
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;
@@ -112,7 +129,7 @@ class Referrers extends Component {
 					statType={ STAT_TYPE }
 				>
 					<StoreStatsReferrerWidget
-						fetchedData={ sortedAndFilteredData }
+						fetchedData={ filteredSortedData }
 						unit={ unit }
 						siteId={ siteId }
 						query={ query }
@@ -124,6 +141,7 @@ class Referrers extends Component {
 						limit={ 5 }
 						pageType="referrers"
 						paginate
+						highlightIndex={ selectedReferrerIndex }
 					/>
 					{ showSearch && (
 						<SearchCard
