@@ -153,6 +153,7 @@ class Referrers extends Component {
 							onSearch={ this.onSearch }
 							placeholder="Filter Referrers"
 							value={ filter }
+							initialValue={ filter }
 						/>
 					) }
 				</Module>
