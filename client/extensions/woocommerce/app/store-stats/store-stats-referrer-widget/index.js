@@ -82,7 +82,6 @@ class StoreStatsReferrerWidget extends Component {
 	paginate = data => {
 		const { paginate, limit } = this.props;
 		if ( ! paginate ) {
-			// const indexedLimit = limit ? limit - 1 : data.length;
 			return data.slice( 0, limit || data.length );
 		}
 		const { page } = this.state;

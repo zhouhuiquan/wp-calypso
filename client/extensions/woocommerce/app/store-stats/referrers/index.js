@@ -55,7 +55,7 @@ class Referrers extends Component {
 			: selectedData.data;
 		return {
 			filteredSortedData: sortBySales( filteredData ),
-			length: selectedData.data.length,
+			unfilteredDataLength: selectedData.data.length,
 		};
 	};
 
@@ -77,7 +77,10 @@ class Referrers extends Component {
 	setData( props, _filter ) {
 		const isEmpty = _filter === '';
 		const filter = isEmpty ? '' : _filter || this.state.filter;
-		const { filteredSortedData, length } = this.getFilteredSortedData( filter, props );
+		const { filteredSortedData, unfilteredDataLength } = this.getFilteredSortedData(
+			filter,
+			props
+		);
 		const { selectedReferrer, selectedReferrerIndex } = this.getSelectedReferrer(
 			filteredSortedData,
 			props
@@ -85,7 +88,7 @@ class Referrers extends Component {
 		this.setState( {
 			filter,
 			filteredSortedData,
-			length,
+			unfilteredDataLength,
 			selectedReferrer,
 			selectedReferrerIndex,
 		} );
@@ -104,12 +107,12 @@ class Referrers extends Component {
 		const {
 			filter,
 			filteredSortedData,
-			length,
+			unfilteredDataLength,
 			selectedReferrer,
 			selectedReferrerIndex,
 		} = this.state;
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-		const showSearch = length > LIMIT;
+		const showSearch = unfilteredDataLength > LIMIT;
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;

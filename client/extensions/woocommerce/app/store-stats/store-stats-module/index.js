@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
-import classanmes from 'classnames';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -54,7 +54,7 @@ class StoreStatsModule extends Component {
 		const hasEmptyData = loaded && data && data.length === 0;
 		/* eslint-disable wpcalypso/jsx-classname-namespace */
 		return (
-			<div className={ classanmes( 'store-stats-module', className ) }>
+			<div className={ classnames( 'store-stats-module', className ) }>
 				{ header }
 				{ isLoading && (
 					<Card>
