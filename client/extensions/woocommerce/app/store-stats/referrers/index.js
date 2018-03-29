@@ -26,6 +26,7 @@ import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-re
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
 
 const STAT_TYPE = 'statsStoreReferrers';
+const LIMIT = 10;
 
 class Referrers extends Component {
 	static propTypes = {
@@ -108,7 +109,7 @@ class Referrers extends Component {
 			selectedReferrerIndex,
 		} = this.state;
 		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-		const showSearch = length > 5;
+		const showSearch = length > LIMIT;
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;
@@ -132,21 +133,6 @@ class Referrers extends Component {
 					query={ query }
 					statType={ STAT_TYPE }
 				>
-					<StoreStatsReferrerWidget
-						fetchedData={ filteredSortedData }
-						unit={ unit }
-						siteId={ siteId }
-						query={ query }
-						statType={ STAT_TYPE }
-						selectedDate={ unitSelectedDate }
-						queryParams={ queryParams }
-						slug={ slug }
-						limit={ 5 }
-						pageType="referrers"
-						paginate
-						selectedIndex={ selectedReferrerIndex }
-						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
-					/>
 					{ showSearch && (
 						<SearchCard
 							className={ 'referrers__search-filter' }
@@ -156,6 +142,21 @@ class Referrers extends Component {
 							initialValue={ filter }
 						/>
 					) }
+					<StoreStatsReferrerWidget
+						fetchedData={ filteredSortedData }
+						unit={ unit }
+						siteId={ siteId }
+						query={ query }
+						statType={ STAT_TYPE }
+						selectedDate={ unitSelectedDate }
+						queryParams={ queryParams }
+						slug={ slug }
+						limit={ LIMIT }
+						pageType="referrers"
+						paginate
+						selectedIndex={ selectedReferrerIndex }
+						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
+					/>
 				</Module>
 				{ selectedReferrer && (
 					<table>
