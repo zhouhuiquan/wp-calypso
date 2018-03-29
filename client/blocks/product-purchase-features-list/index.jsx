@@ -81,6 +81,7 @@ export class ProductPurchaseFeaturesList extends Component {
 				liveChatButtonEventName={ 'calypso_livechat_my_plan_business' }
 			/>,
 			<CustomDomain
+				isButtonPrimary={ false }
 				selectedSite={ selectedSite }
 				hasDomainCredit={ planHasDomainCredit }
 				key="customDomainFeature"
@@ -133,6 +134,7 @@ export class ProductPurchaseFeaturesList extends Component {
 		return [
 			<HappinessSupportCard isPlaceholder={ isPlaceholder } />,
 			<CustomDomain
+				isButtonPrimary={ false }
 				selectedSite={ selectedSite }
 				hasDomainCredit={ planHasDomainCredit }
 				key="customDomainFeature"
@@ -165,6 +167,7 @@ export class ProductPurchaseFeaturesList extends Component {
 		return [
 			<HappinessSupportCard isPlaceholder={ isPlaceholder } />,
 			<CustomDomain
+				isButtonPrimary={ false }
 				selectedSite={ selectedSite }
 				hasDomainCredit={ planHasDomainCredit }
 				key="customDomainFeature"

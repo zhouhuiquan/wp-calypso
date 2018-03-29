@@ -15,7 +15,9 @@ import CustomDomainPurchaseDetail from 'my-sites/checkout/checkout-thank-you/cus
 export default props => {
 	return (
 		<div className="product-purchase-features-list__item">
-			<CustomDomainPurchaseDetail { ...pick( props, [ 'selectedSite', 'hasDomainCredit' ] ) } />
+			<CustomDomainPurchaseDetail
+				{ ...pick( props, [ 'isButtonPrimary', 'selectedSite', 'hasDomainCredit' ] ) }
+			/>
 		</div>
 	);
 };
