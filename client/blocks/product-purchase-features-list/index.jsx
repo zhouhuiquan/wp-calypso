@@ -89,24 +89,41 @@ export class ProductPurchaseFeaturesList extends Component {
 				key="businessOnboarding"
 				onClick={ this.props.recordBusinessOnboardingClick }
 				link={ `/me/concierge/${ selectedSite.slug }/book` }
+				isButtonPrimary={ false }
 			/>,
 			isEnabled( 'manage/plugins/upload' ) ? (
 				<UploadPlugins selectedSite={ selectedSite } key="uploadPluginsFeature" />
 			) : null,
 			isWordadsInstantActivationEligible( selectedSite ) ? (
-				<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />
+				<MonetizeSite
+					isButtonPrimary={ false }
+					selectedSite={ selectedSite }
+					key="monetizeSiteFeature"
+				/>
 			) : null,
-			<JetpackSearch selectedSite={ selectedSite } key="jetpackSearch" />,
+			<JetpackSearch isButtonPrimary={ false } key="jetpackSearch" selectedSite={ selectedSite } />,
 			<GoogleVouchers selectedSite={ selectedSite } key="googleVouchersFeature" />,
-			<GoogleAnalyticsStats selectedSite={ selectedSite } key="googleAnalyticsStatsFeature" />,
-			<AdvertisingRemoved isBusinessPlan key="advertisingRemovedFeature" />,
+			<GoogleAnalyticsStats
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="googleAnalyticsStatsFeature"
+			/>,
+			<AdvertisingRemoved
+				isBusinessPlan
+				isButtonPrimary={ false }
+				key="advertisingRemovedFeature"
+			/>,
 			<CustomizeTheme selectedSite={ selectedSite } key="customizeThemeFeature" />,
 			<VideoAudioPosts
 				selectedSite={ selectedSite }
 				key="videoAudioPostsFeature"
 				plan={ PLAN_BUSINESS }
 			/>,
-			<FindNewTheme selectedSite={ selectedSite } key="findNewThemeFeature" />,
+			<FindNewTheme
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="findNewThemeFeature"
+			/>,
 		];
 	}
 
@@ -120,7 +137,11 @@ export class ProductPurchaseFeaturesList extends Component {
 				hasDomainCredit={ planHasDomainCredit }
 				key="customDomainFeature"
 			/>,
-			<AdvertisingRemoved isBusinessPlan={ false } key="advertisingRemovedFeature" />,
+			<AdvertisingRemoved
+				isBusinessPlan={ false }
+				isButtonPrimary={ false }
+				key="advertisingRemovedFeature"
+			/>,
 			<GoogleVouchers selectedSite={ selectedSite } key="googleVouchersFeature" />,
 			<CustomizeTheme selectedSite={ selectedSite } key="customizeThemeFeature" />,
 			<VideoAudioPosts
@@ -129,7 +150,11 @@ export class ProductPurchaseFeaturesList extends Component {
 				plan={ PLAN_PREMIUM }
 			/>,
 			isWordadsInstantActivationEligible( selectedSite ) ? (
-				<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />
+				<MonetizeSite
+					isButtonPrimary={ false }
+					selectedSite={ selectedSite }
+					key="monetizeSiteFeature"
+				/>
 			) : null,
 		];
 	}
@@ -144,7 +169,11 @@ export class ProductPurchaseFeaturesList extends Component {
 				hasDomainCredit={ planHasDomainCredit }
 				key="customDomainFeature"
 			/>,
-			<AdvertisingRemoved isBusinessPlan={ false } key="advertisingRemovedFeature" />,
+			<AdvertisingRemoved
+				isBusinessPlan={ false }
+				isButtonPrimary={ false }
+				key="advertisingRemovedFeature"
+			/>,
 		];
 	}
 
@@ -157,8 +186,13 @@ export class ProductPurchaseFeaturesList extends Component {
 				isJetpackFreePlan
 				isPlaceholder={ isPlaceholder }
 			/>,
-			<JetpackWordPressCom selectedSite={ selectedSite } key="jetpackWordPressCom" />,
+			<JetpackWordPressCom
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackWordPressCom"
+			/>,
 			<JetpackReturnToDashboard
+				isButtonPrimary={ false }
 				onClick={ this.props.recordReturnToDashboardClick }
 				selectedSite={ selectedSite }
 				key="jetpackReturnToDashboard"
@@ -174,13 +208,25 @@ export class ProductPurchaseFeaturesList extends Component {
 				isJetpack={ !! selectedSite.jetpack && ! isAutomatedTransfer }
 				isPlaceholder={ isPlaceholder }
 			/>,
-			<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />,
-			<JetpackWordPressCom selectedSite={ selectedSite } key="jetpackWordPressCom" />,
-			<JetpackBackupSecurity key="jetpackBackupSecurity" />,
+			<MonetizeSite
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="monetizeSiteFeature"
+			/>,
+			<JetpackWordPressCom
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackWordPressCom"
+			/>,
+			<JetpackBackupSecurity isButtonPrimary={ false } key="jetpackBackupSecurity" />,
 			<JetpackAntiSpam key="jetpackAntiSpam" />,
 			<JetpackPublicize key="jetpackPublicize" />,
 			<JetpackVideo key="jetpackVideo" />,
-			<JetpackReturnToDashboard selectedSite={ selectedSite } key="jetpackReturnToDashboard" />,
+			<JetpackReturnToDashboard
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackReturnToDashboard"
+			/>,
 		];
 	}
 
@@ -192,10 +238,18 @@ export class ProductPurchaseFeaturesList extends Component {
 				isJetpack={ !! selectedSite.jetpack && ! isAutomatedTransfer }
 				isPlaceholder={ isPlaceholder }
 			/>,
-			<JetpackWordPressCom selectedSite={ selectedSite } key="jetpackWordPressCom" />,
-			<JetpackBackupSecurity key="jetpackBackupSecurity" />,
+			<JetpackWordPressCom
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackWordPressCom"
+			/>,
+			<JetpackBackupSecurity isButtonPrimary={ false } key="jetpackBackupSecurity" />,
 			<JetpackAntiSpam key="jetpackAntiSpam" />,
-			<JetpackReturnToDashboard selectedSite={ selectedSite } key="jetpackReturnToDashboard" />,
+			<JetpackReturnToDashboard
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackReturnToDashboard"
+			/>,
 		];
 	}
 
@@ -209,20 +263,41 @@ export class ProductPurchaseFeaturesList extends Component {
 				liveChatButtonEventName={ 'calypso_livechat_my_plan_jetpack_professsional' }
 			/>,
 			<BusinessOnboarding
+				isButtonPrimary={ false }
 				key="businessOnboarding"
 				onClick={ this.props.recordBusinessOnboardingClick }
 				link="https://calendly.com/jetpack/concierge"
 			/>,
-			<JetpackSearch selectedSite={ selectedSite } key="jetpackSearch" />,
-			<MonetizeSite selectedSite={ selectedSite } key="monetizeSiteFeature" />,
-			<GoogleAnalyticsStats selectedSite={ selectedSite } key="googleAnalyticsStatsFeature" />,
-			<JetpackWordPressCom selectedSite={ selectedSite } key="jetpackWordPressCom" />,
-			<FindNewTheme selectedSite={ selectedSite } key="findNewThemeFeature" />,
+			<JetpackSearch isButtonPrimary={ false } key="jetpackSearch" selectedSite={ selectedSite } />,
+			<MonetizeSite
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="monetizeSiteFeature"
+			/>,
+			<GoogleAnalyticsStats
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="googleAnalyticsStatsFeature"
+			/>,
+			<JetpackWordPressCom
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackWordPressCom"
+			/>,
+			<FindNewTheme
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="findNewThemeFeature"
+			/>,
 			<JetpackVideo key="jetpackVideo" />,
 			<JetpackPublicize key="jetpackPublicize" />,
-			<JetpackBackupSecurity key="jetpackBackupSecurity" />,
+			<JetpackBackupSecurity isButtonPrimary={ false } key="jetpackBackupSecurity" />,
 			<JetpackAntiSpam key="jetpackAntiSpam" />,
-			<JetpackReturnToDashboard selectedSite={ selectedSite } key="jetpackReturnToDashboard" />,
+			<JetpackReturnToDashboard
+				isButtonPrimary={ false }
+				selectedSite={ selectedSite }
+				key="jetpackReturnToDashboard"
+			/>,
 		];
 	}
 
