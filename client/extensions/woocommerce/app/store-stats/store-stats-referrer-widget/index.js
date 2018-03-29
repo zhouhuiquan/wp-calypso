@@ -135,13 +135,17 @@ class StoreStatsReferrerWidget extends Component {
 			);
 		}
 		const paginatedData = this.paginate( data );
-		const extent = [ 0, d3Max( paginatedData.map( d => d.sales ) ) ];
+		const extent_sales = [ 0, d3Max( data.map( d => d.sales ) ) ];
+		const extent_views = [ 0, d3Max( data.map( d => d.product_views ) ) ];
 		const header = (
 			<TableRow isHeader>
 				<TableItem isHeader isTitle>
 					{ translate( 'Source' ) }
 				</TableItem>
 				<TableItem isHeader>{ translate( 'Gross Sales' ) }</TableItem>
+				<TableItem isHeader>{ translate( 'Views' ) }</TableItem>
+				<TableItem isHeader>{ translate( 'Carts' ) }</TableItem>
+				<TableItem isHeader>{ translate( 'Purchases' ) }</TableItem>
 			</TableRow>
 		);
 		return (
@@ -158,14 +162,29 @@ class StoreStatsReferrerWidget extends Component {
 							<TableRow
 								key={ d.referrer }
 								href={ href }
-								className={ classnames( { 'is-selected': selectedReferrer === d.referrer } ) }
+								className={ classnames( {
+									'is-selected': selectedReferrer === d.referrer,
+								} ) }
 							>
 								<TableItem isTitle>{ d.referrer }</TableItem>
 								<TableItem>
 									<HorizontalBar
-										extent={ extent }
+										extent={ extent_sales }
 										data={ d.sales }
 										currency={ d.currency }
+										height={ 20 }
+									/>
+								</TableItem>
+								<TableItem>
+									<HorizontalBar extent={ extent_views } data={ d.product_views } height={ 20 } />
+								</TableItem>
+								<TableItem>
+									<HorizontalBar extent={ extent_views } data={ d.add_to_carts } height={ 20 } />
+								</TableItem>
+								<TableItem>
+									<HorizontalBar
+										extent={ extent_views }
+										data={ d.product_purchases }
 										height={ 20 }
 									/>
 								</TableItem>
