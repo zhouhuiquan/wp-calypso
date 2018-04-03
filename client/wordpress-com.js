@@ -361,16 +361,6 @@ sections.push( {
 } );
 
 sections.push( {
-	name: 'login',
-	paths: [ '/log-in' ],
-	module: 'login',
-	enableLoggedOut: true,
-	secondary: false,
-	isomorphic: true,
-	css: 'login',
-} );
-
-sections.push( {
 	name: 'auth',
 	paths: [ '/oauth-login', '/authorize', '/api/oauth/token' ],
 	module: 'auth',

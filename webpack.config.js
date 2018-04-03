@@ -276,9 +276,11 @@ if ( isDevelopment ) {
 		new webpack.LoaderOptionsPlugin( { debug: true } ),
 	] );
 	webpackConfig.entry.build = [ path.join( __dirname, 'client', 'boot', 'app' ) ];
+	webpackConfig.entry.login = [ path.join( __dirname, 'client', 'boot', 'login' ) ];
 	webpackConfig.devServer = { hot: true, inline: true };
 } else {
 	webpackConfig.entry.build = path.join( __dirname, 'client', 'boot', 'app' );
+	webpackConfig.entry.login = path.join( __dirname, 'client', 'boot', 'login' );
 }
 
 if ( ! config.isEnabled( 'desktop' ) ) {
