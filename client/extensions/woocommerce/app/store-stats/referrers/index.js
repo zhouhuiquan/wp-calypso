@@ -74,9 +74,7 @@ class Referrers extends Component {
 		};
 	};
 
-	setData( props, _filter ) {
-		const isEmpty = _filter === '';
-		const filter = isEmpty ? '' : _filter || this.state.filter;
+	setData( props, filter ) {
 		const { filteredSortedData, unfilteredDataLength } = this.getFilteredSortedData(
 			filter,
 			props
@@ -95,11 +93,11 @@ class Referrers extends Component {
 	}
 
 	componentWillReceiveProps( nextProps ) {
-		this.setData( nextProps );
+		this.setData( nextProps, this.state.filter );
 	}
 
 	componentWillMount() {
-		this.setData( this.props );
+		this.setData( this.props, this.state.filter );
 	}
 
 	render() {
