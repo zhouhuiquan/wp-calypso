@@ -43,6 +43,14 @@ class Referrers extends Component {
 		filter: '',
 	};
 
+	componentWillReceiveProps( nextProps ) {
+		this.setData( nextProps, this.state.filter );
+	}
+
+	componentWillMount() {
+		this.setData( this.props, this.state.filter );
+	}
+
 	onSearch = str => {
 		this.setData( this.props, str );
 	};
@@ -90,14 +98,6 @@ class Referrers extends Component {
 			selectedReferrer,
 			selectedReferrerIndex,
 		} );
-	}
-
-	componentWillReceiveProps( nextProps ) {
-		this.setData( nextProps, this.state.filter );
-	}
-
-	componentWillMount() {
-		this.setData( this.props, this.state.filter );
 	}
 
 	render() {
