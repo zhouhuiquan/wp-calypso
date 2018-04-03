@@ -123,7 +123,7 @@ class StoreStats extends Component {
 								siteId={ siteId }
 								query={ referrerQuery }
 								statType="statsStoreReferrers"
-								selectedDate={ unitSelectedDate }
+								unitSelectedDate={ unitSelectedDate }
 								limit={ 5 }
 								pageType="orders"
 							/>

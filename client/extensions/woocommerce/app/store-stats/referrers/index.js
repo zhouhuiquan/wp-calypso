@@ -14,7 +14,6 @@ import { localize } from 'i18n-calypso';
  * Internal dependencies
  */
 import QuerySiteStats from 'components/data/query-site-stats';
-import { getSiteStatsNormalizedData } from 'state/stats/lists/selectors';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { getUnitPeriod } from 'woocommerce/app/store-stats/utils';
 import StoreStatsPeriodNav from 'woocommerce/app/store-stats/store-stats-period-nav';
@@ -24,6 +23,7 @@ import Module from 'woocommerce/app/store-stats/store-stats-module';
 import SearchCard from 'components/search-card';
 import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-referrer-widget';
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
+import { getStoreReferrers } from 'state/selectors';
 
 const STAT_TYPE = 'statsStoreReferrers';
 const LIMIT = 10;
@@ -55,15 +55,11 @@ class Referrers extends Component {
 		this.setData( this.props, str );
 	};
 
-	getFilteredSortedData = ( filter, { data, selectedDate, unit } ) => {
-		const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-		const selectedData = find( data, d => d.date === unitSelectedDate ) || { data: [] };
-		const filteredData = filter
-			? selectedData.data.filter( d => d.referrer.match( filter ) )
-			: selectedData.data;
+	getFilteredData = ( filter, { data } ) => {
+		const filteredData = filter ? data.filter( d => d.referrer.match( filter ) ) : data;
 		return {
 			filteredSortedData: sortBySales( filteredData ),
-			unfilteredDataLength: selectedData.data.length,
+			unfilteredDataLength: data.length,
 		};
 	};
 
@@ -83,10 +79,7 @@ class Referrers extends Component {
 	};
 
 	setData( props, filter ) {
-		const { filteredSortedData, unfilteredDataLength } = this.getFilteredSortedData(
-			filter,
-			props
-		);
+		const { filteredSortedData, unfilteredDataLength } = this.getFilteredData( filter, props );
 		const { selectedReferrer, selectedReferrerIndex } = this.getSelectedReferrer(
 			filteredSortedData,
 			props
@@ -149,7 +142,7 @@ class Referrers extends Component {
 						siteId={ siteId }
 						query={ query }
 						statType={ STAT_TYPE }
-						selectedDate={ unitSelectedDate }
+						unitSelectedDate={ unitSelectedDate }
 						queryParams={ queryParams }
 						slug={ slug }
 						limit={ LIMIT }
@@ -179,11 +172,16 @@ class Referrers extends Component {
 	}
 }
 
-export default connect( ( state, { query } ) => {
+export default connect( ( state, { query, selectedDate, unit } ) => {
 	const siteId = getSelectedSiteId( state );
 	return {
 		slug: getSelectedSiteSlug( state ),
 		siteId,
-		data: getSiteStatsNormalizedData( state, siteId, STAT_TYPE, query ),
+		data: getStoreReferrers( state, {
+			query,
+			siteId,
+			statType: STAT_TYPE,
+			unitSelectedDate: getUnitPeriod( selectedDate, unit ),
+		} ),
 	};
 } )( localize( Referrers ) );

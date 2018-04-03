@@ -7,7 +7,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { find } from 'lodash';
 import { max as d3Max } from 'd3-array';
 import { localize } from 'i18n-calypso';
 import classnames from 'classnames';
@@ -15,16 +14,15 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
-import { getSiteStatsNormalizedData } from 'state/stats/lists/selectors';
 import Table from 'woocommerce/components/table';
 import TableRow from 'woocommerce/components/table/table-row';
 import TableItem from 'woocommerce/components/table/table-item';
 import HorizontalBar from 'woocommerce/components/d3/horizontal-bar';
 import Card from 'components/card';
 import ErrorPanel from 'my-sites/stats/stats-error';
-import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
-import { getWidgetPath, getUnitPeriod } from 'woocommerce/app/store-stats/utils';
+import { getWidgetPath } from 'woocommerce/app/store-stats/utils';
 import Pagination from 'components/pagination';
+import { getStoreReferrers } from 'state/selectors';
 
 class StoreStatsReferrerWidget extends Component {
 	static propTypes = {
@@ -32,7 +30,7 @@ class StoreStatsReferrerWidget extends Component {
 		query: PropTypes.object.isRequired,
 		siteId: PropTypes.number,
 		statType: PropTypes.string.isRequired,
-		selectedDate: PropTypes.string.isRequired,
+		unitSelectedDate: PropTypes.string.isRequired,
 		unit: PropTypes.string.isRequired,
 		queryParams: PropTypes.object.isRequired,
 		slug: PropTypes.string.isRequired,
@@ -115,7 +113,7 @@ class StoreStatsReferrerWidget extends Component {
 	render() {
 		const {
 			data,
-			selectedDate,
+			unitSelectedDate,
 			translate,
 			unit,
 			slug,
@@ -127,7 +125,7 @@ class StoreStatsReferrerWidget extends Component {
 		const { page } = this.state;
 		const basePath = '/store/stats/referrers';
 		if ( data.length === 0 ) {
-			const messages = this.getEmptyDataMessage( selectedDate );
+			const messages = this.getEmptyDataMessage( unitSelectedDate );
 			return (
 				<Card className="store-stats-referrer-widget stats-module is-showing-error has-no-data">
 					<ErrorPanel message={ messages.shift() }>{ messages }</ErrorPanel>
@@ -206,20 +204,9 @@ class StoreStatsReferrerWidget extends Component {
 	}
 }
 
-// @TODO: Do something better with this selector
-function getData( state, props ) {
-	const { siteId, statType, query, fetchedData, selectedDate, unit, limit, paginate } = props;
-	if ( fetchedData ) {
-		return fetchedData;
-	}
-	const rawData = getSiteStatsNormalizedData( state, siteId, statType, query );
-	const unitSelectedDate = getUnitPeriod( selectedDate, unit );
-	const selectedData = find( rawData, d => d.date === unitSelectedDate ) || { data: [] };
-	return sortBySales( selectedData.data, limit && ! paginate ? limit : null );
-}
-
 export default connect( ( state, ownProps ) => {
+	const { fetchedData } = ownProps;
 	return {
-		data: getData( state, ownProps ),
+		data: fetchedData || getStoreReferrers( state, ownProps ),
 	};
 } )( localize( StoreStatsReferrerWidget ) );
