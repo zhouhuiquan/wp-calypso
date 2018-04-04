@@ -23,7 +23,7 @@ import Module from 'woocommerce/app/store-stats/store-stats-module';
 import SearchCard from 'components/search-card';
 import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-referrer-widget';
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
-import { getStoreReferrers } from 'state/selectors';
+import { getStoreReferrersByDate, getStoreReferrersByReferrer } from 'state/selectors';
 
 const STAT_TYPE = 'statsStoreReferrers';
 const LIMIT = 10;
@@ -172,16 +172,22 @@ class Referrers extends Component {
 	}
 }
 
-export default connect( ( state, { query, selectedDate, unit } ) => {
+export default connect( ( state, { query, selectedDate, unit, queryParams } ) => {
 	const siteId = getSelectedSiteId( state );
 	return {
 		slug: getSelectedSiteSlug( state ),
 		siteId,
-		data: getStoreReferrers( state, {
+		data: getStoreReferrersByDate( state, {
 			query,
 			siteId,
 			statType: STAT_TYPE,
 			unitSelectedDate: getUnitPeriod( selectedDate, unit ),
+		} ),
+		periodData: getStoreReferrersByReferrer( state, {
+			siteId,
+			statType: STAT_TYPE,
+			query,
+			queryParams,
 		} ),
 	};
 } )( localize( Referrers ) );
