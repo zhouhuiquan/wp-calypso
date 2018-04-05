@@ -26,22 +26,22 @@ const extensionSections = extensions.map( extension => {
 	}
 } );
 
-sections.push( {
-	name: 'devdocs',
-	paths: [ '/devdocs' ],
-	module: 'devdocs',
-	secondary: true,
-	enableLoggedOut: true,
-	css: 'devdocs',
-} );
-
-sections.push( {
-	name: 'devdocs',
-	paths: [ '/devdocs/start' ],
-	module: 'devdocs',
-	secondary: false,
-	enableLoggedOut: true,
-	css: 'devdocs',
-} );
+// sections.push( {
+// 	name: 'devdocs',
+// 	paths: [ '/devdocs' ],
+// 	module: 'devdocs',
+// 	secondary: true,
+// 	enableLoggedOut: true,
+// 	css: 'devdocs',
+// } );
+//
+// sections.push( {
+// 	name: 'devdocs',
+// 	paths: [ '/devdocs/start' ],
+// 	module: 'devdocs',
+// 	secondary: false,
+// 	enableLoggedOut: true,
+// 	css: 'devdocs',
+// } );
 
 module.exports = sections.concat( extensionSections.filter( Boolean ) );
