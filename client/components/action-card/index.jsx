@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
  * Internal dependencies
  */
 import CompactCard from 'components/card/compact';
+import CardHeading from 'components/card-heading';
 import Button from 'components/button';
 
 const ActionCard = ( {
@@ -25,7 +26,9 @@ const ActionCard = ( {
 } ) => (
 	<CompactCard className="action-card">
 		<div className="action-card__main">
-			<h2 className="action-card__heading">{ headerText }</h2>
+			<CardHeading tagName="h2" size={ 21 }>
+				{ headerText }
+			</CardHeading>
 			<p>{ mainText }</p>
 		</div>
 		<div className="action-card__button-container">
