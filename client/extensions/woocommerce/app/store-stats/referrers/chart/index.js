@@ -21,7 +21,7 @@ class Chart extends Component {
 	static propTypes = {
 		data: PropTypes.array.isRequired,
 		unitSelectedDate: PropTypes.string,
-		// unit: PropTypes.oneOf( [ 'day', 'week', 'month', 'year' ] ),
+		selectedReferrer: PropTypes.string,
 	};
 
 	barClick() {}
@@ -47,29 +47,31 @@ class Chart extends Component {
 		const { data } = this.props;
 		const chartData = data.map( this.buildChartData );
 		const tabs = [
-			{ label: 'Sales', attr: 'sales' },
-			{ label: 'Views', attr: 'views', gridicon: 'visible' },
-			{ label: 'Add to Carts', attr: 'carts' },
-			{ label: 'Purchases', attr: 'purchases' },
+			{ label: 'Sales', attr: 'sales', gridicon: 'money' },
+			{ label: 'Views', attr: 'product_views', gridicon: 'visible' },
+			{ label: 'Add to Carts', attr: 'add_to_carts', gridicon: 'cart' },
+			{ label: 'Purchases', attr: 'product_purchases', gridicon: 'star' },
 		];
 		return (
 			<Card className="stats-module">
 				<Legend
-					activeTab={ tabs[ 1 ] }
-					availableCharts={ [ 'carts' ] }
-					activeCharts={ [ 'carts' ] }
+					activeTab={ tabs[ 0 ] }
+					availableCharts={ [] }
+					activeCharts={ [] }
 					tabs={ tabs }
 					clickHandler={ this.legendClick }
 				/>
 				<ElementChart data={ chartData } barClick={ this.barClick } />
-				<Tabs>
-					{ tabs.map( tab => {
+				<Tabs data={ chartData }>
+					{ tabs.map( ( tab, idx ) => {
 						return (
 							<Tab
 								key={ tab.attr }
 								label={ tab.label }
-								selected={ tab.attr === 'views' }
+								selected={ idx === 0 }
 								tabClick={ this.tabClick }
+								gridicon={ tab.gridicon }
+								value={ chartData[ 29 ].data[ tab.attr ] }
 							/>
 						);
 					} ) }

@@ -131,6 +131,19 @@ class Referrers extends Component {
 					queryParams={ queryParams }
 				/>
 				<Module
+					className="referrers__chart"
+					siteId={ siteId }
+					emptyMessage={ translate( 'No data found' ) }
+					query={ query }
+					statType={ STAT_TYPE }
+				>
+					<Chart
+						data={ periodData }
+						unitSelectedDate={ unitSelectedDate }
+						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
+					/>
+				</Module>
+				<Module
 					className="referrers__search"
 					siteId={ siteId }
 					emptyMessage={ translate( 'No data found' ) }
@@ -161,15 +174,6 @@ class Referrers extends Component {
 						selectedIndex={ selectedReferrerIndex }
 						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
 					/>
-				</Module>
-				<Module
-					className="referrers__chart"
-					siteId={ siteId }
-					emptyMessage={ translate( 'No data found' ) }
-					query={ query }
-					statType={ STAT_TYPE }
-				>
-					<Chart data={ periodData } unitSelectedDate={ unitSelectedDate } />
 				</Module>
 				<JetpackColophon />
 			</Main>
