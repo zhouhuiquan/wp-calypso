@@ -11,7 +11,11 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
+import Card from 'components/card';
 import ElementChart from 'components/chart';
+import Legend from 'components/chart/legend';
+import Tabs from 'my-sites/stats/stats-tabs';
+import Tab from 'my-sites/stats/stats-tabs/tab';
 
 class Chart extends Component {
 	static propTypes = {
@@ -21,6 +25,10 @@ class Chart extends Component {
 	};
 
 	barClick() {}
+
+	tabClick() {}
+
+	legendClick() {}
 
 	buildChartData = item => {
 		const { unitSelectedDate } = this.props;
@@ -38,7 +46,36 @@ class Chart extends Component {
 	render() {
 		const { data } = this.props;
 		const chartData = data.map( this.buildChartData );
-		return <ElementChart data={ chartData } barClick={ this.barClick } />;
+		const tabs = [
+			{ label: 'Sales', attr: 'sales' },
+			{ label: 'Views', attr: 'views', gridicon: 'visible' },
+			{ label: 'Add to Carts', attr: 'carts' },
+			{ label: 'Purchases', attr: 'purchases' },
+		];
+		return (
+			<Card className="stats-module">
+				<Legend
+					activeTab={ tabs[ 1 ] }
+					availableCharts={ [ 'carts' ] }
+					activeCharts={ [ 'carts' ] }
+					tabs={ tabs }
+					clickHandler={ this.legendClick }
+				/>
+				<ElementChart data={ chartData } barClick={ this.barClick } />
+				<Tabs>
+					{ tabs.map( tab => {
+						return (
+							<Tab
+								key={ tab.attr }
+								label={ tab.label }
+								selected={ tab.attr === 'views' }
+								tabClick={ this.tabClick }
+							/>
+						);
+					} ) }
+				</Tabs>
+			</Card>
+		);
 	}
 }
 
