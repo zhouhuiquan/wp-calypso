@@ -24,6 +24,7 @@ import SearchCard from 'components/search-card';
 import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-referrer-widget';
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
 import { getStoreReferrersByDate, getStoreReferrersByReferrer } from 'state/selectors';
+import Chart from './chart';
 
 const STAT_TYPE = 'statsStoreReferrers';
 const LIMIT = 10;
@@ -94,7 +95,16 @@ class Referrers extends Component {
 	}
 
 	render() {
-		const { siteId, query, selectedDate, unit, slug, translate, queryParams } = this.props;
+		const {
+			siteId,
+			query,
+			selectedDate,
+			unit,
+			slug,
+			translate,
+			queryParams,
+			periodData,
+		} = this.props;
 		const {
 			filter,
 			filteredSortedData,
@@ -152,20 +162,15 @@ class Referrers extends Component {
 						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
 					/>
 				</Module>
-				{ selectedReferrer && (
-					<table>
-						<tbody>
-							<tr key={ selectedReferrer.referrer }>
-								<td>{ selectedReferrer.date }</td>
-								<td>{ selectedReferrer.referrer }</td>
-								<td>{ selectedReferrer.product_views }</td>
-								<td>{ selectedReferrer.add_to_carts }</td>
-								<td>{ selectedReferrer.product_purchases }</td>
-								<td>${ selectedReferrer.sales }</td>
-							</tr>
-						</tbody>
-					</table>
-				) }
+				<Module
+					className="referrers__chart"
+					siteId={ siteId }
+					emptyMessage={ translate( 'No data found' ) }
+					query={ query }
+					statType={ STAT_TYPE }
+				>
+					<Chart data={ periodData } unitSelectedDate={ unitSelectedDate } />
+				</Module>
 				<JetpackColophon />
 			</Main>
 		);
