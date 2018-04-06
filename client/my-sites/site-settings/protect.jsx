@@ -26,8 +26,7 @@ import {
 	isJetpackModuleUnavailableInDevelopmentMode,
 	isJetpackSiteInDevelopmentMode,
 } from 'state/selectors';
-import InfoPopover from 'components/info-popover';
-import ExternalLink from 'components/external-link';
+import SupportInfo from 'components/support-info';
 import QueryJetpackConnection from 'components/data/query-jetpack-connection';
 
 class Protect extends Component {
@@ -123,21 +122,12 @@ class Protect extends Component {
 
 				<FormFieldset>
 					<div className="protect__module-settings site-settings__child-settings">
-						<div className="protect__info-link-container site-settings__info-link-container">
-							<InfoPopover position="left">
-								{ translate(
-									'Protects your site from traditional and distributed brute force login attacks.'
-								) }{' '}
-								<ExternalLink
-									href="https://jetpack.com/support/protect"
-									icon={ false }
-									target="_blank"
-								>
-									{ translate( 'Learn more' ) }
-								</ExternalLink>
-							</InfoPopover>
-						</div>
-
+						<SupportInfo
+							text={ translate(
+								'Protects your site from traditional and distributed brute force login attacks.'
+							) }
+							link="https://jetpack.com/support/protect/"
+						/>
 						<p>
 							{ translate( 'Your current IP address: {{strong}}%(IP)s{{/strong}}{{br/}}', {
 								args: {

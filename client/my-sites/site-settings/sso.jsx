@@ -22,8 +22,7 @@ import {
 	isJetpackModuleUnavailableInDevelopmentMode,
 	isJetpackSiteInDevelopmentMode,
 } from 'state/selectors';
-import InfoPopover from 'components/info-popover';
-import ExternalLink from 'components/external-link';
+import SupportInfo from 'components/support-info';
 import QueryJetpackConnection from 'components/data/query-jetpack-connection';
 
 const Sso = ( {
@@ -42,16 +41,12 @@ const Sso = ( {
 
 			<Card className="sso__card site-settings__security-settings">
 				<FormFieldset>
-					<div className="sso__info-link-container site-settings__info-link-container">
-						<InfoPopover position="left">
-							{ translate(
-								'Allows registered users to log in to your site with their WordPress.com accounts.'
-							) }
-							<ExternalLink href="https://jetpack.com/support/sso" icon={ false } target="_blank">
-								{ translate( 'Learn more' ) }
-							</ExternalLink>
-						</InfoPopover>
-					</div>
+					<SupportInfo
+						text={ translate(
+							'Allows registered users to log in to your site with their WordPress.com accounts.'
+						) }
+						link="https://jetpack.com/support/sso/"
+					/>
 
 					<JetpackModuleToggle
 						siteId={ selectedSiteId }

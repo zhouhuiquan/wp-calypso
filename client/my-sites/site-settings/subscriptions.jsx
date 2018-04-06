@@ -23,8 +23,7 @@ import {
 	isJetpackSiteInDevelopmentMode,
 } from 'state/selectors';
 import QueryJetpackConnection from 'components/data/query-jetpack-connection';
-import InfoPopover from 'components/info-popover';
-import ExternalLink from 'components/external-link';
+import SupportInfo from 'components/support-info';
 
 const Subscriptions = ( {
 	fields,
@@ -43,21 +42,13 @@ const Subscriptions = ( {
 
 			<CompactCard className="subscriptions__card site-settings__discussion-settings">
 				<FormFieldset>
-					<div className="subscriptions__info-link-container site-settings__info-link-container">
-						<InfoPopover position="left">
-							{ translate(
-								'Allows readers to subscribe to your posts or comments, ' +
-									'and receive notifications of new content by email.'
-							) }{' '}
-							<ExternalLink
-								href="https://jetpack.com/support/subscriptions"
-								icon={ false }
-								target="_blank"
-							>
-								{ translate( 'Learn more' ) }
-							</ExternalLink>
-						</InfoPopover>
-					</div>
+					<SupportInfo
+						text={ translate(
+							'Allows readers to subscribe to your posts or comments, ' +
+								'and receive notifications of new content by email.'
+						) }
+						link="https://jetpack.com/support/subscriptions/"
+					/>
 
 					<JetpackModuleToggle
 						siteId={ selectedSiteId }
