@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { findIndex } from 'lodash';
 
 /**
  * Internal dependencies
@@ -22,6 +23,10 @@ class Chart extends Component {
 		data: PropTypes.array.isRequired,
 		unitSelectedDate: PropTypes.string,
 		selectedReferrer: PropTypes.string,
+	};
+
+	state = {
+		selectedTabIndex: 0,
 	};
 
 	barClick() {}
@@ -44,7 +49,7 @@ class Chart extends Component {
 	};
 
 	render() {
-		const { data } = this.props;
+		const { data, unitSelectedDate } = this.props;
 		const chartData = data.map( this.buildChartData );
 		const tabs = [
 			{ label: 'Sales', attr: 'sales', gridicon: 'money' },
@@ -52,6 +57,9 @@ class Chart extends Component {
 			{ label: 'Add to Carts', attr: 'add_to_carts', gridicon: 'cart' },
 			{ label: 'Purchases', attr: 'product_purchases', gridicon: 'star' },
 		];
+		const { selectedTabIndex } = this.state;
+		// const selectedTab = tabs[ selectedTabIndex ]; // is useful for legend
+		const selectedIndex = findIndex( data, d => d.date === unitSelectedDate );
 		return (
 			<Card className="stats-module">
 				<Legend
@@ -62,20 +70,22 @@ class Chart extends Component {
 					clickHandler={ this.legendClick }
 				/>
 				<ElementChart data={ chartData } barClick={ this.barClick } />
-				<Tabs data={ chartData }>
-					{ tabs.map( ( tab, idx ) => {
-						return (
-							<Tab
-								key={ tab.attr }
-								label={ tab.label }
-								selected={ idx === 0 }
-								tabClick={ this.tabClick }
-								gridicon={ tab.gridicon }
-								value={ chartData[ chartData.length - 1 ].data[ tab.attr ] }
-							/>
-						);
-					} ) }
-				</Tabs>
+				{ data.length && (
+					<Tabs data={ chartData }>
+						{ tabs.map( ( tab, index ) => {
+							return (
+								<Tab
+									key={ tab.attr }
+									label={ tab.label }
+									selected={ index === selectedTabIndex }
+									tabClick={ this.tabClick }
+									gridicon={ tab.gridicon }
+									value={ chartData[ selectedIndex ].data[ tab.attr ] }
+								/>
+							);
+						} ) }
+					</Tabs>
+				) }
 			</Card>
 		);
 	}
