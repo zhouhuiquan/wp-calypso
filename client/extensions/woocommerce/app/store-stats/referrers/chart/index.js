@@ -31,12 +31,12 @@ class Chart extends Component {
 	legendClick() {}
 
 	buildChartData = item => {
-		const { unitSelectedDate } = this.props;
+		const { unitSelectedDate, chartFormat } = this.props;
 		const className = classnames( {
 			'is-selected': item.date === unitSelectedDate,
 		} );
 		return {
-			label: item.date,
+			label: item[ chartFormat ],
 			value: item.data.sales || 0,
 			data: item.data,
 			className,
@@ -71,7 +71,7 @@ class Chart extends Component {
 								selected={ idx === 0 }
 								tabClick={ this.tabClick }
 								gridicon={ tab.gridicon }
-								value={ chartData[ 29 ].data[ tab.attr ] }
+								value={ chartData[ chartData.length - 1 ].data[ tab.attr ] }
 							/>
 						);
 					} ) }

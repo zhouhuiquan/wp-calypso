@@ -25,6 +25,7 @@ import StoreStatsReferrerWidget from 'woocommerce/app/store-stats/store-stats-re
 import { sortBySales } from 'woocommerce/app/store-stats/referrers/helpers';
 import { getStoreReferrersByDate, getStoreReferrersByReferrer } from 'state/selectors';
 import Chart from './chart';
+import { UNITS } from 'woocommerce/app/store-stats/constants';
 
 const STAT_TYPE = 'statsStoreReferrers';
 const LIMIT = 10;
@@ -117,6 +118,7 @@ class Referrers extends Component {
 		const title = `${ translate( 'Store Referrers' ) }${
 			queryParams.referrer ? ' - ' + queryParams.referrer : ''
 		}`;
+		const chartFormat = UNITS[ unit ].chartFormat;
 		return (
 			<Main className="referrers woocommerce" wideLayout>
 				{ siteId && <QuerySiteStats statType={ STAT_TYPE } siteId={ siteId } query={ query } /> }
@@ -141,6 +143,7 @@ class Referrers extends Component {
 						data={ periodData }
 						unitSelectedDate={ unitSelectedDate }
 						selectedReferrer={ selectedReferrer && selectedReferrer.referrer }
+						chartFormat={ chartFormat }
 					/>
 				</Module>
 				<Module
