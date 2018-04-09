@@ -14,7 +14,7 @@ import NavItem from 'components/section-nav/item';
 import NavTabs from 'components/section-nav/tabs';
 import Intervals from './intervals';
 import FollowersCount from 'blocks/followers-count';
-import { isSiteStore } from 'state/selectors';
+import { isSiteStore, canCurrentUser } from 'state/selectors';
 import { isJetpackSite } from 'state/sites/selectors';
 import { navItems, intervals as intervalConstants } from './constants';
 import config from 'config';
@@ -29,12 +29,15 @@ class StatsNavigation extends Component {
 	};
 
 	isValidItem = item => {
-		const { isStore, isJetpack, siteId } = this.props;
+		const { isStore, isJetpack, siteId, canViewActivityLog } = this.props;
 		switch ( item ) {
 			case 'store':
 				return isStore;
 			case 'activity':
 				if ( 'undefined' === typeof siteId ) {
+					return false;
+				}
+				if ( ! canViewActivityLog ) {
 					return false;
 				}
 				if ( isJetpack ) {
@@ -83,6 +86,7 @@ export default connect( ( state, { siteId } ) => {
 	return {
 		isStore: isSiteStore( state, siteId ),
 		isJetpack: isJetpackSite( state, siteId ),
+		canViewActivityLog: canCurrentUser( state, siteId, 'manage_options' ),
 		siteId,
 	};
 } )( StatsNavigation );
