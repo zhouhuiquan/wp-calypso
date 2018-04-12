@@ -73,7 +73,7 @@ export const setTracksAnonymousUserId = anonId => ( {
 		analytics: [
 			{
 				type: ANALYTICS_TRACKS_ANONID_SET,
-				payload: anonId,
+				payload: { anonId },
 			},
 		],
 	},
@@ -85,7 +85,7 @@ export const loadTrackingTool = trackingTool => ( {
 		analytics: [
 			{
 				type: ANALYTICS_TRACKING_ON,
-				payload: trackingTool,
+				payload: { trackingTool },
 			},
 		],
 	},
@@ -97,7 +97,7 @@ export const setTracksOptOut = isOptingOut => ( {
 		analytics: [
 			{
 				type: ANALYTICS_TRACKS_OPT_OUT,
-				payload: isOptingOut,
+				payload: { isOptingOut },
 			},
 		],
 	},
