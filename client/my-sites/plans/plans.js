@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import config from 'config';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import getIntervalTypeForTerm from 'lib/plans/get-interval-type-for-term';
-import getCurrentPlanTerm from 'state/selectors/get-current-plan-term';
+import { getCurrentPlanTerm } from 'state/selectors';
 import Plans from 'my-sites/plans/main';
 
 export default connect( ( state, { intervalType } ) => {

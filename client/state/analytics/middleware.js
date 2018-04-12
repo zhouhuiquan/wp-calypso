@@ -22,7 +22,7 @@ import {
 	ANALYTICS_TRACKS_ANONID_SET,
 	ANALYTICS_TRACKS_OPT_OUT,
 } from 'state/action-types';
-import isTracking from 'state/selectors/is-tracking';
+import { isTracking } from 'state/selectors';
 
 const eventServices = {
 	ga: ( { category, action, label, value } ) =>
