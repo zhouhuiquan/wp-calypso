@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-import createSelector from 'lib/create-selector';
+import { default as createSelector } from 'lib/create-selector';
 import { getSiteOption, getSitePlanSlug } from 'state/sites/selectors';
 import { isGoogleMyBusinessLocationConnected } from 'state/selectors';
 import { planMatches } from 'lib/plans';
@@ -60,7 +60,8 @@ export default function isGoogleMyBusinessStatsNudgeVisible( state, siteId ) {
 	}
 
 	const createdAt = getSiteOption( state, siteId, 'created_at' );
-	const isWeekPassedSinceSiteCreation = Date.parse( createdAt ) + WEEK_IN_SECONDS * 1000 < Date.now();
+	const isWeekPassedSinceSiteCreation =
+		Date.parse( createdAt ) + WEEK_IN_SECONDS * 1000 < Date.now();
 
 	return (
 		isWeekPassedSinceSiteCreation &&
