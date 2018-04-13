@@ -2246,7 +2246,8 @@ Undocumented.prototype.getSiteConnectInfo = function( targetUrl ) {
 		encodeURIComponent( siteUrlPart ).replace( /%3A%3A/g, '::' ),
 	].join( '/' );
 
-	return this.wpcom.req.get( endpointUrl );
+	// @TODO(sirreal) drop encodeUrl when API is updated
+	return this.wpcom.req.get( endpointUrl, { encodeUrl: 1 } );
 };
 
 /**
