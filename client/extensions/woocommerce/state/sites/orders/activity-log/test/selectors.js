@@ -390,7 +390,7 @@ describe( 'selectors', () => {
 					tracking: '12345',
 					carrierId: 'canada_post',
 					serviceName: 'Xpress',
-					returningLabelIndex: null,
+					returningLabelIndex: undefined,
 				},
 				{
 					key: 3,
@@ -418,7 +418,7 @@ describe( 'selectors', () => {
 					tracking: '12345',
 					carrierId: 'usps',
 					serviceName: 'First Class',
-					returningLabelIndex: null,
+					returningLabelIndex: undefined,
 				},
 				{
 					key: 2,
@@ -446,7 +446,7 @@ describe( 'selectors', () => {
 					tracking: '12345',
 					carrierId: 'canada_post',
 					serviceName: 'Xpress',
-					returningLabelIndex: null,
+					returningLabelIndex: undefined,
 				},
 				{
 					key: 1,
@@ -466,7 +466,7 @@ describe( 'selectors', () => {
 					tracking: '12345',
 					carrierId: 'usps',
 					serviceName: 'First Class',
-					returningLabelIndex: null,
+					returningLabelIndex: undefined,
 				},
 			] );
 		} );
