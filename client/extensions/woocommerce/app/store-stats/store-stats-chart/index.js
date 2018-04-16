@@ -136,7 +136,7 @@ class StoreStatsChart extends Component {
 	};
 
 	render() {
-		const { data, selectedDate, unit, renderTabs, tabs } = this.props;
+		const { data, selectedDate, unit, renderTabs, tabs, className } = this.props;
 		const { selectedTabIndex } = this.state;
 		const selectedTab = tabs[ selectedTabIndex ];
 		const isLoading = ! data.length;
@@ -144,7 +144,7 @@ class StoreStatsChart extends Component {
 		const chartData = data.map( item => this.buildChartData( item, selectedTab, chartFormat ) );
 		const selectedIndex = findIndex( data, d => d.period === selectedDate );
 		return (
-			<Card className="store-stats-chart stats-module">
+			<Card className={ classnames( className, 'stats-module' ) }>
 				{ this.renderLegend( selectedTabIndex ) }
 				<ElementChart loading={ isLoading } data={ chartData } barClick={ this.barClick } />
 				{ ! isLoading &&

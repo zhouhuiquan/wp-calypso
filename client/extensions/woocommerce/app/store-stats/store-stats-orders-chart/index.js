@@ -61,7 +61,7 @@ class StoreStatsOrdersChart extends Component {
 							selected={ tabIndex === selectedTabIndex }
 							tabClick={ tabClick }
 						>
-							<span className="store-stats-chart__value value">
+							<span className="store-stats-orders-chart__value value">
 								{ formatValue( value, tab.type, itemChartData.data.currency ) }
 							</span>
 							<Delta
@@ -82,6 +82,7 @@ class StoreStatsOrdersChart extends Component {
 		const { data, selectedDate, unit, slug } = this.props;
 		return (
 			<StoreStatsChart
+				className="store-stats-orders-chart"
 				data={ data }
 				selectedDate={ selectedDate }
 				unit={ unit }
