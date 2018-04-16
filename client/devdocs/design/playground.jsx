@@ -25,19 +25,20 @@ import SearchCard from 'components/search-card';
 /**
  * Docs examples
  */
-import ActionCard from 'components/action-card';
 import Accordions from 'components/accordion';
+import ActionCard from 'components/action-card';
+import Animate from 'components/animate';
 import BackButton from 'components/back-button';
 import Badge from 'components/badge';
 import Banner from 'components/banner';
 import BulkSelect from 'components/bulk-select';
-import ButtonGroup from 'components/button-group';
 import Button from 'components/button';
+import ButtonGroup from 'components/button-group';
 import Card from 'components/card';
 import CardHeading from 'components/card-heading';
 import Checklist from 'components/checklist';
-import ClipboardButtonInput from 'components/clipboard-button-input';
 import ClipboardButton from 'components/forms/clipboard-button';
+import ClipboardButtonInput from 'components/clipboard-button-input';
 import Collection from 'devdocs/design/search-collection';
 import Count from 'components/count';
 import CountedTextarea from 'components/forms/counted-textarea';
@@ -65,8 +66,8 @@ import FormLegend from 'components/forms/form-legend';
 import FormPasswordInput from 'components/forms/form-password-input';
 import FormPhoneInput from 'components/forms/form-phone-input';
 import FormRadio from 'components/forms/form-radio';
-import FormRadioWithThumbnail from 'components/forms/form-radio-with-thumbnail';
 import FormRadiosBarExample from 'components/forms/form-radios-bar/docs/example';
+import FormRadioWithThumbnail from 'components/forms/form-radio-with-thumbnail';
 import FormSectionHeading from 'components/forms/form-section-heading';
 import FormSelect from 'components/forms/form-select';
 import FormSettingExplanation from 'components/forms/form-setting-explanation';
@@ -88,6 +89,9 @@ import JetpackColophon from 'components/jetpack-colophon';
 import JetpackLogo from 'components/jetpack-logo';
 import LanguagePicker from 'components/language-picker';
 import ListEnd from 'components/list-end';
+import NavItem from 'components/section-nav/item';
+import NavSegmented from 'components/section-nav/segmented';
+import NavTabs from 'components/section-nav/tabs';
 import Notices from 'components/notice';
 import Pagination from 'components/pagination';
 import PaymentLogo from 'components/payment-logo';
@@ -101,9 +105,6 @@ import ScreenReaderText from 'components/screen-reader-text';
 import Search from 'components/search';
 import SectionHeader from 'components/section-header';
 import SectionNav from 'components/section-nav';
-import NavTabs from 'components/section-nav/tabs';
-import NavSegmented from 'components/section-nav/segmented';
-import NavItem from 'components/section-nav/item';
 import SegmentedControl from 'components/segmented-control';
 import SelectDropdown from 'components/select-dropdown';
 import ShareButton from 'components/share-button';
@@ -146,6 +147,7 @@ class DesignAssets extends React.Component {
 		const scope = {
 			Accordions,
 			ActionCard,
+			Animate,
 			BackButton,
 			Badge,
 			Banner,
