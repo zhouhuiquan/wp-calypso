@@ -125,9 +125,22 @@ export const chartTabs = [
 		attr: 'gross_sales',
 		type: 'currency',
 		tabLabel: translate( 'Sales' ),
+		availableCharts: [ 'net_sales' ],
 	},
-	{ label: translate( 'Orders' ), attr: 'orders', type: 'number' },
-	{ label: translate( 'Average Order Value' ), attr: 'avg_order_value', type: 'currency' },
+	{ label: translate( 'Orders' ), attr: 'orders', type: 'number', availableCharts: [] },
+	{
+		label: translate( 'Average Order Value' ),
+		attr: 'avg_order_value',
+		type: 'currency',
+		availableCharts: [],
+	},
+	{
+		label: translate( 'Net Sales' ),
+		attr: 'net_sales',
+		isHidden: true,
+		availableCharts: [],
+		type: 'currency',
+	},
 ];
 
 export const referrerChartTabs = [

@@ -34,7 +34,7 @@ class Chart extends Component {
 
 	state = {
 		selectedTabIndex: 0,
-		activeCharts: [],
+		activeCharts: tabs[ 0 ].availableCharts,
 	};
 
 	barClick = bar => {
@@ -122,7 +122,6 @@ class Chart extends Component {
 		const { data, selectedDate } = this.props;
 		const chartData = data.map( this.buildChartData );
 		const { selectedTabIndex } = this.state;
-		// const selectedTab = tabs[ selectedTabIndex ];
 		const selectedIndex = findIndex( data, d => d.date === selectedDate );
 		return (
 			<Card className="chart stats-module">

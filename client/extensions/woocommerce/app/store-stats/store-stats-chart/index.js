@@ -9,8 +9,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import page from 'page';
-import { findIndex } from 'lodash';
-import { moment, translate } from 'i18n-calypso';
+import { findIndex, find } from 'lodash';
+import { moment } from 'i18n-calypso';
 
 /**
  * Internal dependencies
@@ -30,6 +30,7 @@ import Tabs from 'my-sites/stats/stats-tabs';
 import Tab from 'my-sites/stats/stats-tabs/tab';
 import { UNITS, chartTabs as tabs } from 'woocommerce/app/store-stats/constants';
 import { recordTrack } from 'woocommerce/lib/analytics';
+import { formatValue } from 'woocommerce/app/store-stats/utils';
 
 class StoreStatsChart extends Component {
 	static propTypes = {
@@ -45,6 +46,7 @@ class StoreStatsChart extends Component {
 
 	state = {
 		selectedTabIndex: 0,
+		activeCharts: tabs[ 0 ].availableCharts,
 	};
 
 	barClick = bar => {
@@ -52,12 +54,21 @@ class StoreStatsChart extends Component {
 	};
 
 	tabClick = tab => {
+		const tabData = tabs[ tab.index ];
 		this.setState( {
 			selectedTabIndex: tab.index,
+			activeCharts: tabData.availableCharts,
 		} );
 
 		recordTrack( 'calypso_woocommerce_stats_chart_tab_click', {
-			tab: tabs[ tab.index ].attr,
+			tab: tabData.attr,
+		} );
+	};
+
+	legendClick = attr => {
+		const activeCharts = this.state.activeCharts.indexOf( attr ) === -1 ? [ attr ] : [];
+		this.setState( {
+			activeCharts,
 		} );
 	};
 
@@ -74,10 +85,8 @@ class StoreStatsChart extends Component {
 	};
 
 	buildToolTipData = ( item, selectedTab ) => {
-		const value =
-			selectedTab.type === 'currency'
-				? formatCurrency( item[ selectedTab.attr ], item.currency )
-				: Math.round( item[ selectedTab.attr ] * 100 ) / 100;
+		const { activeCharts } = this.state;
+		const value = formatValue( item[ selectedTab.attr ], selectedTab.type, item.currency );
 		const data = [
 			{ className: 'is-date-label', value: null, label: this.createTooltipDate( item ) },
 			{
@@ -85,28 +94,43 @@ class StoreStatsChart extends Component {
 				label: selectedTab.label,
 			},
 		];
-		if ( selectedTab.attr === 'gross_sales' ) {
+		activeCharts.forEach( attr => {
 			data.push( {
-				value: formatCurrency( item.net_sales, item.currency ),
-				label: translate( 'Net Sales' ),
+				value: formatValue( item[ attr ], selectedTab.type, item.currency ),
+				label: find( tabs, tab => tab.attr === attr ).label,
 			} );
-		}
+		} );
 		return data;
 	};
 
 	buildChartData = ( item, selectedTab, chartFormat ) => {
 		const { selectedDate } = this.props;
+		const { activeCharts } = this.state;
 		const className = classnames( item.classNames.join( ' ' ), {
 			'is-selected': item.period === selectedDate,
 		} );
+		const nestedValue = item[ activeCharts[ 0 ] ] || 0;
 		return {
 			label: item[ chartFormat ],
 			value: item[ selectedTab.attr ],
-			nestedValue: selectedTab.attr === 'gross_sales' ? item.net_sales : null,
+			nestedValue,
 			data: item,
 			tooltipData: this.buildToolTipData( item, selectedTab ),
 			className,
 		};
+	};
+
+	renderLegend = selectedTabIndex => {
+		const activeTab = tabs[ selectedTabIndex ];
+		return (
+			<Legend
+				activeTab={ activeTab }
+				availableCharts={ activeTab.availableCharts }
+				activeCharts={ this.state.activeCharts }
+				tabs={ tabs }
+				clickHandler={ this.legendClick }
+			/>
+		);
 	};
 
 	render() {
@@ -119,18 +143,13 @@ class StoreStatsChart extends Component {
 		const selectedIndex = findIndex( data, d => d.period === selectedDate );
 		return (
 			<Card className="store-stats-chart stats-module">
-				{ selectedTab.attr === 'gross_sales' ? (
-					<Legend
-						activeTab={ selectedTab }
-						availableCharts={ [ 'net_sales' ] }
-						tabs={ [ { label: translate( 'Net Sales' ), attr: 'net_sales' } ] }
-					/>
-				) : (
-					<Legend activeTab={ selectedTab } />
-				) }
+				{ this.renderLegend( selectedTabIndex ) }
 				<ElementChart loading={ isLoading } data={ chartData } barClick={ this.barClick } />
 				<Tabs data={ chartData }>
 					{ tabs.map( ( tab, tabIndex ) => {
+						if ( tab.isHidden ) {
+							return null;
+						}
 						if ( ! isLoading ) {
 							const itemChartData = this.buildChartData( data[ selectedIndex ], tabs[ tabIndex ] );
 							const delta = getDelta( deltas, selectedDate, tab.attr );

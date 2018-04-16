@@ -60,16 +60,4 @@
 			}
 		}
 	}
-
-	.chart__legend-label.is-selectable {
-		cursor: initial;
-
-		&:hover {
-			color: inherit;
-		}
-	}
-
-	.chart__legend-checkbox {
-		display: none;
-	}
 }
