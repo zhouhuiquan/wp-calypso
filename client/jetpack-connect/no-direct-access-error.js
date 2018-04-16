@@ -29,7 +29,7 @@ class NoDirectAccessError extends Component {
 		return (
 			<Main className="jetpack-connect__main-error">
 				<EmptyContent
-					illustration="/calypso/images/illustrations/whoops.svg"
+					illustration="/calypso/images/illustrations/illustration-500.svg"
 					title={ this.props.translate( 'Oops, this URL should not be accessed directly' ) }
 					action={ this.props.translate( 'Get back to Jetpack Connect screen' ) }
 					actionURL="/jetpack/connect"
