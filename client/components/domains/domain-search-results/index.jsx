@@ -256,6 +256,7 @@ class DomainSearchResults extends React.Component {
 			<div className="domain-search-results__domain-suggestions">
 				{ suggestionCount }
 				{ featuredSuggestionElement }
+				{ this.props.children }
 				{ suggestionElements }
 				{ unavailableOffer }
 			</div>

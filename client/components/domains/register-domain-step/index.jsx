@@ -35,6 +35,8 @@ import { localize } from 'i18n-calypso';
 import config from 'config';
 import wpcom from 'lib/wp';
 import Card from 'components/card';
+import CompactCard from 'components/card/compact';
+import Button from 'components/button';
 import Notice from 'components/notice';
 import { checkDomainAvailability, getFixedDomainSearch, getAvailableTlds } from 'lib/domains';
 import { domainAvailability } from 'lib/domains/constants';
@@ -345,7 +347,7 @@ class RegisterDomainStep extends React.Component {
 						showDismiss={ false }
 					/>
 				) }
-				{ this.content() }
+				{ this.renderContent() }
 				{ this.renderPaginationControls() }
 				{ queryObject && <QueryDomainsSuggestions { ...queryObject } /> }
 				<QueryContactDetailsCache />
@@ -367,6 +369,23 @@ class RegisterDomainStep extends React.Component {
 					/>
 				</div>
 			)
+		);
+	}
+
+	renderTldButtons() {
+		const { availableTlds, filters: { tlds: selectedTlds } } = this.state;
+		const addTldToFilter = tld => () => console.log( tld );
+		return (
+			<CompactCard className="register-domain-step__tld-buttons">
+				{ availableTlds.slice( 0, 8 ).map( tld => (
+					<Button
+						className={ classNames( { 'is-active': selectedTlds.includes( tld ) } ) }
+						onClick={ addTldToFilter( tld ) }
+					>
+						{ tld }
+					</Button>
+				) ) }
+			</CompactCard>
 		);
 	}
 
@@ -403,16 +422,16 @@ class RegisterDomainStep extends React.Component {
 		this.setState( { clickedExampleSuggestion: true } );
 	};
 
-	content() {
+	renderContent() {
 		if ( Array.isArray( this.state.searchResults ) || this.state.loadingResults ) {
-			return this.allSearchResults();
+			return this.renderSearchResults();
 		}
 
 		if ( this.props.showExampleSuggestions ) {
-			return this.getExampleSuggestions();
+			return this.renderExampleSuggestions();
 		}
 
-		return this.initialSuggestions();
+		return this.renderInitialSuggestions();
 	}
 
 	save = () => {
@@ -802,7 +821,7 @@ class RegisterDomainStep extends React.Component {
 		);
 	};
 
-	initialSuggestions() {
+	renderInitialSuggestions() {
 		let domainRegistrationSuggestions;
 		let domainUnavailableSuggestion;
 		let suggestions;
@@ -848,7 +867,7 @@ class RegisterDomainStep extends React.Component {
 		);
 	}
 
-	getExampleSuggestions() {
+	renderExampleSuggestions() {
 		return (
 			<ExampleDomainSuggestions
 				onClickExampleSuggestion={ this.handleClickExampleSuggestion }
@@ -860,7 +879,7 @@ class RegisterDomainStep extends React.Component {
 		);
 	}
 
-	allSearchResults() {
+	renderSearchResults() {
 		const {
 			exactMatchDomain,
 			lastDomainIsTransferrable,
@@ -887,7 +906,7 @@ class RegisterDomainStep extends React.Component {
 		if ( suggestions.length === 0 && ! this.state.loadingResults ) {
 			// the search returned no results
 			if ( this.props.showExampleSuggestions ) {
-				return this.getExampleSuggestions();
+				return this.renderExampleSuggestions();
 			}
 
 			suggestions = this.props.defaultSuggestions || [];
@@ -917,7 +936,9 @@ class RegisterDomainStep extends React.Component {
 				railcarSeed={ this.state.railcarSeed }
 				fetchAlgo={ fetchAlgo }
 				cart={ this.props.cart }
-			/>
+			>
+				{ this.renderTldButtons() }
+			</DomainSearchResults>
 		);
 	}
 

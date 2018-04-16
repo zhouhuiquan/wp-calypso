@@ -3,6 +3,7 @@
 /**
  * External dependencies
  */
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { localize } from 'i18n-calypso';
@@ -58,7 +59,8 @@ export class TldFilterControl extends Component {
 		return (
 			<div className="search-filters__filter search-filters__tld-filter">
 				<Button
-					primary={ hasFilterValue }
+					className={ classNames( { 'is-active': hasFilterValue } ) }
+					// primary={ hasFilterValues }
 					ref={ button => ( this.button = button ) } // eslint-disable-line react/jsx-no-bind
 					onClick={ this.togglePopover }
 				>
