@@ -39,7 +39,7 @@ class Chart extends Component {
 
 	barClick = bar => {
 		const { unit, slug, selectedReferrer } = this.props;
-		const query = { startDate: bar.date, referrer: selectedReferrer };
+		const query = { startDate: bar.data.date, referrer: selectedReferrer };
 		const path = getWidgetPath( unit, slug, query );
 		page( `/store/stats/referrers${ path }` );
 	};
@@ -68,11 +68,11 @@ class Chart extends Component {
 		const { activeCharts } = this.state;
 		const data = [
 			{ className: 'is-date-label', value: null, label: selectedDate },
-			{ value: item.data[ selectedTab.attr ] || 0, label: selectedTab.label },
+			{ value: item[ selectedTab.attr ] || 0, label: selectedTab.label },
 		];
 		activeCharts.forEach( attr => {
 			data.push( {
-				value: item.data[ attr ],
+				value: item[ attr ],
 				label: find( tabs, tab => tab.attr === attr ).label,
 			} );
 		} );
@@ -86,12 +86,11 @@ class Chart extends Component {
 		const className = classnames( item.classNames.join( ' ' ), {
 			'is-selected': item.date === selectedDate,
 		} );
-		const nestedValue = item.data[ activeCharts[ 0 ] ] || 0;
+		const nestedValue = item[ activeCharts[ 0 ] ] || 0;
 		return {
 			label: item[ chartFormat ],
-			value: item.data[ selectedTab.attr ] || 0, // @TODO format this
-			data: item.data,
-			date: item.date,
+			value: item[ selectedTab.attr ] || 0, // @TODO format this
+			data: item,
 			nestedValue,
 			tooltipData: this.buildToolTipData( item, selectedTab ),
 			className,

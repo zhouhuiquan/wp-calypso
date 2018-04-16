@@ -17,8 +17,11 @@ export default function( state, { siteId, statType, query, selectedReferrer } ) 
 		return [];
 	}
 	return rawData.map( d => {
-		return Object.assign( {}, d, {
-			data: find( d.data, r => r.referrer === selectedReferrer ) || {},
-		} );
+		const { data, ...props } = d;
+		const referrerData = find( data, r => r.referrer === selectedReferrer ) || {};
+		return {
+			...props,
+			...referrerData,
+		};
 	} );
 }
