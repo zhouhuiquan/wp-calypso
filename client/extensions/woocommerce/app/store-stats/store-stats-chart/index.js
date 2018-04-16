@@ -109,7 +109,7 @@ class StoreStatsChart extends Component {
 		const className = classnames( item.classNames.join( ' ' ), {
 			'is-selected': item.period === selectedDate,
 		} );
-		const nestedValue = item[ activeCharts[ 0 ] ] || 0;
+		const nestedValue = item[ activeCharts[ 0 ] ];
 		return {
 			label: item[ chartFormat ],
 			value: item[ selectedTab.attr ],
@@ -151,7 +151,7 @@ class StoreStatsChart extends Component {
 							return null;
 						}
 						if ( ! isLoading ) {
-							const itemChartData = this.buildChartData( data[ selectedIndex ], tabs[ tabIndex ] );
+							const itemChartData = chartData[ selectedIndex ];
 							const delta = getDelta( deltas, selectedDate, tab.attr );
 							const deltaValue =
 								delta.direction === 'is-undefined-increase'

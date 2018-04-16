@@ -89,7 +89,7 @@ class Chart extends Component {
 		const nestedValue = item[ activeCharts[ 0 ] ] || 0;
 		return {
 			label: item[ chartFormat ],
-			value: item[ selectedTab.attr ] || 0, // @TODO format this
+			value: item[ selectedTab.attr ] || 0,
 			data: item,
 			nestedValue,
 			tooltipData: this.buildToolTipData( item, selectedTab ),
