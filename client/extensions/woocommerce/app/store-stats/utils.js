@@ -148,15 +148,15 @@ export function getStartPeriod( date, unit ) {
  * @param {(string|number)} value - string or number to be formatted
  * @param {string} format - string of 'text', 'number' or 'currency'
  * @param {string} [code] - optional currency code
- * @param {number} [decimals] - number of decimal places. Defaults to 2
+ * @param {number} [decimals] - optional number of decimal places
  * @return {string|number} - formatted number or string value
  */
 export function formatValue( value, format, code, decimals ) {
 	switch ( format ) {
 		case 'currency':
-			return formatCurrency( value, code, { precision: decimals } );
+			return formatCurrency( value, code, { precision: decimals || 2 } );
 		case 'number':
-			return numberFormat( value, { decimals } );
+			return numberFormat( value, decimals );
 		case 'percent':
 			return translate( '%(percentage)s%% ', { args: { percentage: value }, context: 'percent' } );
 		case 'text':
