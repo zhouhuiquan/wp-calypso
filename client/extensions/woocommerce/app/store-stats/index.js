@@ -16,7 +16,7 @@ import Main from 'components/main';
 import StatsNavigation from 'blocks/stats-navigation';
 import SidebarNavigation from 'my-sites/sidebar-navigation';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
-import Chart from './store-stats-chart';
+import Chart from './store-stats-orders-chart';
 import StatsPeriodNavigation from 'my-sites/stats/stats-period-navigation';
 import DatePicker from 'my-sites/stats/stats-date-picker';
 import Module from './store-stats-module';

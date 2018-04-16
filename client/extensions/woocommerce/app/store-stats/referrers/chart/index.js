@@ -97,13 +97,6 @@ class Chart extends Component {
 		};
 	};
 
-	formatTabValue = ( isSales, currency ) => {
-		if ( isSales ) {
-			return value => formatValue( value, 'currency', currency, { precision: 0 } );
-		}
-		return value => formatValue( value, 'number' );
-	};
-
 	renderLegend = selectedTabIndex => {
 		const activeTab = tabs[ selectedTabIndex ];
 		return (
@@ -115,6 +108,10 @@ class Chart extends Component {
 				clickHandler={ this.legendClick }
 			/>
 		);
+	};
+
+	formatTabValue = ( tab, item ) => {
+		return value => formatValue( value, tab.type, item.currency, { precision: 0 } );
 	};
 
 	render() {
@@ -130,8 +127,6 @@ class Chart extends Component {
 					<Tabs data={ chartData }>
 						{ tabs.map( ( tab, index ) => {
 							const item = chartData[ selectedIndex ].data;
-							const value = item[ tab.attr ];
-							const isSales = tab.attr === 'sales';
 							return (
 								<Tab
 									key={ tab.attr }
@@ -140,8 +135,8 @@ class Chart extends Component {
 									selected={ index === selectedTabIndex }
 									tabClick={ this.tabClick }
 									gridicon={ tab.gridicon }
-									value={ value }
-									format={ this.formatTabValue( isSales, item.currency ) }
+									value={ item[ tab.attr ] }
+									format={ this.formatTabValue( tab, item ) }
 								/>
 							);
 						} ) }
