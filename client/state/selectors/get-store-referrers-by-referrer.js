@@ -22,6 +22,7 @@ export default function( state, { siteId, statType, query, selectedReferrer } ) 
 		return {
 			...props,
 			...referrerData,
+			period: props.date,
 		};
 	} );
 }

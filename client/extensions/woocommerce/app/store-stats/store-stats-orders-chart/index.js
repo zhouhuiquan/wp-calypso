@@ -30,11 +30,11 @@ class StoreStatsOrdersChart extends Component {
 		data: PropTypes.array.isRequired,
 		deltas: PropTypes.array.isRequired,
 		isRequesting: PropTypes.bool.isRequired,
-		path: PropTypes.string.isRequired,
 		query: PropTypes.object.isRequired,
 		selectedDate: PropTypes.string.isRequired,
 		siteId: PropTypes.number,
 		unit: PropTypes.string.isRequired,
+		slug: PropTypes.string,
 	};
 
 	renderTabs = ( { chartData, selectedIndex, selectedTabIndex, selectedDate, unit, tabClick } ) => {
@@ -79,14 +79,15 @@ class StoreStatsOrdersChart extends Component {
 	};
 
 	render() {
-		const { data, selectedDate, unit, path } = this.props;
+		const { data, selectedDate, unit, slug } = this.props;
 		return (
 			<StoreStatsChart
 				data={ data }
 				selectedDate={ selectedDate }
 				unit={ unit }
 				renderTabs={ this.renderTabs }
-				path={ path }
+				slug={ slug }
+				basePath={ '/store/stats/orders' }
 			/>
 		);
 	}

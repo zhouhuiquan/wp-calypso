@@ -48,7 +48,7 @@ class StoreStats extends Component {
 	};
 
 	render() {
-		const { path, queryDate, selectedDate, siteId, slug, unit, queryParams } = this.props;
+		const { queryDate, selectedDate, siteId, slug, unit, queryParams } = this.props;
 		const endSelectedDate = getEndPeriod( selectedDate, unit );
 		const { orderQuery, referrerQuery } = getQueries( unit, queryDate );
 		const { topListQuery } = getQueries( unit, selectedDate );
@@ -74,11 +74,11 @@ class StoreStats extends Component {
 					interval={ unit }
 				/>
 				<Chart
-					path={ path }
 					query={ orderQuery }
 					selectedDate={ endSelectedDate }
 					siteId={ siteId }
 					unit={ unit }
+					slug={ slug }
 				/>
 				<StatsPeriodNavigation
 					date={ selectedDate }

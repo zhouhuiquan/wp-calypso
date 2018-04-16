@@ -19,15 +19,21 @@ import ElementChart from 'components/chart';
 import Legend from 'components/chart/legend';
 import { UNITS, chartTabs as tabs } from 'woocommerce/app/store-stats/constants';
 import { recordTrack } from 'woocommerce/lib/analytics';
-import { formatValue } from 'woocommerce/app/store-stats/utils';
+import { getWidgetPath, formatValue } from 'woocommerce/app/store-stats/utils';
 
 class StoreStatsChart extends Component {
 	static propTypes = {
 		data: PropTypes.array.isRequired,
-		path: PropTypes.string.isRequired,
 		selectedDate: PropTypes.string.isRequired,
 		unit: PropTypes.string.isRequired,
+		basePath: PropTypes.string.isRequired,
+		slug: PropTypes.string,
 		renderTabs: PropTypes.func.isRequired,
+		urlQueryParam: PropTypes.object,
+	};
+
+	static defaultProps = {
+		urlQueryParam: {},
 	};
 
 	state = {
@@ -36,7 +42,10 @@ class StoreStatsChart extends Component {
 	};
 
 	barClick = bar => {
-		page.redirect( `${ this.props.path }?startDate=${ bar.data.period }` );
+		const { unit, slug, basePath, urlQueryParam } = this.props;
+		const query = Object.assign( { startDate: bar.data.period }, urlQueryParam );
+		const path = getWidgetPath( unit, slug, query );
+		page( `${ basePath }${ path }` );
 	};
 
 	tabClick = tab => {
@@ -145,12 +154,3 @@ class StoreStatsChart extends Component {
 	}
 }
 export default StoreStatsChart;
-
-// export default connect( ( state, { query, siteId } ) => {
-// 	const statsData = getSiteStatsNormalizedData( state, siteId, 'statsOrders', query );
-// 	return {
-// 		data: statsData.data,
-// 		deltas: statsData.deltas,
-// 		isRequesting: isRequestingSiteStatsForQuery( state, siteId, 'statsOrders', query ),
-// 	};
-// } )( StoreStatsOrdersChart );
