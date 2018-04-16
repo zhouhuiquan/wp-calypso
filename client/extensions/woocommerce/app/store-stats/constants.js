@@ -131,10 +131,25 @@ export const chartTabs = [
 ];
 
 export const referrerChartTabs = [
-	{ label: translate( 'Sales' ), attr: 'sales', gridicon: 'money' },
-	{ label: translate( 'Views' ), attr: 'product_views', gridicon: 'visible' },
-	{ label: translate( 'Add to Carts' ), attr: 'add_to_carts', gridicon: 'cart' },
-	{ label: translate( 'Purchases' ), attr: 'product_purchases', gridicon: 'star' },
+	{ label: translate( 'Sales' ), attr: 'sales', gridicon: 'money', availableCharts: [] },
+	{
+		label: translate( 'Views' ),
+		attr: 'product_views',
+		gridicon: 'visible',
+		availableCharts: [ 'add_to_carts' ],
+	},
+	{
+		label: translate( 'Add to Carts' ),
+		attr: 'add_to_carts',
+		gridicon: 'cart',
+		availableCharts: [ 'product_purchases' ],
+	},
+	{
+		label: translate( 'Purchases' ),
+		attr: 'product_purchases',
+		gridicon: 'star',
+		availableCharts: [],
+	},
 ];
 
 export const dashboardListLimit = 3;

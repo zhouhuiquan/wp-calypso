@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { findIndex } from 'lodash';
+import { findIndex, find } from 'lodash';
 import page from 'page';
 import { connect } from 'react-redux';
 
@@ -34,9 +34,8 @@ class Chart extends Component {
 
 	state = {
 		selectedTabIndex: 0,
+		activeCharts: [],
 	};
-
-	legendClick() {}
 
 	barClick = bar => {
 		const { unit, slug, selectedReferrer } = this.props;
@@ -46,51 +45,48 @@ class Chart extends Component {
 	};
 
 	tabClick = tab => {
+		const tabData = tabs[ tab.index ];
 		this.setState( {
 			selectedTabIndex: tab.index,
+			activeCharts: tabData.availableCharts,
 		} );
 
 		recordTrack( 'calypso_woocommerce_stats_referrers_chart_tab_click', {
-			tab: tabs[ tab.index ].attr,
+			tab: tabData.attr,
+		} );
+	};
+
+	legendClick = attr => {
+		const activeCharts = this.state.activeCharts.indexOf( attr ) === -1 ? [ attr ] : [];
+		this.setState( {
+			activeCharts,
 		} );
 	};
 
 	buildToolTipData = ( item, selectedTab ) => {
 		const { selectedDate } = this.props;
+		const { activeCharts } = this.state;
 		const data = [
 			{ className: 'is-date-label', value: null, label: selectedDate },
 			{ value: item.data[ selectedTab.attr ] || 0, label: selectedTab.label },
 		];
-		if ( selectedTab.attr === 'product_views' ) {
+		activeCharts.forEach( attr => {
 			data.push( {
-				value: item.data.add_to_carts,
-				label: 'Add to Carts',
+				value: item.data[ attr ],
+				label: find( tabs, tab => tab.attr === attr ).label,
 			} );
-		}
-		if ( selectedTab.attr === 'add_to_carts' ) {
-			data.push( {
-				value: item.data.product_purchases,
-				label: 'Purchases',
-			} );
-		}
+		} );
 		return data;
 	};
 
 	buildChartData = item => {
 		const { selectedDate, chartFormat } = this.props;
-		const { selectedTabIndex } = this.state;
+		const { selectedTabIndex, activeCharts } = this.state;
 		const selectedTab = tabs[ selectedTabIndex ];
 		const className = classnames( item.classNames.join( ' ' ), {
 			'is-selected': item.date === selectedDate,
 		} );
-		let nestedValue = null;
-		switch ( selectedTab.attr ) {
-			case 'product_views':
-				nestedValue = item.data.add_to_carts || 0;
-				break;
-			case 'add_to_carts':
-				nestedValue = item.data.product_purchases || 0;
-		}
+		const nestedValue = item.data[ activeCharts[ 0 ] ] || 0;
 		return {
 			label: item[ chartFormat ],
 			value: item.data[ selectedTab.attr ] || 0, // @TODO format this
@@ -109,6 +105,19 @@ class Chart extends Component {
 		return value => formatValue( value, 'number' );
 	};
 
+	renderLegend = selectedTabIndex => {
+		const activeTab = tabs[ selectedTabIndex ];
+		return (
+			<Legend
+				activeTab={ activeTab }
+				availableCharts={ activeTab.availableCharts }
+				activeCharts={ this.state.activeCharts }
+				tabs={ tabs }
+				clickHandler={ this.legendClick }
+			/>
+		);
+	};
+
 	render() {
 		const { data, selectedDate } = this.props;
 		const chartData = data.map( this.buildChartData );
@@ -117,13 +126,7 @@ class Chart extends Component {
 		const selectedIndex = findIndex( data, d => d.date === selectedDate );
 		return (
 			<Card className="chart stats-module">
-				<Legend
-					activeTab={ tabs[ 0 ] }
-					availableCharts={ [] }
-					activeCharts={ [] }
-					tabs={ tabs }
-					clickHandler={ this.legendClick }
-				/>
+				{ this.renderLegend( selectedTabIndex ) }
 				<ElementChart data={ chartData } barClick={ this.barClick } />
 				{ data.length && (
 					<Tabs data={ chartData }>
