@@ -447,10 +447,13 @@ class RegisterDomainStep extends React.Component {
 		} );
 	};
 
-	onFiltersReset = () => {
+	onFiltersReset = ( ...keysToReset ) => {
 		this.setState(
 			{
-				filters: this.getInitialFiltersState(),
+				filters: {
+					...this.state.filters,
+					...pick( this.getInitialFiltersState(), keysToReset ),
+				},
 			},
 			() => {
 				this.save();
