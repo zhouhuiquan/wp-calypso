@@ -98,6 +98,7 @@ import TokenFields from 'components/token-field/docs/example';
 import Tooltip from 'components/tooltip/docs/example';
 import Version from 'components/version/docs/example';
 import VerticalMenu from 'components/vertical-menu/docs/example';
+import VerticalNav from 'components/vertical-nav/docs/example';
 import Wizard from 'components/wizard/docs/example';
 
 class DesignAssets extends React.Component {
@@ -222,6 +223,7 @@ class DesignAssets extends React.Component {
 					<TokenFields readmeFilePath="token-field" />
 					<Tooltip readmeFilePath="tooltip" />
 					<VerticalMenu readmeFilePath="vertical-menu" />
+					<VerticalNav readmeFilePath="vertical-nav" />
 					<Version readmeFilePath="version" />
 					<Wizard readmeFilePath="wizard" />
 				</Collection>
