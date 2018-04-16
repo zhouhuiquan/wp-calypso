@@ -17,9 +17,9 @@ import { moment } from 'i18n-calypso';
 import Card from 'components/card';
 import ElementChart from 'components/chart';
 import Legend from 'components/chart/legend';
-import { UNITS, chartTabs as tabs } from 'woocommerce/app/store-stats/constants';
 import { recordTrack } from 'woocommerce/lib/analytics';
 import { getWidgetPath, formatValue } from 'woocommerce/app/store-stats/utils';
+import { UNITS } from 'woocommerce/app/store-stats/constants';
 
 class StoreStatsChart extends Component {
 	static propTypes = {
@@ -29,6 +29,7 @@ class StoreStatsChart extends Component {
 		basePath: PropTypes.string.isRequired,
 		slug: PropTypes.string,
 		renderTabs: PropTypes.func.isRequired,
+		tabs: PropTypes.array.isRequired,
 		urlQueryParam: PropTypes.object,
 	};
 
@@ -36,10 +37,13 @@ class StoreStatsChart extends Component {
 		urlQueryParam: {},
 	};
 
-	state = {
-		selectedTabIndex: 0,
-		activeCharts: tabs[ 0 ].availableCharts,
-	};
+	constructor( props ) {
+		super( props );
+		this.state = {
+			selectedTabIndex: 0,
+			activeCharts: props.tabs[ 0 ].availableCharts,
+		};
+	}
 
 	barClick = bar => {
 		const { unit, slug, basePath, urlQueryParam } = this.props;
@@ -49,6 +53,7 @@ class StoreStatsChart extends Component {
 	};
 
 	tabClick = tab => {
+		const { tabs } = this.props;
 		const tabData = tabs[ tab.index ];
 		this.setState( {
 			selectedTabIndex: tab.index,
@@ -80,6 +85,7 @@ class StoreStatsChart extends Component {
 	};
 
 	buildToolTipData = ( item, selectedTab ) => {
+		const { tabs } = this.props;
 		const { activeCharts } = this.state;
 		const value = formatValue( item[ selectedTab.attr ], selectedTab.type, item.currency );
 		const data = [
@@ -107,7 +113,7 @@ class StoreStatsChart extends Component {
 		const nestedValue = item[ activeCharts[ 0 ] ];
 		return {
 			label: item[ chartFormat ],
-			value: item[ selectedTab.attr ],
+			value: item[ selectedTab.attr ] || 0,
 			nestedValue,
 			data: item,
 			tooltipData: this.buildToolTipData( item, selectedTab ),
@@ -116,6 +122,7 @@ class StoreStatsChart extends Component {
 	};
 
 	renderLegend = selectedTabIndex => {
+		const { tabs } = this.props;
 		const activeTab = tabs[ selectedTabIndex ];
 		return (
 			<Legend
@@ -129,7 +136,7 @@ class StoreStatsChart extends Component {
 	};
 
 	render() {
-		const { data, selectedDate, unit, renderTabs } = this.props;
+		const { data, selectedDate, unit, renderTabs, tabs } = this.props;
 		const { selectedTabIndex } = this.state;
 		const selectedTab = tabs[ selectedTabIndex ];
 		const isLoading = ! data.length;
