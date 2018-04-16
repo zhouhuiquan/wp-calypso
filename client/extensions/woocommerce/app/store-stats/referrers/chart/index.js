@@ -27,7 +27,7 @@ class Chart extends Component {
 	};
 
 	formatTabValue = ( tab, item ) => {
-		return value => formatValue( value, tab.type, item.currency, { precision: 0 } );
+		return value => formatValue( value, tab.type, item.currency );
 	};
 
 	renderTabs = ( { chartData, selectedIndex, selectedTabIndex, tabClick } ) => {
