@@ -17,8 +17,8 @@ import FakeData from './fake-data';
 import PieChart from 'components/pie-chart';
 import PieChartLegend from 'components/pie-chart/legend';
 import SectionHeader from 'components/section-header';
-import { changeGoogleMyBusinessStatsInterval } from 'state/google-my-business/actions';
-import { getInterval } from 'state/google-my-business/selector';
+import { changeGoogleMyBusinessStatsInterval } from 'state/ui/google-my-business/action';
+import { getStatsInterval } from 'state/ui/google-my-business/selector';
 import { getSelectedSiteId } from 'state/ui/selectors';
 
 class GoogleMyBusinessStatsChart extends Component {
@@ -104,7 +104,7 @@ class GoogleMyBusinessStatsChart extends Component {
 export default connect(
 	( state, ownProps ) => {
 		const siteId = getSelectedSiteId( state );
-		const interval = getInterval( state, siteId, ownProps.statType );
+		const interval = getStatsInterval( state, siteId, ownProps.statType );
 		return {
 			siteId,
 			interval,
