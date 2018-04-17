@@ -23,6 +23,7 @@ import Sidebar from 'layout/sidebar';
 import CartBodyLoadingPlaceholder from 'my-sites/checkout/cart/cart-body/loading-placeholder';
 import { action as upgradesActionTypes } from 'lib/upgrades/constants';
 import scrollIntoViewport from 'lib/scroll-into-viewport';
+import { isPaymentMethodEnabled } from 'lib/cart-values';
 
 class SecondaryCart extends Component {
 	static propTypes = {
@@ -59,6 +60,10 @@ class SecondaryCart extends Component {
 		this.cartBodyRef = cartBody;
 	};
 
+	shouldShowInstallments = () => {
+		return this.props.cart.currency === 'BRL' && isPaymentMethodEnabled( this.props.cart, 'ebanx' );
+	};
+
 	render() {
 		const { cart, selectedSite } = this.props;
 		const cartClasses = classNames( {
@@ -86,7 +91,7 @@ class SecondaryCart extends Component {
 					cart={ cart }
 					selectedSite={ selectedSite }
 					showCoupon={ true }
-					showInstallments={ true }
+					showInstallments={ this.shouldShowInstallments() }
 				/>
 				<CartPlanDiscountAd cart={ cart } selectedSite={ selectedSite } />
 			</Sidebar>

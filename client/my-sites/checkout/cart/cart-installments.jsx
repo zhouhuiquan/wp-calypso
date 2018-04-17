@@ -32,7 +32,7 @@ class CartInstallments extends React.Component {
 	}
 
 	componentWillReceiveProps( nextProps ) {
-		if ( ! this.state.userChangedInstallments ) {
+		if ( ! this.state.userChangedInstallments && nextProps.cart ) {
 			this.setState( { installmentsInputValue: nextProps.cart.installments.toString() } );
 		}
 	}
@@ -56,13 +56,6 @@ class CartInstallments extends React.Component {
 	};
 
 	getInstallmentsForm = () => {
-		if (
-			! this.state.isInstallmentsFormShowing ||
-			this.props.cart.installments_plans.length === 0
-		) {
-			return;
-		}
-
 		return (
 			<form>
 				<FormLabel htmlFor="installments_number">
