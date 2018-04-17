@@ -20,7 +20,7 @@ class CartInstallments extends React.Component {
 
 	constructor( props ) {
 		super( props );
-		const installments = props.cart.installments,
+		const installments = props.cart.installments ? props.cart.installments : 1,
 			cartHadInstallmentsBeforeMount = props.cart.installments > 1;
 
 		this.state = {
