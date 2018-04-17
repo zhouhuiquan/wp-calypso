@@ -8,7 +8,13 @@ import {
 	GOOGLE_MY_BUSINESS_DISCONNECT_LOCATION,
 	GOOGLE_MY_BUSINESS_STATS_CHANGE_INTERVAL,
 } from 'state/action-types';
-import { saveSiteSettings } from 'state/site-settings/actions';
+import { requestSiteSettings, saveSiteSettings } from 'state/site-settings/actions';
+
+export const fetchGoogleMyBusinessLocation = siteId => dispatch => {
+	return dispatch(
+		requestSiteSettings( siteId )
+	);
+};
 
 export const connectGoogleMyBusinessLocation = (
 	siteId,

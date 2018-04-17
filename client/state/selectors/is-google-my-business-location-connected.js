@@ -1,14 +1,12 @@
 /** @format */
 
 /**
- * External dependencies
+ * Internal dependencies
  */
-import { get } from 'lodash';
-
-const getGoogleMyBusinessLocationId = ( state, siteId ) => {
-	return get( state, `googleMyBusiness.${ siteId }.location.id`, null );
-};
+import { getSiteSettings } from 'state/site-settings/selectors';
 
 export default function isGoogleMyBusinessLocationConnected( state, siteId ) {
-	return getGoogleMyBusinessLocationId( state, siteId ) !== null;
+	const siteSettings = getSiteSettings( state, siteId );
+
+	return siteSettings !== null && siteSettings.hasOwnProperty( 'google_my_business_location_id' );
 }

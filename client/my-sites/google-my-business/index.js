@@ -9,9 +9,31 @@ import page from 'page';
  * Internal dependencies
  */
 import config from 'config';
+import { fetchGoogleMyBusinessLocation } from 'state/google-my-business/actions';
+import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
+import { isGoogleMyBusinessLocationConnected, isGoogleMyBusinessLocationReady } from 'state/selectors';
 import { makeLayout, redirectLoggedOut } from 'controller';
 import { navigation, sites, siteSelection } from 'my-sites/controller';
 import { newAccount, selectBusinessType, selectLocation, stats } from './controller';
+
+export function redirectToStatsPage( context, next ) {
+	const state = context.store.getState();
+	const siteId = getSelectedSiteId( state );
+
+	if ( ! isGoogleMyBusinessLocationReady( state, siteId ) ) {
+		context.store.dispatch( fetchGoogleMyBusinessLocation( siteId ) );
+	}
+
+	if ( isGoogleMyBusinessLocationConnected( state, siteId ) ) {
+		const siteSlug = getSelectedSiteSlug( state );
+
+		page.redirect( `/google-my-business/stats/${ siteSlug }` );
+
+		return;
+	}
+
+	next();
+}
 
 export default function( router ) {
 	router(
@@ -31,6 +53,7 @@ export default function( router ) {
 		'/google-my-business/select-business-type/:site',
 		redirectLoggedOut,
 		siteSelection,
+		redirectToStatsPage,
 		selectBusinessType,
 		navigation,
 		makeLayout,
@@ -49,6 +72,7 @@ export default function( router ) {
 			'/google-my-business/new/:site',
 			redirectLoggedOut,
 			siteSelection,
+			redirectToStatsPage,
 			newAccount,
 			navigation,
 			makeLayout,
@@ -66,6 +90,7 @@ export default function( router ) {
 			'/google-my-business/select-location/:site',
 			redirectLoggedOut,
 			siteSelection,
+			redirectToStatsPage,
 			selectLocation,
 			navigation,
 			makeLayout,
