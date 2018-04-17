@@ -25,7 +25,7 @@ import HeaderCake from 'components/header-cake';
 import KeyringConnectButton from 'blocks/keyring-connect-button';
 import Main from 'components/main';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
-import { canCurrentUser } from 'state/selectors';
+import { canCurrentUser, getGoogleMyBusinessLocations } from 'state/selectors';
 import { recordTracksEvent } from 'state/analytics/actions';
 
 class GoogleMyBusinessSelectBusinessType extends Component {
@@ -40,9 +40,13 @@ class GoogleMyBusinessSelectBusinessType extends Component {
 	};
 
 	handleConnect = () => {
-		const { siteSlug } = this.props;
+		const { googleMyBusinessLocations, siteSlug } = this.props;
 
-		page.redirect( `/google-my-business/new/${ siteSlug }` );
+		if ( googleMyBusinessLocations.length === 0 ) {
+			page.redirect( `/google-my-business/new/${ siteSlug }` );
+		} else {
+			page.redirect( `/google-my-business/select-location/${ siteSlug }` );
+		}
 	};
 
 	trackCreateYourListingClick = () => {
@@ -103,7 +107,7 @@ class GoogleMyBusinessSelectBusinessType extends Component {
 				} ) }
 				mainText={ translate(
 					'Your business has a physical location customers can visit, ' +
-					'or provides goods and services to local customers, or both.'
+						'or provides goods and services to local customers, or both.'
 				) }
 			>
 				{ connectButton }
@@ -154,7 +158,7 @@ class GoogleMyBusinessSelectBusinessType extends Component {
 						<p>
 							{ translate(
 								'{{link}}Google My Business{{/link}} lists your local business on Google Search and Google Maps. ' +
-								'It works for businesses that have a physical location or serve a local area.',
+									'It works for businesses that have a physical location or serve a local area.',
 								{
 									components: {
 										link: (
@@ -188,10 +192,14 @@ class GoogleMyBusinessSelectBusinessType extends Component {
 }
 
 export default connect(
-	state => ( {
-		canUserManageOptions: canCurrentUser( state, getSelectedSiteId( state ), 'manage_options' ),
-		siteSlug: getSelectedSiteSlug( state ),
-	} ),
+	state => {
+		const siteId = getSelectedSiteId( state );
+		return {
+			googleMyBusinessLocations: getGoogleMyBusinessLocations( state, siteId ),
+			canUserManageOptions: canCurrentUser( state, siteId, 'manage_options' ),
+			siteSlug: getSelectedSiteSlug( state ),
+		};
+	},
 	{
 		recordTracksEvent,
 	}
