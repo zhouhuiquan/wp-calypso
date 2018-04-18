@@ -3,7 +3,7 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { assign, snakeCase, some, map, noop, identity } from 'lodash';
+import { assign, snakeCase, some, map, zipObject, isEmpty } from 'lodash';
 
 /**
  * Internal dependencies
@@ -24,6 +24,8 @@ import FormLabel from 'components/forms/form-label';
 import EbanxPaymentFields from 'my-sites/checkout/checkout/ebanx-payment-fields';
 import { planMatches } from 'lib/plans';
 import { TYPE_BUSINESS, GROUP_WPCOM } from 'lib/plans/constants';
+import { validatePaymentDetails } from 'lib/checkout';
+import { PAYMENT_PROCESSOR_EBANX_COUNTRIES } from 'lib/checkout/constants';
 
 export class RedirectPaymentBox extends PureComponent {
 	static displayName = 'RedirectPaymentBox';
@@ -34,20 +36,43 @@ export class RedirectPaymentBox extends PureComponent {
 		countriesList: PropTypes.object.isRequired,
 		transaction: PropTypes.object.isRequired,
 		redirectTo: PropTypes.func.isRequired,
+	};
+
+	eventFormName = 'Checkout Form';
+
+	constructor( props ) {
+		super( props );
+		this.state = {
+			errorMessages: [],
+			paymentDetails: this.setPaymentDetailsState( props.paymentType ),
+		};
 	}
 
-	constructor() {
-		super();
-		this.redirectToPayment = this.redirectToPayment.bind( this );
-		this.handleChange = this.handleChange.bind( this );
+	setPaymentDetailsState( paymentType ) {
+		switch ( paymentType ) {
+			case 'tef':
+				return zipObject(
+					PAYMENT_PROCESSOR_EBANX_COUNTRIES.BR.fields,
+					map( PAYMENT_PROCESSOR_EBANX_COUNTRIES.BR.fields, () => '' )
+				);
+		}
+		return {};
 	}
 
-	handleChange( event ) {
-		const data = {};
-		data[ event.target.name ] = event.target.value;
+	handleChange = ( event ) => this.updateFieldValues( event.target.name, event.target.value );
 
-		this.setState( data );
-	}
+	updateFieldValues = ( name, value ) => {
+		this.setState( {
+			paymentDetails: {
+				...this.state.paymentDetails,
+				[ name ]: value,
+			},
+		} );
+	};
+
+	getErrorMessage = ( fieldName ) => this.state.errorMessages[ fieldName ];
+
+	getFieldValue = ( fieldName ) => this.state.paymentDetails[ fieldName ];
 
 	setSubmitState( submitState ) {
 		if ( submitState.error ) {
@@ -66,9 +91,19 @@ export class RedirectPaymentBox extends PureComponent {
 		return paymentMethodClassName( paymentType ) || 'WPCOM_Billing_Stripe_Source';
 	}
 
-	redirectToPayment( event ) {
+	redirectToPayment = ( event ) => {
 		const origin = getLocationOrigin( location );
 		event.preventDefault();
+
+		const validation = validatePaymentDetails( this.state.paymentDetails, this.props.paymentType );
+
+		this.setState( {
+			errorMessages: validation.errors,
+		} );
+
+		if ( ! isEmpty( validation.errors ) ) {
+			return;
+		}
 
 		this.setSubmitState( {
 			info: translate( 'Setting up your %(paymentProvider)s payment', {
@@ -85,7 +120,7 @@ export class RedirectPaymentBox extends PureComponent {
 		}
 
 		const dataForApi = {
-			payment: assign( {}, this.state, {
+			payment: assign( {}, this.state.paymentDetails, {
 				paymentMethod: this.paymentMethodByType( this.props.paymentType ),
 				successUrl: origin + this.props.redirectTo(),
 				cancelUrl,
@@ -95,30 +130,31 @@ export class RedirectPaymentBox extends PureComponent {
 		};
 
 		// get the redirect URL from rest endpoint
-		wpcom.undocumented().transactions( 'POST', dataForApi, function( error, result ) {
-			let errorMessage;
-			if ( error ) {
-				if ( error.message ) {
-					errorMessage = error.message;
-				} else {
-					errorMessage = translate( "We've encountered a problem. Please try again later." );
-				}
+		wpcom.undocumented()
+			.transactions( 'POST', dataForApi, ( error, result ) => {
+				let errorMessage;
+				if ( error ) {
+					if ( error.message ) {
+						errorMessage = error.message;
+					} else {
+						errorMessage = translate( "We've encountered a problem. Please try again later." );
+					}
 
-				this.setSubmitState( {
-					error: errorMessage,
-					disabled: false,
-				} );
-			} else if ( result.redirect_url ) {
-				this.setSubmitState( {
-					info: translate( 'Redirecting you to the payment partner to complete the payment.' ),
-					disabled: true,
-				} );
-				analytics.ga.recordEvent( 'Upgrades', 'Clicked Checkout With Redirect Payment Button' );
-				analytics.tracks.recordEvent( 'calypso_checkout_with_redirect_' + snakeCase( this.props.paymentType ) );
-				location.href = result.redirect_url;
-			}
-		}.bind( this ) );
-	}
+					this.setSubmitState( {
+						error: errorMessage,
+						disabled: false,
+					} );
+				} else if ( result.redirect_url ) {
+					this.setSubmitState( {
+						info: translate( 'Redirecting you to the payment partner to complete the payment.' ),
+						disabled: true,
+					} );
+					analytics.ga.recordEvent( 'Upgrades', 'Clicked Checkout With Redirect Payment Button' );
+					analytics.tracks.recordEvent( 'calypso_checkout_with_redirect_' + snakeCase( this.props.paymentType ) );
+					location.href = result.redirect_url;
+				}
+			} );
+	};
 
 	renderButtonText() {
 		if ( cartValues.cartItems.hasRenewalItem( this.props.cart ) ) {
@@ -188,7 +224,7 @@ export class RedirectPaymentBox extends PureComponent {
 						name="email"
 						onChange={ this.handleChange }
 						label={ translate( 'Email Address' ) }
-						eventFormName="Checkout Form" />
+						eventFormName={ this.eventFormName } />
 				);
 			case 'tef':
 				return (
@@ -205,11 +241,12 @@ export class RedirectPaymentBox extends PureComponent {
 						<EbanxPaymentFields
 							countryCode="BR"
 							countriesList={ this.props.countriesList }
-							getErrorMessage={ noop }
-							getFieldValue={ identity }
-							handleFieldChange={ noop }
+							getErrorMessage={ this.getErrorMessage }
+							getFieldValue={ this.getFieldValue }
+							handleFieldChange={ this.updateFieldValues }
 							fieldClassName="credit-card-form-fields__field"
-						/>
+							eventFormName={ this.eventFormName }
+							/>
 					</div>
 				);
 		}
@@ -233,7 +270,7 @@ export class RedirectPaymentBox extends PureComponent {
 						name="name"
 						onChange={ this.handleChange }
 						label={ translate( 'Your Name' ) }
-						eventFormName="Checkout Form" />
+						eventFormName={ this.eventFormName } />
 
 					{ this.renderAdditionalFields() }
 				</div>
