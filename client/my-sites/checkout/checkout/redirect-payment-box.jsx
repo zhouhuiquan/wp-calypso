@@ -3,7 +3,7 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { assign, snakeCase, some, map, noop } from 'lodash';
+import { assign, snakeCase, some, map, noop, identity } from 'lodash';
 
 /**
  * Internal dependencies
@@ -206,7 +206,7 @@ export class RedirectPaymentBox extends PureComponent {
 							countryCode="BR"
 							countriesList={ this.props.countriesList }
 							getErrorMessage={ noop }
-							getFieldValue={ noop }
+							getFieldValue={ identity }
 							handleFieldChange={ noop }
 							fieldClassName="credit-card-form-fields__field"
 						/>
